@@ -495,6 +495,66 @@ const SITE_CONFIG = {
               "body": "Team Timeline E2 Description"
             }
           ]
+        },
+        {
+          "type": "form",
+          "label": "Custom Form Label",
+          "background": "dark",
+          "heading": "Custom Form Heading",
+          "intro": "Custom Form Intro paragraph",
+          "submitLabel": "Submit Form",
+          "successMsg": "Thank you! We'll be in touch soon.",
+          "endpoint": "",
+          "fields": [
+            {
+              "type": "text",
+              "label": "First Name",
+              "placeholder": "John",
+              "required": true,
+              "halfWidth": true,
+              "options": []
+            },
+            {
+              "type": "text",
+              "label": "Last Name",
+              "placeholder": "Smith",
+              "required": true,
+              "halfWidth": false,
+              "options": []
+            },
+            {
+              "type": "select",
+              "label": "Custom Form Select",
+              "placeholder": "Custom Form Select Name",
+              "required": true,
+              "halfWidth": false,
+              "options": [
+                "Custom Form Select 1",
+                "Custom Form Select 2",
+                "Custom Form Select 3"
+              ]
+            },
+            {
+              "type": "checkbox",
+              "label": "Would you like to join our waitlist",
+              "placeholder": "waitlist 1",
+              "required": true,
+              "halfWidth": true,
+              "options": []
+            },
+            {
+              "type": "radio",
+              "label": "Do you need assistance?",
+              "placeholder": "placeholder 1",
+              "required": true,
+              "halfWidth": false,
+              "options": [
+                "Yes",
+                "No",
+                "Maybe"
+              ]
+            }
+          ]
         }
       ]
     },

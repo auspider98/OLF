@@ -1688,6 +1688,160 @@ footer {
 .cps-section-dark .cps-body { color: rgba(255,255,255,0.65) !important; }
 .cps-section-dark .section-label-text { color: var(--gold-light); }
 .cps-section-dark .section-label-line { background: var(--gold-light); }
+
+/* ── CUSTOM FORM SECTION ───────────────────────────────────────── */
+.cps-form-wrap {
+  max-width: 680px;
+  margin: 40px auto 0;
+}
+.cps-form-intro {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+.cps-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.cps-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cps-form-field label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.cps-form-field label .req-star {
+  color: var(--gold);
+  margin-left: 2px;
+}
+.cps-form-field input[type="text"],
+.cps-form-field input[type="email"],
+.cps-form-field input[type="tel"],
+.cps-form-field textarea,
+.cps-form-field select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd8d0;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-body);
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  appearance: none;
+}
+.cps-form-field input:focus,
+.cps-form-field textarea:focus,
+.cps-form-field select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+.cps-form-field textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+.cps-form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7670' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.cps-form-radio-group,
+.cps-form-checkbox-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cps-form-radio-group label,
+.cps-form-checkbox-wrap label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-body);
+  cursor: pointer;
+}
+.cps-form-radio-group input[type="radio"],
+.cps-form-checkbox-wrap input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--gold);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.cps-form-submit {
+  margin-top: 8px;
+}
+.cps-form-success {
+  display: none;
+  background: rgba(45,122,95,0.08);
+  border: 1px solid rgba(45,122,95,0.3);
+  border-radius: 8px;
+  padding: 24px 28px;
+  text-align: center;
+  margin-top: 24px;
+}
+.cps-form-success-icon { font-size: 36px; margin-bottom: 10px; }
+.cps-form-success-msg { font-size: 16px; color: #1f5c42; font-weight: 500; line-height: 1.5; }
+/* All sections: ensure select options are always readable */
+.cps-form-field select option {
+  background: #fff;
+  color: var(--text-body);
+}
+/* Dark section overrides */
+.cps-section-dark .cps-form-field input:not([type="radio"]):not([type="checkbox"]),
+.cps-section-dark .cps-form-field textarea,
+.cps-section-dark .cps-form-field select {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.15);
+  color: #fff;
+  -webkit-appearance: none;
+}
+.cps-section-dark .cps-form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.5)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px 8px;
+}
+.cps-section-dark .cps-form-field select option {
+  background: var(--navy);
+  color: #fff;
+}
+.cps-section-dark .cps-form-field input:not([type="radio"]):not([type="checkbox"]):focus,
+.cps-section-dark .cps-form-field textarea:focus,
+.cps-section-dark .cps-form-field select:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.09);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
+.cps-section-dark .cps-form-field label { color: rgba(255,255,255,0.6); }
+.cps-section-dark .cps-form-field label .req-star { color: var(--gold-light); }
+.cps-section-dark .cps-form-field input:not([type="radio"]):not([type="checkbox"])::placeholder,
+.cps-section-dark .cps-form-field textarea::placeholder { color: rgba(255,255,255,0.3); }
+.cps-section-dark .cps-form-intro { color: rgba(255,255,255,0.65); }
+.cps-section-dark .cps-form-radio-group label,
+.cps-section-dark .cps-form-checkbox-wrap label { color: rgba(255,255,255,0.8); }
+/* Side-by-side field row */
+.cps-form-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 580px) {
+  .cps-form-field-row { grid-template-columns: 1fr; gap: 0; }
+}
 </style>
 </head>
 <body>
@@ -3184,6 +3338,88 @@ function renderCustomSection(sec, idx, isFirst) {
       break;
     }
 
+    // ── CUSTOM FORM ──────────────────────────────────────────────
+    case 'form': {
+      const formId = `cps-form-${idx}`;
+
+      function renderFormInput(f, fi) {
+        const fieldId = `${formId}-f${fi}`;
+        const reqAttr = f.required !== false ? 'required' : '';
+        const reqStar = f.required !== false ? '<span class="req-star">*</span>' : '';
+        const label = f.label ? `<label for="${fieldId}">${f.label}${reqStar}</label>` : '';
+        const ph = f.placeholder ? `placeholder="${escAttr(f.placeholder)}"` : '';
+        let input = '';
+        switch (f.type) {
+          case 'email':
+            input = `<input type="email" id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}/>`;
+            break;
+          case 'phone':
+            input = `<input type="tel" id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}/>`;
+            break;
+          case 'textarea':
+            input = `<textarea id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}></textarea>`;
+            break;
+          case 'select': {
+            const opts = (f.options || []).map(o => `<option value="${escAttr(o)}">${o}</option>`).join('');
+            input = `<select id="${fieldId}" name="${escAttr(f.label)}" ${reqAttr}><option value="">Select an option…</option>${opts}</select>`;
+            break;
+          }
+          case 'radio': {
+            const opts = (f.options || []).map(o => `
+              <label><input type="radio" name="${escAttr(f.label)}" value="${escAttr(o)}" ${reqAttr}/>${o}</label>`).join('');
+            input = `<div class="cps-form-radio-group">${opts}</div>`;
+            break;
+          }
+          case 'checkbox':
+            input = `<div class="cps-form-checkbox-wrap">
+              <label><input type="checkbox" name="${escAttr(f.label)}" ${reqAttr}/>${f.label || ''}</label>
+            </div>`;
+            break;
+          default:
+            input = `<input type="text" id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}/>`;
+        }
+        return `<div class="cps-form-field">${label}${input}</div>`;
+      }
+
+      // Build fields — halfWidth fields pair with the next field into a two-column row
+      const fieldList = sec.fields || [];
+      let fieldsHtml = '';
+      let fi = 0;
+      while (fi < fieldList.length) {
+        const f = fieldList[fi];
+        if (f.halfWidth && fi + 1 < fieldList.length) {
+          fieldsHtml += `<div class="cps-form-field-row">
+            ${renderFormInput(f, fi)}
+            ${renderFormInput(fieldList[fi + 1], fi + 1)}
+          </div>`;
+          fi += 2;
+        } else {
+          fieldsHtml += renderFormInput(f, fi);
+          fi++;
+        }
+      }
+
+      const submitLabel = sec.submitLabel || 'Send Message';
+      wrapper.innerHTML = `<div class="container">
+        ${labelHTML}
+        ${sec.heading ? `<${headTag} class="${headClass} cps-heading reveal">${sec.heading}</${headTag}>` : ''}
+        <div class="cps-form-wrap reveal reveal-delay-1">
+          ${sec.intro ? `<div class="cps-form-intro">${sec.intro}</div>` : ''}
+          <form class="cps-form" id="${formId}" onsubmit="submitCpsForm(event,'${formId}','${escAttr(sec.endpoint||'')}','${escAttr(sec.successMsg||'Thank you! We\'ll be in touch soon.')}')">
+            ${fieldsHtml}
+            <div class="cps-form-submit">
+              <button type="submit" class="btn-primary">${submitLabel} →</button>
+            </div>
+          </form>
+          <div class="cps-form-success" id="${formId}-success">
+            <div class="cps-form-success-icon">✅</div>
+            <div class="cps-form-success-msg"></div>
+          </div>
+        </div>
+      </div>`;
+      break;
+    }
+
     default:
       return null;
   }
@@ -3211,6 +3447,41 @@ function openCpsModal(title, icon, body) {
   document.getElementById('modal-body').textContent = body;
   document.getElementById('serviceModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+// Custom form submission handler
+async function submitCpsForm(e, formId, endpoint, successMsg) {
+  e.preventDefault();
+  const form = document.getElementById(formId);
+  const successEl = document.getElementById(formId + '-success');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  if (!form || !successEl) return;
+
+  // Show loading state
+  const origText = submitBtn.textContent;
+  submitBtn.textContent = 'Sending…';
+  submitBtn.disabled = true;
+
+  try {
+    if (endpoint && endpoint.trim()) {
+      const data = new FormData(form);
+      const res = await fetch(endpoint.trim(), {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!res.ok) throw new Error('Server responded with ' + res.status);
+    }
+    // Show success
+    form.style.display = 'none';
+    successEl.style.display = 'block';
+    successEl.querySelector('.cps-form-success-msg').textContent = successMsg || 'Thank you! We\'ll be in touch soon.';
+  } catch (err) {
+    submitBtn.textContent = origText;
+    submitBtn.disabled = false;
+    alert('There was a problem submitting the form. Please try again or contact us directly.');
+  }
 }
 
 

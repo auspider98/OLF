@@ -1985,6 +1985,7 @@ const CP_SECTION_TYPES = [
   { value:'fees',         label:'💰 Fee Schedule' },
   { value:'jurisdiction', label:'⚠️ Jurisdiction Notice' },
   { value:'team',         label:'👥 Team Block' },
+  { value:'form',         label:'📬 Custom Form' },
 ];
 
 const CP_BG_OPTIONS = [
@@ -1997,17 +1998,19 @@ function buildCustomPagesList() {
   const container = document.getElementById('cp-pages-list');
   if (!container) return;
 
-  // Snapshot which pages are currently collapsed (not open) before wiping
-  const collapsedSet = new Set();
+  // Snapshot which pages are currently OPEN before wiping
+  const openSet = new Set();
   container.querySelectorAll('.cp-page-card').forEach(card => {
-    if (!card.classList.contains('open')) collapsedSet.add(parseInt(card.dataset.pi));
+    if (card.classList.contains('open')) openSet.add(parseInt(card.dataset.pi));
   });
+  const isFirstBuild = container.children.length === 0;
 
   container.innerHTML = '';
   (DATA.customPages||[]).forEach((page, pi) => {
     const card = buildCustomPageCard(page, pi);
-    // Restore collapsed state — new pages (no prior state) stay open by default
-    if (collapsedSet.has(pi)) card.classList.remove('open');
+    // Default collapsed; restore open state if it was open before
+    card.classList.remove('open');
+    if (!isFirstBuild && openSet.has(pi)) card.classList.add('open');
     container.appendChild(card);
   });
 }
@@ -2343,9 +2346,127 @@ function buildCpSectionTypeFields(sec, pi, si) {
         </div>
         <p class="field-hint">When on, automatically shows the attorneys configured in About Us.</p>`;
 
+    case 'form': {
+      const fields = (sec.fields || []);
+      const fieldRows = fields.map((f, fi) => buildFormFieldEditorHtml(f, pi, si, fi)).join('');
+      return `
+        <div class="field-group"><label>Form Heading</label><input type="text" ${p} data-field="heading" value="${v('heading')}"/></div>
+        <div class="field-group"><label>Form Intro (optional)</label><textarea ${p} data-field="intro" rows="2">${v('intro')}</textarea></div>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Form Fields</div>
+        <div class="cp-sub-items cp-form-fields-list" data-pi="${pi}" data-si="${si}">${fieldRows}</div>
+        <button class="btn-add" onclick="addFormField(${pi},${si})">+ Add Field</button>
+        <div class="divider" style="margin:14px 0;"></div>
+        <div class="form-row-2">
+          <div class="field-group"><label>Submit Button Label</label><input type="text" ${p} data-field="submitLabel" value="${v('submitLabel','Send Message')}" placeholder="Send Message"/></div>
+          <div class="field-group"><label>Success Message</label><input type="text" ${p} data-field="successMsg" value="${v('successMsg','Thank you! We\'ll be in touch soon.')}" placeholder="Thank you! We'll be in touch soon."/></div>
+        </div>
+        <div class="field-group">
+          <label>Form Endpoint (Formspree URL or webhook)</label>
+          <input type="url" ${p} data-field="endpoint" value="${v('endpoint')}" placeholder="https://formspree.io/f/xxxxxxxx"/>
+          <div class="field-hint">Paste your <a href="https://formspree.io" target="_blank" style="color:var(--gold);">Formspree</a> endpoint, any POST webhook URL, or leave blank to show success message only.</div>
+        </div>`;
+    }
+
     default:
       return `<p class="field-hint">No editor for section type: ${sec.type}</p>`;
   }
+}
+
+function buildFormFieldEditorHtml(f, pi, si, fi) {
+  const fv = (key, def='') => escHtml(f[key] != null ? f[key] : def);
+  const fieldTypes = ['text','email','phone','textarea','select','radio','checkbox'];
+  const typeOpts = fieldTypes.map(t => `<option value="${t}"${f.type===t?' selected':''}>${t}</option>`).join('');
+  const showOptions = (f.type==='select'||f.type==='radio');
+  return `<div class="cp-sub-item cp-form-field-item" data-fi="${fi}">
+    <div class="cp-sub-item-header">
+      <span class="cp-sub-item-label">Field #${fi+1}</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button class="cp-move-btn" onclick="moveFormField(${pi},${si},${fi},-1);event.stopPropagation();" title="Move up">↑</button>
+        <button class="cp-move-btn" onclick="moveFormField(${pi},${si},${fi},1);event.stopPropagation();" title="Move down">↓</button>
+        <button class="btn-remove" onclick="removeFormField(${pi},${si},${fi})">×</button>
+      </div>
+    </div>
+    <div class="form-row-2" style="margin-bottom:8px;">
+      <div class="field-group" style="margin:0;">
+        <label>Field Type</label>
+        <select data-cp="${pi}" data-sec="${si}" data-ff="${fi}" data-field="type" onchange="onFormFieldTypeChange(${pi},${si},${fi},this)">${typeOpts}</select>
+      </div>
+      <div class="field-group" style="margin:0;">
+        <label>Label</label>
+        <input type="text" data-cp="${pi}" data-sec="${si}" data-ff="${fi}" data-field="label" value="${fv('label')}" placeholder="Full Name"/>
+      </div>
+    </div>
+    <div class="form-row-2" style="margin-bottom:8px;">
+      <div class="field-group" style="margin:0;">
+        <label>Placeholder</label>
+        <input type="text" data-cp="${pi}" data-sec="${si}" data-ff="${fi}" data-field="placeholder" value="${fv('placeholder')}" placeholder="e.g. John Smith"/>
+      </div>
+      <div class="field-group" style="margin:0;">
+        <label>Required?</label>
+        <div class="switch-row" style="margin:0;padding-top:6px;">
+          <span class="switch-label" style="font-size:12px;">Required field</span>
+          <label class="switch"><input type="checkbox" data-cp="${pi}" data-sec="${si}" data-ff="${fi}" data-field="required" ${f.required!==false?'checked':''}/><span class="switch-slider"></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row-2" style="margin-bottom:8px;">
+      <div class="field-group cp-form-options-row" style="margin:0;display:${showOptions?'block':'none'};">
+        <label>Options <span style="font-weight:400;text-transform:none;letter-spacing:0;">(one per line)</span></label>
+        <textarea data-cp="${pi}" data-sec="${si}" data-ff="${fi}" data-field="options-text" rows="3" placeholder="Option 1\nOption 2\nOption 3">${escHtml((f.options||[]).join('\n'))}</textarea>
+      </div>
+      <div class="field-group" style="margin:0;padding-top:${showOptions?'0':'6px'};">
+        <label>Layout</label>
+        <div class="switch-row" style="margin:0;padding-top:6px;">
+          <span class="switch-label" style="font-size:12px;">Half-width (pair with next field)</span>
+          <label class="switch"><input type="checkbox" data-cp="${pi}" data-sec="${si}" data-ff="${fi}" data-field="halfWidth" ${f.halfWidth?'checked':''}/><span class="switch-slider"></span></label>
+        </div>
+        <div class="field-hint" style="margin-top:4px;">When on, this field shares a row with the field below it.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* =============================================
+   FORM FIELD ACTIONS
+   ============================================= */
+function addFormField(pi, si) {
+  collectData();
+  if (!DATA.customPages[pi]?.sections[si]) return;
+  const sec = DATA.customPages[pi].sections[si];
+  if (!sec.fields) sec.fields = [];
+  sec.fields.push({ type:'text', label:'', placeholder:'', required:true, options:[] });
+  buildCustomPagesList();
+  autosave();
+}
+
+function removeFormField(pi, si, fi) {
+  collectData();
+  if (!DATA.customPages[pi]?.sections[si]?.fields) return;
+  DATA.customPages[pi].sections[si].fields.splice(fi, 1);
+  buildCustomPagesList();
+  autosave();
+}
+
+function moveFormField(pi, si, fi, dir) {
+  collectData();
+  const fields = DATA.customPages[pi]?.sections[si]?.fields;
+  if (!fields) return;
+  const newIdx = fi + dir;
+  if (newIdx < 0 || newIdx >= fields.length) return;
+  [fields[fi], fields[newIdx]] = [fields[newIdx], fields[fi]];
+  buildCustomPagesList();
+  autosave();
+}
+
+function onFormFieldTypeChange(pi, si, fi, selectEl) {
+  // Show/hide options textarea based on type
+  const item = selectEl.closest('.cp-form-field-item');
+  if (!item) return;
+  const optRow = item.querySelector('.cp-form-options-row');
+  if (!optRow) return;
+  const showOptions = selectEl.value === 'select' || selectEl.value === 'radio';
+  optRow.style.display = showOptions ? 'block' : 'none';
 }
 
 /* CUSTOM PAGES — ACTIONS */
@@ -2356,6 +2477,10 @@ function addCustomPage() {
     sections:[]
   });
   buildCustomPagesList();
+  // Open the newly added page card so admin can edit it immediately
+  const container = document.getElementById('cp-pages-list');
+  const newCard = container && container.lastElementChild;
+  if (newCard) newCard.classList.add('open');
   autosave();
 }
 
@@ -2403,6 +2528,7 @@ function addCpSection(pi) {
   // Seed empty items for array-based types
   if (['stats','bullets','services','steps','faq','timeline','fees'].includes(type)) defaults.items = [];
   if (type === 'checklist') defaults.categories = [];
+  if (type === 'form') { defaults.fields = []; defaults.submitLabel = 'Send Message'; defaults.successMsg = "Thank you! We'll be in touch soon."; }
   if (!DATA.customPages[pi]) return;
   DATA.customPages[pi].sections = DATA.customPages[pi].sections || [];
   DATA.customPages[pi].sections.push(defaults);
@@ -2544,6 +2670,11 @@ function collectCpSections(card, pi, existingSections) {
         sec.heading = get('heading'); sec.body = get('body'); break;
       case 'team':
         sec.heading = get('heading'); sec.useAttorneys = getCheck('useAttorneys'); break;
+      case 'form':
+        sec.heading = get('heading'); sec.intro = get('intro');
+        sec.submitLabel = get('submitLabel'); sec.successMsg = get('successMsg');
+        sec.endpoint = get('endpoint');
+        sec.fields = collectFormFields(secCard, pi, si); break;
     }
     return sec;
   });
@@ -2575,6 +2706,36 @@ function collectCpChecklistCategories(secCard, pi, si) {
     });
   });
   return cats;
+}
+
+function collectFormFields(secCard, pi, si) {
+  const items = [];
+  const fieldItems = secCard.querySelectorAll(`.cp-form-field-item[data-fi]`);
+  fieldItems.forEach((item, fi) => {
+    const get = (field) => {
+      const el = item.querySelector(`[data-cp="${pi}"][data-sec="${si}"][data-ff="${fi}"][data-field="${field}"]`);
+      return el ? el.value.trim() : '';
+    };
+    const getCheck = (field) => {
+      const el = item.querySelector(`[data-cp="${pi}"][data-sec="${si}"][data-ff="${fi}"][data-field="${field}"]`);
+      return el ? el.checked : true;
+    };
+    const getCheckFalse = (field) => {
+      const el = item.querySelector(`[data-cp="${pi}"][data-sec="${si}"][data-ff="${fi}"][data-field="${field}"]`);
+      return el ? el.checked : false;
+    };
+    const optText = get('options-text');
+    const options = optText ? optText.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+    items.push({
+      type: get('type') || 'text',
+      label: get('label'),
+      placeholder: get('placeholder'),
+      required: getCheck('required'),
+      halfWidth: getCheckFalse('halfWidth'),
+      options
+    });
+  });
+  return items;
 }
 
 
