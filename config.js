@@ -127,7 +127,7 @@ const SITE_CONFIG = {
     "navy": "#0b2341",
     "navyLight": "#1a3560",
     "gold": "#e86100",
-    "goldLight": "#a80000",
+    "goldLight": "#d15700",
     "goldPale": "#faf6ec",
     "warmWhite": "#fffdf9",
     "cream": "#f9f6f0",
