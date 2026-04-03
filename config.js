@@ -126,8 +126,8 @@ const SITE_CONFIG = {
   "colors": {
     "navy": "#0f2340",
     "navyLight": "#1a3560",
-    "gold": "#c9a84c",
-    "goldLight": "#b09a69",
+    "gold": "#00a2ff",
+    "goldLight": "#005da8",
     "goldPale": "#faf6ec",
     "warmWhite": "#fffdf9",
     "cream": "#f9f6f0",
@@ -180,7 +180,7 @@ const SITE_CONFIG = {
     "motionType": "zoom-out",
     "motionSpeed": 20,
     "overlayColor": "#0f2340",
-    "overlayOpacity": 0.3
+    "overlayOpacity": 0.5
   },
   "heroHeadline": "Building Families Through the Law, With Heart.",
   "heroSubline": "We guide adoptive parents, birth parents, and families through every step of the adoption process — clearly, compassionately, and with deep legal expertise in Alabama adoption law.",
