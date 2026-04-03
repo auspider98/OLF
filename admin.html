@@ -863,6 +863,7 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
             <div class="radio-tab"><input type="radio" name="heroBgType" id="hbt-color" value="color" onchange="updateHeroBgUI()"/><label for="hbt-color">Solid Color</label></div>
             <div class="radio-tab"><input type="radio" name="heroBgType" id="hbt-image" value="image" onchange="updateHeroBgUI()"/><label for="hbt-image">Single Image</label></div>
             <div class="radio-tab"><input type="radio" name="heroBgType" id="hbt-slideshow" value="slideshow" onchange="updateHeroBgUI()"/><label for="hbt-slideshow">Slideshow</label></div>
+            <div class="radio-tab"><input type="radio" name="heroBgType" id="hbt-video" value="video" onchange="updateHeroBgUI()"/><label for="hbt-video">Video</label></div>
           </div>
           <div class="hero-bg-panel" id="hbp-color">
             <div class="field-group">
@@ -915,6 +916,63 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
             </div>
             <div class="switch-row"><span class="switch-label">Autoplay</span><label class="switch"><input type="checkbox" id="f_heroAutoplay"/><span class="switch-slider"></span></label></div>
             <div class="switch-row"><span class="switch-label">Show Dots</span><label class="switch"><input type="checkbox" id="f_heroShowDots"/><span class="switch-slider"></span></label></div>
+          </div>
+
+          <div class="hero-bg-panel" id="hbp-video">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Video 1 (Primary)</div>
+            <div class="form-row-2">
+              <div class="field-group">
+                <label>MP4 Path (H.264)</label>
+                <input type="text" id="f_heroVideoMp4" placeholder="videos/hero.mp4"/>
+                <div class="field-hint">Required. Universal browser support.</div>
+              </div>
+              <div class="field-group">
+                <label>WebM Path (optional)</label>
+                <input type="text" id="f_heroVideoWebm" placeholder="videos/hero.webm"/>
+                <div class="field-hint">Better compression; modern browsers prefer it.</div>
+              </div>
+            </div>
+            <div class="divider" style="margin:12px 0;"></div>
+            <div class="field-group">
+              <label>Loop Behavior</label>
+              <select id="f_heroVideoLoop" onchange="updateVideoLoopUI()">
+                <option value="loop">Simple Loop (hard cut)</option>
+                <option value="fade-image">Fade to Image, then replay</option>
+                <option value="crossfade">Crossfade to Second Video</option>
+              </select>
+            </div>
+            <div id="vloop-fade-image" style="display:none;">
+              <div class="field-group">
+                <label>Fallback / Hold Image</label>
+                <input type="text" id="f_heroVideoFallback" placeholder="images/hero-fallback.jpg"/>
+                <div class="field-hint">Shown on mobile and faded in at the end of the video before it replays.</div>
+              </div>
+              <div class="field-group">
+                <label>Image Hold Duration (seconds)</label>
+                <div class="range-row">
+                  <input type="range" id="f_heroVideoHold" min="2" max="12" step="1" oninput="document.getElementById('f_heroVideoHoldVal').textContent=this.value+'s'"/>
+                  <span class="range-val" id="f_heroVideoHoldVal">4s</span>
+                </div>
+              </div>
+            </div>
+            <div id="vloop-crossfade" style="display:none;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:4px 0 10px;">Video 2 (Crossfade Target)</div>
+              <div class="form-row-2">
+                <div class="field-group">
+                  <label>MP4 Path (H.264)</label>
+                  <input type="text" id="f_heroVideo2Mp4" placeholder="videos/hero2.mp4"/>
+                </div>
+                <div class="field-group">
+                  <label>WebM Path (optional)</label>
+                  <input type="text" id="f_heroVideo2Webm" placeholder="videos/hero2.webm"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Fallback Image (mobile)</label>
+                <input type="text" id="f_heroVideoFallback2" placeholder="images/hero-fallback.jpg"/>
+                <div class="field-hint">Shown on mobile where autoplay is blocked.</div>
+              </div>
+            </div>
           </div>
 
           <div class="divider"></div>
@@ -1586,6 +1644,15 @@ function loadForm() {
   setRange('f_heroMotionSpeed','f_heroMotionSpeedVal', hb.motionSpeed||20, 's');
   setColor('f_heroOverlayColor','f_heroOverlayColorHex', hb.overlayColor||'#0f2340');
   setRange('f_heroOverlayOpacity','f_heroOverlayOpacityVal', hb.overlayOpacity!==undefined?hb.overlayOpacity:0.3, '');
+  setVal('f_heroVideoMp4', hb.videoMp4||'');
+  setVal('f_heroVideoWebm', hb.videoWebm||'');
+  setVal('f_heroVideoFallback', hb.videoFallback||'');
+  setSelectVal('f_heroVideoLoop', hb.videoLoop||'loop');
+  setRange('f_heroVideoHold','f_heroVideoHoldVal', hb.videoHold||4, 's');
+  setVal('f_heroVideo2Mp4', hb.video2Mp4||'');
+  setVal('f_heroVideo2Webm', hb.video2Webm||'');
+  setVal('f_heroVideoFallback2', hb.videoFallback2||'');
+  updateVideoLoopUI();
   buildStatsList();
   buildHoursList();
   buildHeroSlidesList();
@@ -1703,6 +1770,14 @@ function collectData() {
   DATA.heroBg.motionSpeed = parseInt(document.getElementById('f_heroMotionSpeed').value)||20;
   DATA.heroBg.overlayColor = getVal('f_heroOverlayColorHex');
   DATA.heroBg.overlayOpacity = parseFloat(document.getElementById('f_heroOverlayOpacity').value)||0.3;
+  DATA.heroBg.videoMp4 = getVal('f_heroVideoMp4');
+  DATA.heroBg.videoWebm = getVal('f_heroVideoWebm');
+  DATA.heroBg.videoFallback = getVal('f_heroVideoFallback');
+  DATA.heroBg.videoLoop = getVal('f_heroVideoLoop') || 'loop';
+  DATA.heroBg.videoHold = parseInt(document.getElementById('f_heroVideoHold')?.value) || 4;
+  DATA.heroBg.video2Mp4 = getVal('f_heroVideo2Mp4');
+  DATA.heroBg.video2Webm = getVal('f_heroVideo2Webm');
+  DATA.heroBg.videoFallback2 = getVal('f_heroVideoFallback2');
   DATA.stats = collectArray('stats-list', ['num','label']);
   DATA.whyChooseUs.bullets = collectArray('why-bullets-list', ['title','desc']);
   DATA.services = collectArray('services-list', ['icon','title','desc','full']);
@@ -1899,11 +1974,21 @@ function addHour() { DATA.hours.push({days:'',hours:''}); buildHoursList(); }
 
 function buildHeroSlidesList() {
   const list = document.getElementById('hero-slides-list');
-  list.innerHTML = (DATA.heroBg.slides||[]).map((s,i) => `
+  const slides = DATA.heroBg.slides || [];
+  const posOpts = [
+    'center center','center top','center bottom',
+    'left center','left top','left bottom',
+    'right center','right top','right bottom'
+  ];
+  list.innerHTML = slides.map((s, i) => `
     <div class="array-item">
       <div class="array-item-header">
         <span class="array-item-label">Slide #${i+1}</span>
-        <button class="btn-remove" onclick="removeArrayItem(this)">×</button>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button class="cp-move-btn" onclick="moveHeroSlide(${i},-1)" title="Move up">↑</button>
+          <button class="cp-move-btn" onclick="moveHeroSlide(${i},1)" title="Move down">↓</button>
+          <button class="btn-remove" onclick="removeHeroSlide(${i})">×</button>
+        </div>
       </div>
       <div class="field-group" style="margin-bottom:8px;">
         <label>Image Path / URL</label>
@@ -1915,12 +2000,32 @@ function buildHeroSlidesList() {
             onerror="this.parentElement.style.display='none';"/>
         </div>
       </div>
-      <div class="field-group" style="margin-bottom:8px;">
-        <label>Position (e.g. center top)</label>
-        <input type="text" data-field="position" value="${escHtml(s.position||'')}"/>
+      <div class="field-group" style="margin-bottom:0;">
+        <label>Position</label>
+        <select data-field="position">
+          ${posOpts.map(p => `<option value="${p}"${(s.position||'center center')===p?' selected':''}>${p}</option>`).join('')}
+        </select>
       </div>
     </div>`).join('');
 }
+
+function moveHeroSlide(idx, dir) {
+  collectData();
+  const slides = DATA.heroBg.slides;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= slides.length) return;
+  [slides[idx], slides[newIdx]] = [slides[newIdx], slides[idx]];
+  buildHeroSlidesList();
+  autosave();
+}
+
+function removeHeroSlide(idx) {
+  collectData();
+  DATA.heroBg.slides.splice(idx, 1);
+  buildHeroSlidesList();
+  autosave();
+}
+
 function addHeroSlide() { DATA.heroBg.slides.push({imagePath:'',position:'center center'}); buildHeroSlidesList(); }
 
 function buildWhyBulletsList() {
@@ -2745,6 +2850,14 @@ function updateHeroBgUI() {
   document.querySelectorAll('.hero-bg-panel').forEach(p => p.classList.remove('active'));
   const target = document.getElementById('hbp-'+val);
   if (target) target.classList.add('active');
+  if (val === 'video') updateVideoLoopUI();
+}
+
+function updateVideoLoopUI() {
+  const sel = document.getElementById('f_heroVideoLoop');
+  const val = sel ? sel.value : 'loop';
+  document.getElementById('vloop-fade-image').style.display = val === 'fade-image' ? 'block' : 'none';
+  document.getElementById('vloop-crossfade').style.display  = val === 'crossfade'  ? 'block' : 'none';
 }
 
 /* =============================================

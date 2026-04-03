@@ -319,6 +319,23 @@ nav.main-nav { display: none !important; }
   animation: kenBurns 20s linear infinite;
 }
 .hero-slide.active { opacity: 1; }
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  opacity: 1;
+  transition: opacity 1.8s ease;
+}
+.hero-video.fading { opacity: 0; }
+.hero-video-poster {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center center;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+}
+.hero-video-poster.visible { opacity: 1; }
 @keyframes kenBurns {
   0%   { transform: scale(1.05) translate(0,0); }
   50%  { transform: scale(1.1) translate(-1%, 0.5%); }
@@ -2393,6 +2410,115 @@ function applyColors() {
 }
 
 /* =============================================
+   HERO VIDEO CONTROLLER
+   ============================================= */
+function makeVideoEl(mp4, webm, fallback) {
+  const vid = document.createElement('video');
+  vid.className = 'hero-video';
+  vid.muted = true;
+  vid.playsInline = true;
+  vid.autoplay = true;
+  if (fallback) vid.poster = fallback;
+  if (webm) { const s = document.createElement('source'); s.src = webm; s.type = 'video/webm'; vid.appendChild(s); }
+  if (mp4)  { const s = document.createElement('source'); s.src = mp4;  s.type = 'video/mp4';  vid.appendChild(s); }
+  return vid;
+}
+
+function initHeroVideo(hb, container) {
+  const hasVideo = hb.videoMp4 || hb.videoWebm;
+  const mode = hb.videoLoop || 'loop';
+
+  // No video paths — show fallback image only
+  if (!hasVideo) {
+    if (hb.videoFallback) {
+      container.style.backgroundImage = `url('${hb.videoFallback}')`;
+      container.style.backgroundSize = 'cover';
+      container.style.backgroundPosition = 'center center';
+    } else {
+      container.style.background = hb.bgColor || '#0f2340';
+    }
+    return;
+  }
+
+  if (mode === 'loop') {
+    // ── Simple loop ──────────────────────────────────────────
+    const vid = makeVideoEl(hb.videoMp4, hb.videoWebm, hb.videoFallback);
+    vid.loop = true;
+    container.appendChild(vid);
+
+  } else if (mode === 'fade-image') {
+    // ── Fade to image on end, then replay ───────────────────
+    const holdMs = (hb.videoHold || 4) * 1000;
+    const vid = makeVideoEl(hb.videoMp4, hb.videoWebm, hb.videoFallback);
+
+    const poster = document.createElement('div');
+    poster.className = 'hero-video-poster';
+    if (hb.videoFallback) poster.style.backgroundImage = `url('${hb.videoFallback}')`;
+
+    container.appendChild(vid);
+    container.appendChild(poster);
+
+    vid.addEventListener('ended', () => {
+      vid.classList.add('fading');
+      poster.classList.add('visible');
+      setTimeout(() => {
+        poster.classList.remove('visible');
+        vid.classList.remove('fading');
+        vid.currentTime = 0;
+        vid.play().catch(() => {});
+      }, 1900 + holdMs);
+    });
+
+  } else if (mode === 'crossfade') {
+    // ── Crossfade between two videos ────────────────────────
+    const has2 = hb.video2Mp4 || hb.video2Webm;
+    if (!has2) {
+      // No second video — fall back to simple loop
+      const vid = makeVideoEl(hb.videoMp4, hb.videoWebm, hb.videoFallback);
+      vid.loop = true;
+      container.appendChild(vid);
+      return;
+    }
+
+    const vid1 = makeVideoEl(hb.videoMp4,  hb.videoWebm,  hb.videoFallback);
+    const vid2 = makeVideoEl(hb.video2Mp4, hb.video2Webm, hb.videoFallback);
+
+    // vid2 sits below vid1, starts invisible
+    vid2.style.opacity = '0';
+    vid1.style.zIndex  = '1';
+    vid2.style.zIndex  = '0';
+
+    container.appendChild(vid2);
+    container.appendChild(vid1);
+
+    let active = 1;
+
+    function crossfadeToNext() {
+      if (active === 1) {
+        // Fade vid1 out, reveal vid2
+        vid2.currentTime = 0;
+        vid2.play().catch(() => {});
+        vid1.style.opacity = '0';
+        vid2.style.opacity = '1';
+        active = 2;
+        vid2.addEventListener('ended', crossfadeToNext, { once: true });
+      } else {
+        // Fade vid2 out, reveal vid1
+        vid1.currentTime = 0;
+        vid1.play().catch(() => {});
+        vid2.style.opacity = '0';
+        vid1.style.opacity = '1';
+        active = 1;
+        vid1.addEventListener('ended', crossfadeToNext, { once: true });
+      }
+    }
+
+    vid1.addEventListener('ended', crossfadeToNext, { once: true });
+    vid1.play().catch(() => {});
+  }
+}
+
+/* =============================================
    HERO BUILD
    ============================================= */
 function buildHero() {
@@ -2408,7 +2534,9 @@ function buildHero() {
   overlay.style.background = `linear-gradient(to top, rgba(${r},${g},${b},${Math.min(op+0.3,1)}) 0%, rgba(${r},${g},${b},${op}) 50%, rgba(${r},${g},${b},${Math.max(op-0.2,0)}) 100%)`;
 
   let slides = [];
-  if (hb.type === 'slideshow' && hb.slides && hb.slides.length) {
+  if (hb.type === 'video') {
+    initHeroVideo(hb, slidesEl);
+  } else if (hb.type === 'slideshow' && hb.slides && hb.slides.length) {
     slides = hb.slides;
   } else if (hb.imagePath) {
     slides = [{ imagePath: hb.imagePath, position: hb.imagePosition || 'center center' }];

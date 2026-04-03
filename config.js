@@ -157,7 +157,7 @@ const SITE_CONFIG = {
     "privacy": "Privacy Policy — Osborne Law Firm"
   },
   "heroBg": {
-    "type": "slideshow",
+    "type": "video",
     "bgColor": "#0f2340",
     "imagePath": "images/hero-bkground-01.jpg",
     "imagePosition": "center center",
@@ -167,8 +167,16 @@ const SITE_CONFIG = {
         "position": "center top"
       },
       {
+        "imagePath": "images/hero-bkground-03.webp",
+        "position": "center center"
+      },
+      {
         "imagePath": "images/hero-bkground-02.jpg",
         "position": "center top"
+      },
+      {
+        "imagePath": "images/hero-bkground-04.jpg",
+        "position": "center bottom"
       }
     ],
     "transition": "crossfade",
@@ -178,9 +186,17 @@ const SITE_CONFIG = {
     "showDots": true,
     "autoplay": true,
     "motionType": "zoom-out",
-    "motionSpeed": 20,
+    "motionSpeed": 10,
     "overlayColor": "#0f2340",
-    "overlayOpacity": 0.5
+    "overlayOpacity": 0.2,
+    "videoMp4": "videos/hero-bkground-v01.mp4",
+    "videoWebm": "",
+    "videoFallback": "images/hero-bkground-01.jpg",
+    "videoLoop": "crossfade",
+    "videoHold": 4,
+    "video2Mp4": "videos/hero-bkground-v02.mp4",
+    "video2Webm": "",
+    "videoFallback2": ""
   },
   "heroHeadline": "Building Families Through the Law, With Heart.",
   "heroSubline": "We guide adoptive parents, birth parents, and families through every step of the adoption process — clearly, compassionately, and with deep legal expertise in Alabama adoption law.",
