@@ -2614,10 +2614,14 @@ function buildCustomPagesList() {
   const container = document.getElementById('cp-pages-list');
   if (!container) return;
 
-  // Snapshot which pages are currently OPEN before wiping
+  // Snapshot which pages and sections are currently OPEN before wiping
   const openSet = new Set();
   container.querySelectorAll('.cp-page-card').forEach(card => {
     if (card.classList.contains('open')) openSet.add(parseInt(card.dataset.pi));
+  });
+  const openSections = new Set();
+  container.querySelectorAll('.cp-section-card').forEach(card => {
+    if (card.classList.contains('open')) openSections.add(`${card.dataset.pi}-${card.dataset.si}`);
   });
   const isFirstBuild = container.children.length === 0;
 
@@ -2627,6 +2631,13 @@ function buildCustomPagesList() {
     // Default collapsed; restore open state if it was open before
     card.classList.remove('open');
     if (!isFirstBuild && openSet.has(pi)) card.classList.add('open');
+    // Restore section card open states
+    if (!isFirstBuild) {
+      card.querySelectorAll('.cp-section-card').forEach(secCard => {
+        const key = `${secCard.dataset.pi}-${secCard.dataset.si}`;
+        if (!openSections.has(key)) secCard.classList.remove('open');
+      });
+    }
     container.appendChild(card);
   });
 
@@ -2728,10 +2739,12 @@ function buildCustomSectionHtml(sec, pi, si) {
   return `<div class="cp-section-card open" data-pi="${pi}" data-si="${si}">
     <div class="cp-section-header" onclick="toggleCpSection(this)">
       <span class="cp-section-type-badge">${typeLabel}</span>
-      <div class="cp-section-controls">
-        <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},-1);event.stopPropagation();" title="Move up">↑</button>
-        <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},1);event.stopPropagation();" title="Move down">↓</button>
-        <button class="btn-remove" onclick="removeCpSection(${pi},${si});event.stopPropagation();" title="Remove section">×</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="cp-section-controls">
+          <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},-1);event.stopPropagation();" title="Move up">↑</button>
+          <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},1);event.stopPropagation();" title="Move down">↓</button>
+          <button class="btn-remove" onclick="removeCpSection(${pi},${si});event.stopPropagation();" title="Remove section">×</button>
+        </div>
         <span class="panel-chevron">▼</span>
       </div>
     </div>
@@ -3155,10 +3168,13 @@ function addCustomPage() {
     sections:[]
   });
   buildCustomPagesList();
-  // Open the newly added page card so admin can edit it immediately
+  // Open the newly added page card and scroll it into view
   const container = document.getElementById('cp-pages-list');
   const newCard = container && container.lastElementChild;
-  if (newCard) newCard.classList.add('open');
+  if (newCard) {
+    newCard.classList.add('open');
+    newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
   autosave();
 }
 
@@ -3213,6 +3229,17 @@ function addCpSection(pi) {
   DATA.customPages[pi].sections = DATA.customPages[pi].sections || [];
   DATA.customPages[pi].sections.push(defaults);
   buildCustomPagesList();
+  // Open the new section card (restore loop would strip it since it wasn't in the snapshot)
+  // and scroll it into view
+  const pageCard = document.querySelector(`.cp-page-card[data-pi="${pi}"]`);
+  if (pageCard) {
+    const secCards = pageCard.querySelectorAll('.cp-section-card');
+    const newSecCard = secCards[secCards.length - 1];
+    if (newSecCard) {
+      newSecCard.classList.add('open');
+      newSecCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
   autosave();
   toast('Section added.','success');
 }

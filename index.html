@@ -931,6 +931,21 @@ h2.section-title {
 }
 .process-step.step-active .step-desc { color: rgba(255,255,255,0.75); }
 
+/* Process steps light/alt section theming */
+.cps-section-light .process-step,
+.cps-section-alt .process-step { border-bottom-color: var(--border); }
+.cps-section-light .step-num-wrap,
+.cps-section-alt .step-num-wrap { background: var(--warm-white); border-color: rgba(201,168,76,0.45); }
+.cps-section-alt .step-num-wrap { background: var(--cream); }
+.cps-section-light .step-title,
+.cps-section-alt .step-title { color: var(--navy); }
+.cps-section-light .process-step.step-active .step-title,
+.cps-section-alt .process-step.step-active .step-title { color: var(--navy); }
+.cps-section-light .step-desc,
+.cps-section-alt .step-desc { color: var(--text-muted); }
+.cps-section-light .process-step.step-active .step-desc,
+.cps-section-alt .process-step.step-active .step-desc { color: var(--text-body); }
+
 /* =============================================
    TESTIMONIALS
    ============================================= */
@@ -1041,6 +1056,14 @@ h2.section-title {
   color: var(--text-muted);
 }
 .faq-item.open .faq-answer { max-height: 300px; }
+
+/* FAQ dark/alt section theming */
+.cps-section-dark .faq-item { border-color: rgba(255,255,255,0.12); }
+.cps-section-dark .faq-question-text { color: #fff; }
+.cps-section-dark .faq-toggle { border-color: rgba(255,255,255,0.25); }
+.cps-section-dark .faq-toggle-icon { color: rgba(255,255,255,0.6); }
+.cps-section-dark .faq-answer-inner { color: rgba(255,255,255,0.65); }
+.cps-section-alt .faq-item { border-color: var(--border); }
 
 /* =============================================
    BLOG
@@ -1473,8 +1496,18 @@ footer {
 }
 
 /* Stats Bar (custom) */
-.cps-stats-bar { background: var(--navy); padding: 0; }
+.cps-stats-bar { padding: 0; }
 .cps-stats-bar .stats-inner { }
+
+/* Stats bar light/alt section theming */
+.cps-section-light .stats-inner,
+.cps-section-alt .stats-inner { border-left-color: var(--border); }
+.cps-section-light .stat-cell,
+.cps-section-alt .stat-cell { border-right-color: var(--border); }
+.cps-section-light .stat-cell:hover,
+.cps-section-alt .stat-cell:hover { background: var(--gold-pale); }
+.cps-section-light .stat-label,
+.cps-section-alt .stat-label { color: var(--text-muted); }
 
 /* Bullet / Checklist */
 .cps-bullets-list {
@@ -1519,6 +1552,16 @@ footer {
   color: var(--text-muted);
 }
 @media (max-width: 640px) { .cps-bullets-list { grid-template-columns: 1fr; } .cps-bullet-item { border-right: none; } }
+
+/* Bullets dark/alt section theming */
+.cps-section-dark .cps-bullets-list,
+.cps-section-dark .cps-bullet-item { border-color: rgba(255,255,255,0.12); }
+.cps-section-dark .cps-bullet-item:hover { background: rgba(255,255,255,0.05); }
+.cps-section-dark .cps-bullet-icon { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.25); color: var(--gold); }
+.cps-section-dark .cps-bullet-text h4 { color: #fff; }
+.cps-section-dark .cps-bullet-text p { color: rgba(255,255,255,0.65); }
+.cps-section-alt .cps-bullets-list,
+.cps-section-alt .cps-bullet-item { border-color: var(--border); }
 
 /* CTA Banner */
 .cps-cta-banner {
@@ -3385,7 +3428,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── STATS BAR ────────────────────────────────────────────────
     case 'stats': {
-      wrapper.className = 'cps-stats-bar';
+      wrapper.classList.add('cps-stats-bar');
       wrapper.style.cssText = '';
       const items = (sec.items || []).map(s => `
         <div class="stat-cell">
@@ -3443,11 +3486,11 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
             <p class="step-desc">${s.body || s.desc || ''}</p>
           </div>
         </div>`).join('');
-      wrapper.className = `section section-dark cps-section-dark`;
+      wrapper.classList.add('cps-section-steps');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
-        ${sec.heading ? `<${headTag} class="${headClass} reveal" style="${isDark ? 'color:#fff;' : ''}">${sec.heading}</${headTag}>` : ''}
-        ${sec.subtitle ? `<p class="section-subtitle reveal reveal-delay-1" style="${isFirst ? subtitleStyle : 'color:rgba(255,255,255,0.6);'}">${sec.subtitle}</p>` : ''}
+        ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
+        ${sec.subtitle ? `<p class="section-subtitle reveal reveal-delay-1" style="${subtitleStyle}">${sec.subtitle}</p>` : ''}
         <div class="process-timeline" style="margin-top:48px;">${items}</div>
       </div>`;
       break;
@@ -3502,7 +3545,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── CTA BANNER ───────────────────────────────────────────────
     case 'cta': {
-      wrapper.className = '';
+      wrapper.classList.add('cps-cta-wrapper');
       wrapper.innerHTML = `<div class="cps-cta-banner">
         <div class="container">
           ${sec.heading ? `<${headTag} class="${headClass} cps-heading reveal">${sec.heading}</${headTag}>` : ''}
