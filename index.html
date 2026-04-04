@@ -1058,17 +1058,54 @@ h2.section-title {
   overflow: hidden;
   border: 1px solid #e8e3d8;
   transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
 }
-.blog-card:hover {
+.blog-card.has-link { cursor: pointer; }
+.blog-card.has-link:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(15,35,64,0.1);
+}
+/* Featured card spans full width with horizontal layout */
+.blog-card.blog-featured {
+  grid-column: 1 / -1;
+  flex-direction: row;
+}
+.blog-card.blog-featured .blog-card-top {
+  width: 340px;
+  flex-shrink: 0;
+  min-height: 220px;
+}
+.blog-card.blog-featured .blog-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 36px 40px;
+}
+.blog-card.blog-featured .blog-title {
+  font-size: 22px;
+  margin-bottom: 14px;
 }
 .blog-card-top {
   background: var(--navy);
   padding: 28px;
   display: flex; align-items: center; justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  min-height: 110px;
 }
+.blog-card-top-img {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.blog-card-top-overlay {
+  position: absolute; inset: 0;
+  background: rgba(15,35,64,0.45);
+}
+.blog-card-top > * { position: relative; z-index: 1; }
 .blog-emoji { font-size: 32px; }
 .blog-tag {
   font-size: 10px;
@@ -1079,7 +1116,12 @@ h2.section-title {
   padding: 4px 10px;
   border-radius: 2px;
 }
-.blog-card-body { padding: 24px 28px 28px; }
+.blog-card-body {
+  padding: 24px 28px 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 .blog-title {
   font-family: var(--font-display);
   font-size: 17px;
@@ -1088,13 +1130,49 @@ h2.section-title {
   line-height: 1.4;
   margin-bottom: 10px;
 }
-.blog-excerpt { font-size: 13px; line-height: 1.75; color: var(--text-muted); }
-.blog-date {
+.blog-excerpt { font-size: 13px; line-height: 1.75; color: var(--text-muted); flex: 1; }
+.blog-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-top: 16px;
+}
+.blog-date {
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
+}
+.blog-read-time {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  display: flex; align-items: center; gap: 4px;
+}
+.blog-read-time::before { content: '·'; }
+.blog-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(201,168,76,0.35);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+  align-self: flex-start;
+}
+.blog-card.has-link:hover .blog-cta { color: var(--gold-light); border-color: var(--gold-light); }
+@media (max-width: 900px) {
+  .blog-grid { grid-template-columns: 1fr 1fr; }
+  .blog-card.blog-featured { flex-direction: column; }
+  .blog-card.blog-featured .blog-card-top { width: 100%; min-height: 160px; }
+}
+@media (max-width: 600px) {
+  .blog-grid { grid-template-columns: 1fr; }
 }
 
 /* =============================================
@@ -1706,7 +1784,39 @@ footer {
 .cps-section-dark .section-label-text { color: var(--gold-light); }
 .cps-section-dark .section-label-line { background: var(--gold-light); }
 
-/* ── CUSTOM FORM SECTION ───────────────────────────────────────── */
+/* Outline button variant for light/alt section backgrounds */
+.btn-outline-dark {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent;
+  color: var(--navy);
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 15px 28px; border-radius: 4px;
+  border: 1.5px solid var(--navy-light);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.btn-outline-dark:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+/* Link + Button appendage sections — inherit prior section background, moderate continuation padding */
+.cps-appendage { padding: 8px 0 32px; }
+.cps-link-block { text-align: center; }
+.cps-link-anchor {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 500;
+  color: var(--navy);
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 4px;
+  transition: color 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+.cps-link-anchor:hover { color: var(--gold); border-color: var(--gold-light); }
+.cps-section-dark .cps-link-anchor { color: #fff; border-color: var(--gold); }
+.cps-section-dark .cps-link-anchor:hover { color: var(--gold-light); }
+.cps-button-actions { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+.cps-section-dark .btn-outline-dark { color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.4); }
+.cps-section-dark .btn-outline-dark:hover { color: #fff; border-color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); }
 .cps-form-wrap {
   max-width: 680px;
   margin: 40px auto 0;
@@ -2800,20 +2910,63 @@ function buildTestimonials() {
 /* =============================================
    BLOG
    ============================================= */
+function buildBlogCardHtml(p, i, delayClass) {
+  const hasLink = p.linkType && p.linkType !== 'none' && p.linkUrl;
+  const isFeatured = p.featured;
+  const delay = delayClass || `reveal-delay-${(i % 3) + 1}`;
+
+  // Click handler
+  let clickHandler = '';
+  if (hasLink) {
+    if (p.linkType === 'internal') {
+      clickHandler = `onclick="showPage('${escAttr(p.linkUrl)}')"`;
+    } else {
+      clickHandler = `onclick="window.open('${escAttr(p.linkUrl)}','_blank','noopener')"`;
+    }
+  }
+
+  // Card top — image or emoji
+  const topImg = p.imagePath
+    ? `<div class="blog-card-top-img" style="background-image:url('${escAttr(p.imagePath)}')"></div>
+       <div class="blog-card-top-overlay"></div>`
+    : '';
+  const topContent = `
+    ${topImg}
+    <div class="blog-emoji">${p.emoji || '📋'}</div>
+    <div class="blog-tag">${p.tag || 'Article'}</div>`;
+
+  // Meta row
+  const meta = (p.date || p.readTime) ? `
+    <div class="blog-card-meta">
+      ${p.date ? `<span class="blog-date">${p.date}</span>` : ''}
+      ${p.readTime ? `<span class="blog-read-time">${p.readTime}</span>` : ''}
+    </div>` : '';
+
+  // CTA label
+  const defaultCta = { internal: 'View Page', external: 'Read More', file: 'Open File' };
+  const ctaText = p.ctaLabel || (p.linkType ? defaultCta[p.linkType] : '');
+  const cta = hasLink && ctaText ? `<div class="blog-cta">${ctaText} →</div>` : '';
+
+  return `<div class="blog-card${isFeatured ? ' blog-featured' : ''}${hasLink ? ' has-link' : ''} reveal ${delay}" ${clickHandler}>
+    <div class="blog-card-top">${topContent}</div>
+    <div class="blog-card-body">
+      <h3 class="blog-title">${p.title}</h3>
+      <p class="blog-excerpt">${p.excerpt}</p>
+      ${meta}
+      ${cta}
+    </div>
+  </div>`;
+}
+
 function buildBlog() {
   const grid = document.getElementById('blogGrid');
-  grid.innerHTML = (CFG.blogPosts||[]).map((p,i) => `
-    <div class="blog-card reveal reveal-delay-${(i%3)+1}">
-      <div class="blog-card-top">
-        <div class="blog-emoji">${p.emoji||'📋'}</div>
-        <div class="blog-tag">${p.tag||'Article'}</div>
-      </div>
-      <div class="blog-card-body">
-        <h3 class="blog-title">${p.title}</h3>
-        <p class="blog-excerpt">${p.excerpt}</p>
-        <div class="blog-date">${p.date}</div>
-      </div>
-    </div>`).join('');
+  if (!grid) return;
+  const posts = [...(CFG.blogPosts || [])];
+  // Sort: featured first
+  const featured = posts.filter(p => p.featured);
+  const rest = posts.filter(p => !p.featured);
+  const ordered = [...featured, ...rest];
+  grid.innerHTML = ordered.map((p, i) => buildBlogCardHtml(p, i)).join('');
 }
 
 /* =============================================
@@ -3148,7 +3301,7 @@ function buildCustomPages() {
     // Sections — first section gets header padding to clear fixed nav
     const sections = page.sections || [];
     sections.forEach((sec, idx) => {
-      const secEl = renderCustomSection(sec, idx, idx === 0);
+      const secEl = renderCustomSection(sec, idx, idx === 0, sections);
       if (secEl) pageEl.appendChild(secEl);
     });
 
@@ -3156,7 +3309,18 @@ function buildCustomPages() {
   });
 }
 
-function renderCustomSection(sec, idx, isFirst) {
+// For link/button sections, inherit background from the nearest preceding non-appendage section.
+function getInheritedBg(sections, idx) {
+  for (let i = idx - 1; i >= 0; i--) {
+    const t = sections[i].type;
+    if (t !== 'link' && t !== 'button') {
+      return sections[i].background || 'light';
+    }
+  }
+  return 'light';
+}
+
+function renderCustomSection(sec, idx, isFirst, allSections) {
   if (!sec || !sec.type) return null;
 
   const isDark = sec.background === 'dark';
@@ -3322,19 +3486,11 @@ function renderCustomSection(sec, idx, isFirst) {
 
     // ── RESOURCES / BLOG ─────────────────────────────────────────
     case 'resources': {
-      const posts = (sec.items || CFG.blogPosts || []).slice(0, sec.limit || 6);
-      const items = posts.map((p, i) => `
-        <div class="blog-card reveal reveal-delay-${(i%3)+1}">
-          <div class="blog-card-top">
-            <div class="blog-emoji">${p.emoji || '📋'}</div>
-            <div class="blog-tag">${p.tag || 'Article'}</div>
-          </div>
-          <div class="blog-card-body">
-            <h3 class="blog-title">${p.title}</h3>
-            <p class="blog-excerpt">${p.excerpt}</p>
-            <div class="blog-date">${p.date}</div>
-          </div>
-        </div>`).join('');
+      const allPosts = sec.items || CFG.blogPosts || [];
+      const featured = allPosts.filter(p => p.featured);
+      const rest = allPosts.filter(p => !p.featured);
+      const ordered = [...featured, ...rest].slice(0, sec.limit || 6);
+      const items = ordered.map((p, i) => buildBlogCardHtml(p, i)).join('');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
@@ -3543,6 +3699,63 @@ function renderCustomSection(sec, idx, isFirst) {
             <div class="cps-form-success-icon">✅</div>
             <div class="cps-form-success-msg"></div>
           </div>
+        </div>
+      </div>`;
+      break;
+    }
+
+    // ── LINK ─────────────────────────────────────────────────────
+    case 'link': {
+      const inheritedBg = getInheritedBg(allSections || [], idx);
+      const inheritedClass = inheritedBg === 'dark' ? 'cps-section-dark section-dark'
+                           : inheritedBg === 'alt'  ? 'cps-section-alt section-alt'
+                           : 'cps-section-light';
+      wrapper.className = `cps-appendage ${inheritedClass}`;
+
+      const hasLink = sec.linkType && sec.linkType !== 'none' && sec.linkUrl;
+      let clickHandler = '';
+      if (hasLink) {
+        if (sec.linkType === 'internal') {
+          clickHandler = `onclick="showPage('${escAttr(sec.linkUrl)}')"`;
+        } else {
+          clickHandler = `onclick="window.open('${escAttr(sec.linkUrl)}','_blank','noopener')"`;
+        }
+      }
+      const linkText = sec.linkLabel || sec.linkUrl || 'Learn More';
+      wrapper.innerHTML = `<div class="container">
+        <div class="cps-link-block reveal">
+          ${hasLink
+            ? `<span class="cps-link-anchor" ${clickHandler}>${linkText} →</span>`
+            : `<span class="cps-link-anchor" style="opacity:0.4;cursor:default;">${linkText} →</span>`}
+        </div>
+      </div>`;
+      break;
+    }
+
+    // ── BUTTON ───────────────────────────────────────────────────
+    case 'button': {
+      const inheritedBg = getInheritedBg(allSections || [], idx);
+      const inheritedClass = inheritedBg === 'dark' ? 'cps-section-dark section-dark'
+                           : inheritedBg === 'alt'  ? 'cps-section-alt section-alt'
+                           : 'cps-section-light';
+      wrapper.className = `cps-appendage ${inheritedClass}`;
+
+      function makeBtnClick(linkType, linkUrl) {
+        if (!linkType || linkType === 'none' || !linkUrl) return '';
+        if (linkType === 'internal') return `onclick="showPage('${escAttr(linkUrl)}')"`;
+        return `onclick="window.open('${escAttr(linkUrl)}','_blank','noopener')"`;
+      }
+      const hasPrimary = sec.primary_linkType && sec.primary_linkType !== 'none' && sec.primary_linkUrl;
+      const hasSecondary = sec.secondary_linkType && sec.secondary_linkType !== 'none' && sec.secondary_linkUrl;
+      const primaryBtn = (hasPrimary || sec.primary_linkLabel)
+        ? `<button class="btn-primary" ${makeBtnClick(sec.primary_linkType, sec.primary_linkUrl)}>${sec.primary_linkLabel || 'Learn More'} →</button>`
+        : '';
+      const secondaryBtn = (hasSecondary || sec.secondary_linkLabel)
+        ? `<button class="btn-outline-dark" ${makeBtnClick(sec.secondary_linkType, sec.secondary_linkUrl)}>${sec.secondary_linkLabel || 'Learn More'}</button>`
+        : '';
+      wrapper.innerHTML = `<div class="container">
+        <div class="cps-button-actions reveal">
+          ${primaryBtn}${secondaryBtn}
         </div>
       </div>`;
       break;
