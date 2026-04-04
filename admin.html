@@ -166,7 +166,7 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
   font-weight: 600; font-size: 14px;
 }
 .panel-title-icon { font-size: 16px; }
-.panel-chevron { color: var(--muted); transition: transform 0.2s; font-size: 12px; }
+.panel-chevron { color: var(--muted); transition: transform 0.25s ease; font-size: 12px; will-change: transform; }
 .panel.open .panel-chevron { transform: rotate(180deg); }
 .panel-body { display: none; padding: 20px; }
 .panel.open .panel-body { display: block; }
@@ -3186,9 +3186,6 @@ function removeCpPage(pi) {
   toast('Page removed.','');
 }
 
-function toggleCpPage(header) {
-  header.closest('.cp-page-card').classList.toggle('open');
-}
 
 function toggleCpPageEnabled(pi, cb) {
   DATA.customPages[pi].enabled = cb.checked;
@@ -3260,7 +3257,13 @@ function moveCpSection(pi, si, dir) {
 }
 
 function toggleCpSection(header) {
-  header.closest('.cp-section-card').classList.toggle('open');
+  const card = header.closest('.cp-section-card');
+  requestAnimationFrame(() => card.classList.toggle('open'));
+}
+
+function toggleCpPage(header) {
+  const card = header.closest('.cp-page-card');
+  requestAnimationFrame(() => card.classList.toggle('open'));
 }
 
 function setCpSecBg(pi, si, val, el) {
