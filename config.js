@@ -690,6 +690,123 @@ const SITE_CONFIG = {
               "body": "Timeline Event 2 Description"
             }
           ]
+        },
+        {
+          "type": "fees",
+          "label": "Fee Schedule Label",
+          "background": "dark",
+          "heading": "Fee Schedule Heading",
+          "subtitle": "Fee Schedule Subtitle",
+          "disclaimer": "",
+          "items": [
+            {
+              "service": "Fee Schedule Service 1",
+              "amount": "Fee 1",
+              "detail": "Fee Schedule Service 1 Details",
+              "note": "Fee Schedule Service 1 Note"
+            },
+            {
+              "service": "Fee Schedule Service 2",
+              "amount": "Fee 2",
+              "detail": "Fee Schedule Service 2 Details",
+              "note": "Fee Schedule Service 2 Note"
+            }
+          ]
+        },
+        {
+          "type": "jurisdiction",
+          "label": "Jurisdiction Label",
+          "background": "alt",
+          "icon": "⚖️",
+          "title": "Jurisdiction Title",
+          "heading": "Jurisdiction Heading",
+          "body": "Jurisdiction Body"
+        },
+        {
+          "type": "team",
+          "label": "Team Label",
+          "background": "dark",
+          "heading": "Team Heading",
+          "useAttorneys": true
+        },
+        {
+          "type": "form",
+          "label": "Custom Form Label",
+          "background": "dark",
+          "heading": "Custom Form Heading",
+          "intro": "Custom Form Intro (optional)",
+          "submitLabel": "Send Message",
+          "successMsg": "Thank you! We'll be in touch soon.",
+          "endpoint": "",
+          "fields": [
+            {
+              "type": "text",
+              "label": "Text Field Label",
+              "placeholder": "Text Field Placeholder",
+              "required": true,
+              "halfWidth": false,
+              "options": []
+            },
+            {
+              "type": "textarea",
+              "label": "Textarea",
+              "placeholder": "Textarea Placeholder",
+              "required": true,
+              "halfWidth": false,
+              "options": []
+            },
+            {
+              "type": "select",
+              "label": "Select Label",
+              "placeholder": "Select Placeholder",
+              "required": true,
+              "halfWidth": false,
+              "options": [
+                "Select 1",
+                "Select 2",
+                "Select 3"
+              ]
+            },
+            {
+              "type": "radio",
+              "label": "Radio Label",
+              "placeholder": "Radio Placeholder",
+              "required": true,
+              "halfWidth": false,
+              "options": [
+                "Radio 1",
+                "Radio 2",
+                "Radio 3"
+              ]
+            },
+            {
+              "type": "checkbox",
+              "label": "Checkbox Label",
+              "placeholder": "Checkbox Placeholder",
+              "required": true,
+              "halfWidth": false,
+              "options": []
+            }
+          ]
+        },
+        {
+          "type": "link",
+          "label": "",
+          "background": "light",
+          "linkType": "internal",
+          "linkLabel": "Link Label",
+          "linkUrl": "home"
+        },
+        {
+          "type": "button",
+          "label": "",
+          "background": "light",
+          "primary_linkType": "internal",
+          "primary_linkLabel": "Button Label",
+          "primary_linkUrl": "home",
+          "secondary_linkType": "internal",
+          "secondary_linkLabel": "Secondary Button Label",
+          "secondary_linkUrl": "home"
         }
       ]
     }
