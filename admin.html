@@ -552,7 +552,6 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
   border: 1px solid var(--border);
   border-radius: 6px;
   margin-bottom: 10px;
-  overflow: hidden;
 }
 .cp-section-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -2739,12 +2738,10 @@ function buildCustomSectionHtml(sec, pi, si) {
   return `<div class="cp-section-card open" data-pi="${pi}" data-si="${si}">
     <div class="cp-section-header" onclick="toggleCpSection(this)">
       <span class="cp-section-type-badge">${typeLabel}</span>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="cp-section-controls">
-          <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},-1);event.stopPropagation();" title="Move up">↑</button>
-          <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},1);event.stopPropagation();" title="Move down">↓</button>
-          <button class="btn-remove" onclick="removeCpSection(${pi},${si});event.stopPropagation();" title="Remove section">×</button>
-        </div>
+      <div class="cp-section-controls">
+        <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},-1);event.stopPropagation();" title="Move up">↑</button>
+        <button class="cp-move-btn" onclick="moveCpSection(${pi},${si},1);event.stopPropagation();" title="Move down">↓</button>
+        <button class="btn-remove" onclick="removeCpSection(${pi},${si});event.stopPropagation();" title="Remove section">×</button>
         <span class="panel-chevron">▼</span>
       </div>
     </div>
@@ -3257,8 +3254,7 @@ function moveCpSection(pi, si, dir) {
 }
 
 function toggleCpSection(header) {
-  const card = header.closest('.cp-section-card');
-  requestAnimationFrame(() => card.classList.toggle('open'));
+  header.closest('.cp-section-card').classList.toggle('open');
 }
 
 function toggleCpPage(header) {

@@ -1700,6 +1700,12 @@ footer {
   margin-bottom: 6px;
 }
 
+/* Timeline dark/alt section theming */
+.cps-section-dark .cps-timeline-dot { background: rgba(255,255,255,0.08); border-color: rgba(201,168,76,0.5); color: var(--gold); }
+.cps-section-dark .cps-timeline-body h4 { color: #fff; }
+.cps-section-dark .cps-timeline-body p { color: rgba(255,255,255,0.65); }
+.cps-section-alt .cps-timeline-body h4 { color: var(--navy); }
+
 /* Fee Schedule */
 .cps-fee-table {
   width: 100%;
@@ -1812,6 +1818,14 @@ footer {
 .cps-team-bio { font-size: 13.5px; line-height: 1.7; color: var(--text-muted); }
 @media (max-width: 900px) { .cps-team-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 580px) { .cps-team-grid { grid-template-columns: 1fr; } }
+
+/* Team dark/alt section theming */
+.cps-section-dark .cps-team-card { border-color: rgba(255,255,255,0.12); }
+.cps-section-dark .cps-team-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.cps-section-dark .cps-team-info { background: rgba(255,255,255,0.04); }
+.cps-section-dark .cps-team-name { color: #fff; }
+.cps-section-dark .cps-team-bio { color: rgba(255,255,255,0.65); }
+.cps-section-alt .cps-team-card { border-color: var(--border); }
 
 /* Section wrapper bg variants */
 .cps-first-section {
