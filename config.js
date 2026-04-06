@@ -579,14 +579,14 @@ const SITE_CONFIG = {
               "title": "Bullet Section Item 1",
               "desc": "Bullet Section Item 1 Description",
               "linkType": "external",
-              "linkUrl": "google.com"
+              "linkUrl": "home"
             },
             {
               "icon": "✓",
               "title": "Bullet Section Item 2",
               "desc": "Bullet Section Item 2 Description",
               "linkType": "file",
-              "linkUrl": "images/ladybug.png"
+              "linkUrl": "home"
             }
           ]
         },
@@ -604,7 +604,7 @@ const SITE_CONFIG = {
               "detail": "Services Grid Service 1 Detail Modal Popup",
               "btnLabel": "Services 1 Modal Button",
               "btnLinkType": "external",
-              "btnLinkUrl": "google.com"
+              "btnLinkUrl": "home"
             },
             {
               "icon": "⚖️",
@@ -613,7 +613,7 @@ const SITE_CONFIG = {
               "detail": "Services Grid Service 2 Detail Modal Popup",
               "btnLabel": "Services 2 Modal Button",
               "btnLinkType": "file",
-              "btnLinkUrl": "images/ladybug.png"
+              "btnLinkUrl": "home"
             },
             {
               "icon": "⚖️",
@@ -629,7 +629,7 @@ const SITE_CONFIG = {
         {
           "type": "steps",
           "label": "Process Steps Label",
-          "background": "alt",
+          "background": "dark",
           "heading": "Process Steps Heading",
           "subtitle": "Process Steps Subtitle",
           "items": [
@@ -658,11 +658,17 @@ const SITE_CONFIG = {
           "items": [
             {
               "q": "FAQ Section Q1",
-              "a": "FAQ Section Q1 Answer"
+              "a": "FAQ Section Q1 Answer",
+              "linkLabel": "FAQ 1 Link Label",
+              "linkType": "external",
+              "linkUrl": "google.com"
             },
             {
               "q": "FAQ Section Q2",
-              "a": "FAQ Section Q2 Answer"
+              "a": "FAQ Section Q2 Answer",
+              "linkLabel": "FAQ 2 Link Label",
+              "linkType": "file",
+              "linkUrl": "images/ladybug.png"
             }
           ]
         },
