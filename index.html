@@ -912,7 +912,21 @@ h2.section-title {
   transition: color 0.4s;
 }
 .process-step.step-active .step-num { color: var(--navy); }
-.step-body { flex: 1; padding-top: 12px; }
+.step-body { flex: 1; padding-top: 12px; padding-bottom: 24px; }
+.step-body.has-step-link { padding-bottom: 0; }
+.step-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding-bottom: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.step-link:hover { opacity: 0.75; }
+.cps-section-dark .step-link { color: var(--gold-light); }
 .step-title {
   font-family: var(--font-display);
   font-size: 20px;
@@ -1055,6 +1069,20 @@ h2.section-title {
   font-size: 14px; line-height: 1.85;
   color: var(--text-muted);
 }
+.faq-answer-inner.has-faq-link { padding-bottom: 0; }
+.faq-item-link {
+  display: block;
+  margin-top: 8px;
+  padding-bottom: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.faq-item-link:hover { opacity: 0.75; }
+.cps-section-dark .faq-item-link { color: var(--gold-light); }
 .faq-item.open .faq-answer { max-height: 300px; }
 
 /* FAQ dark/alt section theming */
@@ -1528,6 +1556,11 @@ footer {
 }
 .cps-bullet-item:nth-child(2n) { border-right: none; }
 .cps-bullet-item:hover { background: var(--gold-pale); }
+.cps-bullet-linked:hover { background: var(--gold-pale); }
+.cps-bullet-linked .cps-bullet-text h4 { color: var(--navy); }
+.cps-bullet-arrow { margin-left: 6px; font-size: 13px; color: var(--gold); opacity: 0; transition: opacity 0.2s, transform 0.2s; display: inline-block; transform: translateX(-4px); }
+.cps-bullet-linked:hover .cps-bullet-arrow { opacity: 1; transform: translateX(0); }
+.cps-section-dark .cps-bullet-linked:hover .cps-bullet-text h4 { color: #fff; }
 .cps-bullet-icon {
   flex-shrink: 0;
   width: 32px; height: 32px;
@@ -2418,8 +2451,8 @@ footer {
     <div class="modal-icon" id="modal-icon"></div>
     <h2 class="modal-title" id="modal-title"></h2>
     <p class="modal-body" id="modal-body"></p>
-    <div class="modal-cta">
-      <button class="btn-primary" onclick="showPage('contact');closeServiceModal()">Schedule a Consultation →</button>
+    <div class="modal-cta" id="modal-cta">
+      <button class="btn-primary" id="modal-cta-btn" onclick="handleModalCta()">Schedule a Consultation →</button>
     </div>
   </div>
 </div>
@@ -2986,7 +3019,7 @@ function buildBlogCardHtml(p, i, delayClass) {
     if (p.linkType === 'internal') {
       clickHandler = `onclick="showPage('${escAttr(p.linkUrl)}')"`;
     } else {
-      clickHandler = `onclick="window.open('${escAttr(p.linkUrl)}','_blank','noopener')"`;
+      clickHandler = `onclick="openSmartLink('${escAttr(p.linkType)}','${escAttr(p.linkUrl)}')"`;
     }
   }
 
@@ -3438,7 +3471,11 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} cps-heading">${sec.heading}</${headTag}>` : ''}
         <div class="cps-body">${formatBody(sec.body)}</div>
-        ${sec.ctaLabel ? `<div style="margin-top:28px;"><button class="btn-primary" onclick="showPage('contact')">${sec.ctaLabel} →</button></div>` : ''}
+        ${(sec.cta_linkLabel || sec.ctaLabel) ? `<div style="margin-top:28px;"><button class="btn-primary" ${
+          sec.cta_linkType === 'internal' ? `onclick="showPage('${escAttr(sec.cta_linkUrl || 'contact')}')"` :
+          (sec.cta_linkType === 'external' || sec.cta_linkType === 'file') ? `onclick="openSmartLink('${escAttr(sec.cta_linkType)}','${escAttr(sec.cta_linkUrl)}')"` :
+          `onclick="showPage('contact')"`
+        }>${sec.cta_linkLabel || sec.ctaLabel} →</button></div>` : ''}
       </div>`;
       wrapper.innerHTML = `<div class="container">
         <div class="cps-two-col ${imgSide} reveal">
@@ -3463,14 +3500,23 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── BULLET / CHECKLIST ───────────────────────────────────────
     case 'bullets': {
-      const items = (sec.items || []).map(item => `
-        <div class="cps-bullet-item reveal">
+      const items = (sec.items || []).map(item => {
+        const hasLink = item.linkType && item.linkType !== 'none' && item.linkUrl;
+        const clickAttr = hasLink
+          ? (item.linkType === 'internal'
+              ? `onclick="showPage('${escAttr(item.linkUrl)}')" style="cursor:pointer;"`
+              : `onclick="openSmartLink('${escAttr(item.linkType)}','${escAttr(item.linkUrl)}')" style="cursor:pointer;"`)
+          : '';
+        const arrow = hasLink ? `<span class="cps-bullet-arrow">→</span>` : '';
+        return `
+        <div class="cps-bullet-item reveal${hasLink ? ' cps-bullet-linked' : ''}" ${clickAttr}>
           <div class="cps-bullet-icon">${item.icon || '✓'}</div>
           <div class="cps-bullet-text">
-            <h4>${item.title}</h4>
+            <h4>${item.title}${arrow}</h4>
             ${item.desc ? `<p>${item.desc}</p>` : ''}
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
@@ -3483,7 +3529,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
     // ── SERVICES GRID ────────────────────────────────────────────
     case 'services': {
       const items = (sec.items || []).map((s, i) => `
-        <div class="service-card reveal reveal-delay-${(i%3)+1}" ${s.detail ? `onclick="openCpsModal('${escAttr(s.title)}','${escAttr(s.icon||'⚖️')}','${escAttr(s.detail || s.desc)}')"` : ''}>
+        <div class="service-card reveal reveal-delay-${(i%3)+1}" ${s.detail ? `onclick="openCpsModal('${escAttr(s.title)}','${escAttr(s.icon||'⚖️')}','${escAttr(s.detail || s.desc)}','${escAttr(s.btnLabel||'')}','${escAttr(s.btnLinkType||'internal')}','${escAttr(s.btnLinkUrl||'contact')}')"` : ''}>
           <div class="service-icon">${s.icon || '⚖️'}</div>
           <h3 class="service-title">${s.title}</h3>
           <p class="service-desc">${s.desc}</p>
@@ -3500,14 +3546,21 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── PROCESS STEPS ────────────────────────────────────────────
     case 'steps': {
-      const items = (sec.items || []).map((s, i) => `
+      const items = (sec.items || []).map((s, i) => {
+        const hasLink = s.linkType && s.linkType !== 'none' && s.linkUrl && s.linkLabel;
+        const linkHtml = hasLink ? `<div class="step-link" onclick="${
+          s.linkType === 'internal' ? `showPage('${escAttr(s.linkUrl)}')` : `openSmartLink('${escAttr(s.linkType)}','${escAttr(s.linkUrl)}')`
+        }">${escAttr(s.linkLabel)} →</div>` : '';
+        return `
         <div class="process-step${i===0?' step-active':''}" data-step="${i+1}">
           <div class="step-num-wrap"><span class="step-num">${i+1}</span></div>
-          <div class="step-body">
+          <div class="step-body${hasLink?' has-step-link':''}">
             <h3 class="step-title">${s.title}</h3>
             <p class="step-desc">${s.body || s.desc || ''}</p>
+            ${linkHtml}
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
       wrapper.classList.add('cps-section-steps');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
@@ -3520,14 +3573,20 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── FAQ ACCORDION ────────────────────────────────────────────
     case 'faq': {
-      const items = (sec.items || []).map((f, i) => `
+      const items = (sec.items || []).map((f, i) => {
+        const hasLink = f.linkType && f.linkType !== 'none' && f.linkUrl && f.linkLabel;
+        const linkHtml = hasLink ? `<div class="faq-item-link" onclick="${
+          f.linkType === 'internal' ? `showPage('${escAttr(f.linkUrl)}')` : `openSmartLink('${escAttr(f.linkType)}','${escAttr(f.linkUrl)}')`
+        }">${escAttr(f.linkLabel)} →</div>` : '';
+        return `
         <div class="faq-item" id="cpfaq-${idx}-${i}">
           <div class="faq-question" onclick="toggleFaq('cpfaq-${idx}-${i}')">
             <span class="faq-question-text">${f.q}</span>
             <div class="faq-toggle"><span class="faq-toggle-icon">+</span></div>
           </div>
-          <div class="faq-answer"><div class="faq-answer-inner">${f.a}</div></div>
-        </div>`).join('');
+          <div class="faq-answer"><div class="faq-answer-inner${hasLink?' has-faq-link':''}">${f.a}</div>${linkHtml}</div>
+        </div>`;
+      }).join('');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
@@ -3783,7 +3842,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
         if (sec.linkType === 'internal') {
           clickHandler = `onclick="showPage('${escAttr(sec.linkUrl)}')"`;
         } else {
-          clickHandler = `onclick="window.open('${escAttr(sec.linkUrl)}','_blank','noopener')"`;
+          clickHandler = `onclick="openSmartLink('${escAttr(sec.linkType)}','${escAttr(sec.linkUrl)}')"`;
         }
       }
       const linkText = sec.linkLabel || sec.linkUrl || 'Learn More';
@@ -3808,7 +3867,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       function makeBtnClick(linkType, linkUrl) {
         if (!linkType || linkType === 'none' || !linkUrl) return '';
         if (linkType === 'internal') return `onclick="showPage('${escAttr(linkUrl)}')"`;
-        return `onclick="window.open('${escAttr(linkUrl)}','_blank','noopener')"`;
+        return `onclick="openSmartLink('${escAttr(linkType)}','${escAttr(linkUrl)}')"`;
       }
       const hasPrimary = sec.primary_linkType && sec.primary_linkType !== 'none' && sec.primary_linkUrl;
       const hasSecondary = sec.secondary_linkType && sec.secondary_linkType !== 'none' && sec.secondary_linkUrl;
@@ -3846,13 +3905,46 @@ function escAttr(str) {
   return (str||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
 }
 
+// Resolves and opens a smart link — handles external URL prefix and file paths
+function openSmartLink(linkType, linkUrl) {
+  if (!linkUrl) return;
+  if (linkType === 'internal') { showPage(linkUrl); return; }
+  let url = linkUrl.trim();
+  if (linkType === 'external' && url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+
 // Generic modal for custom page service cards
-function openCpsModal(title, icon, body) {
+let _modalBtnLinkType = 'internal';
+let _modalBtnLinkUrl = 'contact';
+
+function openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl) {
   document.getElementById('modal-icon').textContent = icon;
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').textContent = body;
+  const btn = document.getElementById('modal-cta-btn');
+  const cta = document.getElementById('modal-cta');
+  if (btn) {
+    const label = btnLabel || 'Schedule a Consultation';
+    btn.textContent = label + ' →';
+    _modalBtnLinkType = btnLinkType || 'internal';
+    _modalBtnLinkUrl = btnLinkUrl || 'contact';
+    cta.style.display = (btnLinkType === 'none' && !btnLabel) ? 'none' : '';
+  }
   document.getElementById('serviceModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function handleModalCta() {
+  closeServiceModal();
+  openSmartLink(_modalBtnLinkType, _modalBtnLinkUrl);
 }
 
 // Custom form submission handler
