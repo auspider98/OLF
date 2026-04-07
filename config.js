@@ -538,7 +538,7 @@ const SITE_CONFIG = {
       "a": "For private placement and agency adoptions, a statutory waiting period applies before the final hearing. Stepparent adoptions generally have a shorter waiting period."
     }
   ],
-  "ctaLabel": "Free Consultation",
+  "ctaLabel": "Contact Us",
   "pageToggles": {
     "about": true,
     "services": true,
