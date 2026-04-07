@@ -1073,6 +1073,7 @@ h2.section-title {
 .faq-item-link {
   display: block;
   margin-top: 8px;
+  margin-left: 12px;
   padding-bottom: 20px;
   font-size: 13px;
   font-weight: 600;
@@ -1374,6 +1375,26 @@ footer {
   color: rgba(255,255,255,0.4);
   max-width: 280px;
 }
+.footer-social-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.footer-social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.footer-social-icon:hover { background: var(--gold); color: var(--navy); }
+.footer-social-icon svg { width: 16px; height: 16px; }
 .footer-heading {
   font-size: 11px;
   letter-spacing: 0.25em;
@@ -1713,6 +1734,21 @@ footer {
   padding-top: 10px;
   padding-bottom: 24px;
 }
+.cps-timeline-body.has-tl-link { padding-bottom: 0; }
+.cps-timeline-link {
+  display: block;
+  margin-top: 10px;
+  margin-left: 12px;
+  padding-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.cps-timeline-link:hover { opacity: 0.75; }
+.cps-section-dark .cps-timeline-link { color: var(--gold-light); }
 .cps-timeline-body h4 {
   font-family: var(--font-display);
   font-size: 19px;
@@ -1775,6 +1811,20 @@ footer {
   white-space: nowrap;
 }
 .cps-fee-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.cps-fee-link {
+  display: block;
+  margin-top: 6px;
+  margin-left: 12px;
+  padding-bottom: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.cps-fee-link:hover { opacity: 0.75; }
+.cps-section-dark .cps-fee-link { color: var(--gold-light); }
 
 /* Fee table dark/alt section theming */
 .cps-section-dark .cps-fee-table thead tr { background: rgba(255,255,255,0.07); }
@@ -1805,6 +1855,20 @@ footer {
   line-height: 1.85;
   color: var(--text-body);
 }
+.cps-jurisdiction-body.has-jur-link { margin-bottom: 0; }
+.cps-jurisdiction-link {
+  display: block;
+  margin-top: 10px;
+  margin-left: 12px;
+  padding-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.cps-jurisdiction-link:hover { opacity: 0.75; }
 .cps-jurisdiction-body p { margin-bottom: 10px; }
 
 /* Team Block (on custom pages) */
@@ -2464,6 +2528,7 @@ footer {
       <div class="footer-brand">
         <div class="logo-name" id="footer-firm-name"></div>
         <div class="logo-tagline" id="footer-tagline-foot" style="margin-top:4px;"></div>
+        <div id="footer-social-icons" style="margin-top:16px;"></div>
         <p id="footer-bio"></p>
       </div>
       <div>
@@ -3096,7 +3161,25 @@ function buildContact() {
 function buildFooter() {
   document.getElementById('footer-firm-name').textContent = CFG.firmName;
   document.getElementById('footer-tagline-foot').textContent = CFG.tagline;
-  document.getElementById('footer-bio').textContent = CFG.aboutBio1 ? CFG.aboutBio1.substring(0,120)+'…' : '';
+  document.getElementById('footer-bio').textContent = CFG.footerBio || (CFG.aboutBio1 ? CFG.aboutBio1.substring(0,120)+'…' : '');
+
+  // Social icons
+  const SOCIAL_SVGS = {
+    facebook:  `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>`,
+    instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+    linkedin:  `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>`,
+    x:         `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+    youtube:   `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="white" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>`,
+    tiktok:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.15a8.16 8.16 0 0 0 4.77 1.52V7.21a4.85 4.85 0 0 1-1-.52z"/></svg>`,
+    custom:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  };
+  const socialEl = document.getElementById('footer-social-icons');
+  if (socialEl) {
+    const links = (CFG.socialLinks || []).filter(s => s.url);
+    socialEl.innerHTML = links.length ? `<div class="footer-social-row">${
+      links.map(s => `<a class="footer-social-icon" onclick="openSmartLink('external','${escAttr(s.url)}')" title="${escAttr(s.platform)}">${SOCIAL_SVGS[s.platform] || SOCIAL_SVGS.custom}</a>`).join('')
+    }</div>` : '';
+  }
   document.getElementById('footer-copyright').textContent = `© ${new Date().getFullYear()} ${CFG.firmName}. All rights reserved.`;
   document.getElementById('footer-contact-links').innerHTML = `
     <a href="tel:${CFG.phoneRaw}">${CFG.phone}</a>
@@ -3661,18 +3744,25 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── TIMELINE (case/estate) ────────────────────────────────────
     case 'timeline': {
-      const items = (sec.items || []).map((item, i) => `
+      const items = (sec.items || []).map((item, i) => {
+        const hasLink = item.linkType && item.linkType !== 'none' && item.linkUrl && item.linkLabel;
+        const linkHtml = hasLink ? `<div class="cps-timeline-link" onclick="${
+          item.linkType === 'internal' ? `showPage('${escAttr(item.linkUrl)}')` : `openSmartLink('${escAttr(item.linkType)}','${escAttr(item.linkUrl)}')`
+        }">${escAttr(item.linkLabel)} →</div>` : '';
+        return `
         <div class="cps-timeline-item reveal">
           <div class="cps-timeline-left">
             <div class="cps-timeline-dot">${i+1}</div>
             <div class="cps-timeline-line"></div>
           </div>
-          <div class="cps-timeline-body">
+          <div class="cps-timeline-body${hasLink?' has-tl-link':''}">
             ${item.date ? `<div class="cps-timeline-date">${item.date}</div>` : ''}
             <h4>${item.title}</h4>
             <p>${item.body || ''}</p>
+            ${linkHtml}
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
@@ -3684,12 +3774,18 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── FEE SCHEDULE ─────────────────────────────────────────────
     case 'fees': {
-      const rows = (sec.items || []).map(row => `
+      const rows = (sec.items || []).map(row => {
+        const hasLink = row.linkType && row.linkType !== 'none' && row.linkUrl && row.linkLabel;
+        const linkHtml = hasLink ? `<div class="cps-fee-link" onclick="${
+          row.linkType === 'internal' ? `showPage('${escAttr(row.linkUrl)}')` : `openSmartLink('${escAttr(row.linkType)}','${escAttr(row.linkUrl)}')`
+        }">${escAttr(row.linkLabel)} →</div>` : '';
+        return `
         <tr>
-          <td><strong>${row.service}</strong>${row.note ? `<div class="cps-fee-note">${row.note}</div>` : ''}</td>
+          <td><strong>${row.service}</strong>${row.note ? `<div class="cps-fee-note">${row.note}</div>` : ''}${linkHtml}</td>
           <td><div class="cps-fee-amount">${row.amount}</div></td>
           <td style="color:var(--text-muted);font-size:13px;">${row.detail || ''}</td>
-        </tr>`).join('');
+        </tr>`;
+      }).join('');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
@@ -3707,13 +3803,18 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── JURISDICTION NOTICE ──────────────────────────────────────
     case 'jurisdiction': {
+      const hasLink = sec.linkType && sec.linkType !== 'none' && sec.linkUrl && sec.linkLabel;
+      const linkHtml = hasLink ? `<div class="cps-jurisdiction-link" onclick="${
+        sec.linkType === 'internal' ? `showPage('${escAttr(sec.linkUrl)}')` : `openSmartLink('${escAttr(sec.linkType)}','${escAttr(sec.linkUrl)}')`
+      }">${escAttr(sec.linkLabel)} →</div>` : '';
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
         <div class="cps-jurisdiction reveal reveal-delay-1" style="margin-top:${sec.heading ? '32px' : '0'};">
           <div class="cps-jurisdiction-icon">${sec.icon || '⚖️'}</div>
           <div class="cps-jurisdiction-title">${sec.title || ''}</div>
-          <div class="cps-jurisdiction-body">${formatBody(sec.body)}</div>
+          <div class="cps-jurisdiction-body${hasLink?' has-jur-link':''}">${formatBody(sec.body)}</div>
+          ${linkHtml}
         </div>
       </div>`;
       break;
