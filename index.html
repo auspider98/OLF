@@ -650,6 +650,114 @@ h2.section-title {
 }
 
 /* =============================================
+   CUSTOM PAGE — FEATURE CARDS
+   ============================================= */
+.cps-fc-header {
+  display: flex; align-items: flex-start; gap: 56px;
+  flex-wrap: wrap;
+  margin-bottom: 64px;
+}
+.cps-fc-header-text { flex: 1; min-width: 280px; }
+.cps-fc-badge {
+  flex-shrink: 0;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  margin-top: 8px;
+}
+.cps-fc-badge-num {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1;
+}
+.cps-fc-badge-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.cps-fc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid #e8e3d8;
+}
+.cps-fc-card {
+  padding: clamp(36px, 5vw, 56px);
+  border-right: 1px solid #e8e3d8;
+  border-bottom: 1px solid #e8e3d8;
+  transition: background 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.cps-fc-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  height: 2px; width: 0;
+  background: var(--gold);
+  transition: width 0.4s var(--ease-out);
+}
+.cps-fc-card:hover { background: var(--gold-pale); }
+.cps-fc-card:hover::after { width: 100%; }
+.cps-fc-card:nth-child(2n) { border-right: none; }
+.cps-fc-num {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 400;
+  color: rgba(15,35,64,0.07);
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: color 0.3s;
+}
+.cps-fc-card:hover .cps-fc-num { color: rgba(201,168,76,0.2); }
+.cps-fc-card h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-head);
+  margin-bottom: 10px;
+}
+.cps-fc-card p {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-muted);
+  margin: 0;
+}
+.cps-fc-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.cps-fc-link:hover { color: var(--navy); }
+
+/* dark / alt overrides */
+.cps-section-dark .cps-fc-badge { border-color: var(--gold-light); }
+.cps-section-dark .cps-fc-badge-num { color: #fff; }
+.cps-section-dark .cps-fc-badge-label { color: rgba(255,255,255,0.55); }
+.cps-section-dark .cps-fc-grid { border-color: rgba(255,255,255,0.12); }
+.cps-section-dark .cps-fc-card { border-color: rgba(255,255,255,0.12); }
+.cps-section-dark .cps-fc-card:hover { background: rgba(255,255,255,0.05); }
+.cps-section-dark .cps-fc-num { color: rgba(255,255,255,0.06); }
+.cps-section-dark .cps-fc-card:hover .cps-fc-num { color: rgba(201,168,76,0.2); }
+.cps-section-dark .cps-fc-card h3 { color: #fff; }
+.cps-section-dark .cps-fc-card p { color: rgba(255,255,255,0.65); }
+.cps-section-dark .cps-fc-link { color: var(--gold-light); }
+.cps-section-dark .cps-fc-link:hover { color: #fff; }
+.cps-section-alt .cps-fc-grid { border-color: #ddd8cc; }
+.cps-section-alt .cps-fc-card { border-color: #ddd8cc; }
+
+/* =============================================
    SERVICES
    ============================================= */
 #services { background: var(--cream); }
@@ -1446,6 +1554,9 @@ footer {
   .about-top-grid { grid-template-columns: 1fr; }
   .why-grid { grid-template-columns: 1fr; }
   .why-card { border-right: none; }
+  .cps-fc-grid { grid-template-columns: 1fr; }
+  .cps-fc-card { border-right: none; }
+  .cps-fc-header { flex-direction: column; }
   .services-grid { grid-template-columns: 1fr; }
   .testimonials-track { grid-template-columns: 1fr; }
   .blog-grid { grid-template-columns: 1fr; }
@@ -3578,6 +3689,49 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
           <div class="stat-label">${s.label}</div>
         </div>`).join('');
       wrapper.innerHTML = `<div class="stats-inner">${items}</div>`;
+      break;
+    }
+
+    // ── FEATURE CARDS ─────────────────────────────────────────────
+    case 'feature-cards': {
+      const fcCards = (sec.items || []).map((card, i) => {
+        const hasLink = card.linkType && card.linkType !== 'none' && card.linkUrl && card.linkLabel;
+        const linkOnclick = hasLink
+          ? (card.linkType === 'internal'
+              ? 'showPage(\'' + escAttr(card.linkUrl) + '\')'
+              : 'openSmartLink(\'' + escAttr(card.linkType) + '\',\'' + escAttr(card.linkUrl) + '\')')
+          : '';
+        const linkHtml = hasLink
+          ? '<span class="cps-fc-link" onclick="' + linkOnclick + '">' + (card.linkLabel || '') + ' \u2192</span>'
+          : '';
+        const cardNum = card.num || String(i + 1).padStart(2, '0');
+        return `
+        <div class="cps-fc-card reveal reveal-delay-${(i % 4) + 1}">
+          <div class="cps-fc-num">${cardNum}</div>
+          <h3>${card.title || ''}</h3>
+          <p>${card.body || ''}</p>
+          ${linkHtml}
+        </div>`;
+      }).join('');
+      const hasBadge = sec.badgeNum && sec.badgeNum.trim();
+      const badgeHtml = hasBadge ? `
+        <div class="cps-fc-badge reveal reveal-delay-3">
+          <div class="cps-fc-badge-num">${sec.badgeNum}</div>
+          <div class="cps-fc-badge-label">${sec.badgeLabel || ''}</div>
+        </div>` : '';
+      const headerHtml = (sec.heading || sec.body || hasBadge) ? `
+        <div class="cps-fc-header">
+          <div class="cps-fc-header-text">
+            ${labelHTML}
+            ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
+            ${sec.body ? `<p class="section-subtitle reveal reveal-delay-1" style="${subtitleStyle}">${sec.body}</p>` : ''}
+          </div>
+          ${badgeHtml}
+        </div>` : labelHTML;
+      wrapper.innerHTML = `<div class="container">
+        ${headerHtml}
+        <div class="cps-fc-grid">${fcCards}</div>
+      </div>`;
       break;
     }
 

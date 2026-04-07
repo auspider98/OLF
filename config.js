@@ -598,6 +598,41 @@ const SITE_CONFIG = {
           ]
         },
         {
+          "type": "feature-cards",
+          "label": "Feature Cards Label",
+          "background": "alt",
+          "heading": "Feature Cards Heading",
+          "body": "Feature Cards Body",
+          "badgeNum": "10+",
+          "badgeLabel": "Seasons",
+          "items": [
+            {
+              "num": "01",
+              "title": "Card 1 Title",
+              "body": "Card 1 Description",
+              "linkLabel": "Card 1 Link",
+              "linkType": "external",
+              "linkUrl": "google.com"
+            },
+            {
+              "num": "02",
+              "title": "Card 2 Title",
+              "body": "Card 2 Description",
+              "linkLabel": "Card 2 Link",
+              "linkType": "file",
+              "linkUrl": "images/ladybug.png"
+            },
+            {
+              "num": "03",
+              "title": "Card 3 Title",
+              "body": "Card 3 Description",
+              "linkLabel": "",
+              "linkType": "none",
+              "linkUrl": "home"
+            }
+          ]
+        },
+        {
           "type": "bullets",
           "label": "Bullet Section Label",
           "background": "light",
