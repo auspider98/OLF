@@ -1290,11 +1290,10 @@ h2.section-title {
   line-height: 1.4;
   margin-bottom: 10px;
 }
-.blog-excerpt { font-size: 13px; line-height: 1.75; color: var(--text-muted); flex: 1; }
+.blog-excerpt { font-size: 13px; line-height: 1.75; color: var(--text-muted); }
 .blog-card-meta {
   display: flex;
   align-items: center;
-  gap: 16px;
   margin-top: 16px;
 }
 .blog-date {
@@ -1307,14 +1306,14 @@ h2.section-title {
   font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--text-muted);
-  display: flex; align-items: center; gap: 4px;
+  margin-left: auto;
 }
-.blog-read-time::before { content: '·'; }
 .blog-cta {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 18px;
+  margin-top: 10px;
+  align-self: flex-end;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -1323,7 +1322,6 @@ h2.section-title {
   border-bottom: 1px solid rgba(201,168,76,0.35);
   padding-bottom: 2px;
   transition: color 0.2s, border-color 0.2s;
-  align-self: flex-start;
 }
 .blog-card.has-link:hover .blog-cta { color: var(--gold-light); border-color: var(--gold-light); }
 @media (max-width: 900px) {
@@ -1557,6 +1555,7 @@ footer {
   .cps-fc-grid { grid-template-columns: 1fr; }
   .cps-fc-card { border-right: none; }
   .cps-fc-header { flex-direction: column; }
+  .cps-fc-badge { display: none; }
   .services-grid { grid-template-columns: 1fr; }
   .testimonials-track { grid-template-columns: 1fr; }
   .blog-grid { grid-template-columns: 1fr; }
@@ -2315,41 +2314,8 @@ footer {
     <div class="stats-inner" id="statsInner"></div>
   </section>
 
-  <!-- Why Choose Us -->
-  <section id="why" class="section">
-    <div class="container">
-      <div class="why-badge-wrap">
-        <div class="why-text">
-          <div class="section-label reveal">
-            <div class="section-label-line"></div>
-            <span class="section-label-text">Why Choose Us</span>
-          </div>
-          <h2 class="section-title reveal reveal-delay-1" id="why-heading"></h2>
-          <p class="section-subtitle reveal reveal-delay-2" id="why-subtext"></p>
-        </div>
-        <div class="why-badge reveal reveal-delay-3">
-          <div class="why-badge-num" id="why-badge-num"></div>
-          <div class="why-badge-label" id="why-badge-label"></div>
-        </div>
-      </div>
-      <div class="why-grid" id="whyGrid"></div>
-    </div>
-  </section>
-
-  <!-- Testimonials Preview -->
-  <section class="section section-alt" id="home-testimonials-section">
-    <div class="container">
-      <div class="section-label reveal">
-        <div class="section-label-line"></div>
-        <span class="section-label-text">Client Stories</span>
-      </div>
-      <h2 class="section-title reveal reveal-delay-1">Families We've Built Together</h2>
-      <div class="testimonials-track" id="homeTestimonials" style="margin-top:48px;"></div>
-      <div style="text-align:center;margin-top:40px;">
-        <button class="btn-primary" onclick="showPage('testimonials')" style="margin:0 auto;">Read All Reviews →</button>
-      </div>
-    </div>
-  </section>
+  <!-- Home Sections (section builder) -->
+  <div id="home-sections"></div>
 
 </div><!-- /page-home -->
 
@@ -3006,12 +2972,16 @@ function buildStats() {
    ============================================= */
 function buildWhy() {
   const w = CFG.whyChooseUs;
-  document.getElementById('why-heading').textContent = w.heading;
-  document.getElementById('why-subtext').textContent = w.subtext;
-  document.getElementById('why-badge-num').textContent = w.badgeNum;
-  document.getElementById('why-badge-label').textContent = w.badgeLabel;
+  const elH = document.getElementById('why-heading');
+  const elS = document.getElementById('why-subtext');
+  const elBN = document.getElementById('why-badge-num');
+  const elBL = document.getElementById('why-badge-label');
   const grid = document.getElementById('whyGrid');
-  grid.innerHTML = (w.bullets||[]).map((b,i) => `
+  if (elH) elH.textContent = w.heading;
+  if (elS) elS.textContent = w.subtext;
+  if (elBN) elBN.textContent = w.badgeNum;
+  if (elBL) elBL.textContent = w.badgeLabel;
+  if (grid) grid.innerHTML = (w.bullets||[]).map((b,i) => `
     <div class="why-card reveal reveal-delay-${(i%4)+1}">
       <div class="why-card-num">0${i+1}</div>
       <h3>${b.title}</h3>
@@ -3184,9 +3154,9 @@ function buildTestimonials() {
 /* =============================================
    BLOG
    ============================================= */
-function buildBlogCardHtml(p, i, delayClass) {
+function buildBlogCardHtml(p, i, delayClass, noFeatured) {
   const hasLink = p.linkType && p.linkType !== 'none' && p.linkUrl;
-  const isFeatured = p.featured;
+  const isFeatured = p.featured && !noFeatured;
   const delay = delayClass || `reveal-delay-${(i % 3) + 1}`;
 
   // Click handler
@@ -3209,11 +3179,11 @@ function buildBlogCardHtml(p, i, delayClass) {
     <div class="blog-emoji">${p.emoji || '📋'}</div>
     <div class="blog-tag">${p.tag || 'Article'}</div>`;
 
-  // Meta row
+  // Meta row — date left, read time right
   const meta = (p.date || p.readTime) ? `
     <div class="blog-card-meta">
       ${p.date ? `<span class="blog-date">${p.date}</span>` : ''}
-      ${p.readTime ? `<span class="blog-read-time">${p.readTime}</span>` : ''}
+      ${p.readTime ? `<span class="blog-read-time" style="margin-left:auto;">${p.readTime}</span>` : ''}
     </div>` : '';
 
   // CTA label
@@ -3226,8 +3196,9 @@ function buildBlogCardHtml(p, i, delayClass) {
     <div class="blog-card-body">
       <h3 class="blog-title">${p.title}</h3>
       <p class="blog-excerpt">${p.excerpt}</p>
-      ${meta}
       ${cta}
+      <div style="flex:1;"></div>
+      ${meta}
     </div>
   </div>`;
 }
@@ -3311,7 +3282,7 @@ function buildNav() {
     { key: 'about',        label: 'About'        },
     { key: 'services',     label: 'Services'     },
     { key: 'process',      label: 'Process'      },
-    { key: 'faq',          label: 'FAQ'          },
+    { key: 'faq',          label: 'FAQ',         toggleKey: 'faqs' },
     { key: 'testimonials', label: 'Testimonials' },
     { key: 'blog',         label: 'Resources'    },
   ];
@@ -3326,7 +3297,7 @@ function buildNav() {
   parts.push(homeLink);
   // Core pages
   navPages.forEach(p => {
-    if (pt[p.key] === false) return;
+    if (pt[p.toggleKey || p.key] === false) return;
     const link = document.createElement('span');
     link.className = 'nav-link';
     link.textContent = p.label;
@@ -3371,7 +3342,7 @@ function buildFooterNav() {
     { key: 'about',        label: 'About'        },
     { key: 'services',     label: 'Services'     },
     { key: 'process',      label: 'Process'      },
-    { key: 'faq',          label: 'FAQ'          },
+    { key: 'faq',          label: 'FAQ',         toggleKey: 'faqs' },
     { key: 'testimonials', label: 'Testimonials' },
     { key: 'blog',         label: 'Resources'    },
   ];
@@ -3379,7 +3350,7 @@ function buildFooterNav() {
   if (!container) return;
   container.innerHTML = '';
   footerPages.forEach(p => {
-    if (p.key !== 'home' && pt[p.key] === false) return;
+    if (p.key !== 'home' && pt[p.toggleKey || p.key] === false) return;
     const a = document.createElement('a');
     a.textContent = p.label;
     a.style.cursor = 'pointer';
@@ -3471,11 +3442,14 @@ function applyCTALabel() {
 const PAGES = ['home','about','services','process','faq','testimonials','blog','contact','privacy'];
 let currentPage = 'home';
 
+let _suppressHistoryPush = false;
+
 function showPage(name) {
   // Redirect to home if core page is disabled
   const pt = CFG.pageToggles || {};
   const disableable = ['about','services','process','faq','testimonials','blog','contact'];
-  if (disableable.includes(name) && pt[name] === false) name = 'home';
+  const toggleKey = name === 'faq' ? 'faqs' : name;
+  if (disableable.includes(name) && pt[toggleKey] === false) name = 'home';
 
   // Check if it's a custom page slug
   const customPages = CFG.customPages || [];
@@ -3496,6 +3470,12 @@ function showPage(name) {
   // If it's a disabled custom page, go home
   if (!PAGES.includes(name) && !isCustom) {
     return showPage('home');
+  }
+
+  // Push history state so back/forward work
+  if (!_suppressHistoryPush) {
+    const hash = name === 'home' ? '' : '#' + name;
+    history.pushState({ page: name }, '', hash || window.location.pathname);
   }
 
   // Update nav active state
@@ -3535,6 +3515,14 @@ function showPage(name) {
 
   setTimeout(initReveal, 100);
 }
+
+// Back / forward button support
+window.addEventListener('popstate', e => {
+  const page = (e.state && e.state.page) ? e.state.page : 'home';
+  _suppressHistoryPush = true;
+  showPage(page);
+  _suppressHistoryPush = false;
+});
 
 /* =============================================
    MOBILE NAV
@@ -3580,6 +3568,17 @@ function initReveal() {
 /* =============================================
    CUSTOM PAGE BUILDER
    ============================================= */
+function buildHomeSections() {
+  const container = document.getElementById('home-sections');
+  if (!container) return;
+  container.innerHTML = '';
+  const sections = CFG.homeSections || [];
+  sections.forEach((sec, idx) => {
+    const secEl = renderCustomSection(sec, idx, false, sections);
+    if (secEl) container.appendChild(secEl);
+  });
+}
+
 function buildCustomPages() {
   const container = document.getElementById('custom-pages-container');
   if (!container) return;
@@ -3610,6 +3609,59 @@ function getInheritedBg(sections, idx) {
     }
   }
   return 'light';
+}
+
+const CPS_NO_ZONE_TYPES = new Set(['link','button','cta','stats','two-col','feature-cards']);
+
+function applyTwoZoneLayout(wrapper, sec, isFirst) {
+  if (CPS_NO_ZONE_TYPES.has(sec.type)) return;
+  if (!sec.heading) return;
+  if (isFirst) return;
+  if (!(sec.subtitle || sec.body)) return;
+
+  const bg = sec.background || 'light';
+  if (bg === 'dark') return;
+
+  const dividerColor = bg === 'alt' ? 'rgba(201,168,76,0.25)' : '#e4e0d8';
+
+  const container = wrapper.querySelector('.container');
+  if (!container) return;
+
+  const headerItems = [];
+  const contentItems = [];
+  Array.from(container.childNodes).forEach(node => {
+    if (node.nodeType === 3 && !node.textContent.trim()) return;
+    const isLabel   = node.nodeType === 1 && node.classList && node.classList.contains('section-label');
+    const isHeading = node.nodeType === 1 && (node.tagName === 'H1' || node.tagName === 'H2');
+    if (isLabel || isHeading) {
+      headerItems.push(node.cloneNode(true));
+    } else {
+      contentItems.push(node.cloneNode(true));
+    }
+  });
+
+  if (!headerItems.length || !contentItems.length) return;
+
+  const headerZone = document.createElement('div');
+  headerZone.className = 'cps-header-zone';
+  headerZone.style.paddingBottom = '32px';
+  headerZone.style.borderBottom = '1px solid ' + dividerColor;
+  const hc = document.createElement('div');
+  hc.className = 'container';
+  headerItems.forEach(n => hc.appendChild(n));
+  headerZone.appendChild(hc);
+
+  const contentZone = document.createElement('div');
+  contentZone.className = 'cps-content-zone';
+  contentZone.style.paddingTop = '40px';
+  const cc = document.createElement('div');
+  cc.className = 'container';
+  contentItems.forEach(n => cc.appendChild(n));
+  contentZone.appendChild(cc);
+
+  // No background change — wrapper keeps its section class bg
+  // Just remove the container and replace with two zones
+  container.replaceWith(headerZone, contentZone);
 }
 
 function renderCustomSection(sec, idx, isFirst, allSections) {
@@ -3835,23 +3887,27 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── TESTIMONIALS ─────────────────────────────────────────────
     case 'testimonials': {
-      const items = (sec.items || CFG.testimonials || []).map(testimonialCard).join('');
+      const count = parseInt(sec.count) || 3;
+      const items = (CFG.testimonials || []).slice(0, count).map(testimonialCard).join('');
+      const showBtn = sec.showReadAll !== false;
+      const btnLabel = sec.readAllLabel || 'Read All Reviews';
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
         ${sec.subtitle ? `<p class="section-subtitle reveal reveal-delay-1" style="${subtitleStyle}">${sec.subtitle}</p>` : ''}
         <div class="testimonials-track" style="margin-top:40px;">${items}</div>
+        ${showBtn ? `<div style="text-align:center;margin-top:40px;"><button class="btn-primary" onclick="showPage('testimonials')" style="margin:0 auto;">${btnLabel} →</button></div>` : ''}
       </div>`;
       break;
     }
 
     // ── RESOURCES / BLOG ─────────────────────────────────────────
     case 'resources': {
-      const allPosts = sec.items || CFG.blogPosts || [];
+      const allPosts = sec.items || [];
       const featured = allPosts.filter(p => p.featured);
       const rest = allPosts.filter(p => !p.featured);
-      const ordered = [...featured, ...rest].slice(0, sec.limit || 6);
-      const items = ordered.map((p, i) => buildBlogCardHtml(p, i)).join('');
+      const ordered = [...featured, ...rest];
+      const items = ordered.map((p, i) => buildBlogCardHtml(p, i, null, true)).join('');
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
@@ -4144,9 +4200,14 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       return null;
   }
 
+  // Apply two-zone header/content split for sections with headings
+  applyTwoZoneLayout(wrapper, sec, isFirst);
+
   return wrapper;
 }
 
+// Two-zone layout: splits sections with a heading into a tinted header zone
+// and a lighter content zone, separated by a thin divider line.
 // Helpers
 function formatBody(text) {
   if (!text) return '';
@@ -4246,13 +4307,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set page title from config immediately on load
   document.title = CFG.pageTitles.home || CFG.firmName;
   buildPageHeaders();
-  applyHomepageToggles();
   buildHero();
   // Start header fully transparent — scroll handler fades it in on home page
   const header = document.getElementById('site-header');
   header.style.background = 'rgba(9, 20, 38, 0)';
   header.style.backdropFilter = '';
   buildStats();
+  buildHomeSections();
   buildWhy();
   buildServices();
   buildAbout();
@@ -4265,6 +4326,13 @@ document.addEventListener('DOMContentLoaded', () => {
   applyCTALabel();
   buildCustomPages();
   initReveal();
+
+  // Seed initial history state and navigate to hash if present
+  const initialPage = window.location.hash.replace('#', '') || 'home';
+  _suppressHistoryPush = true;
+  showPage(initialPage);
+  _suppressHistoryPush = false;
+  history.replaceState({ page: initialPage }, '', window.location.hash || window.location.pathname);
 
   // Preloader
   setTimeout(() => {
