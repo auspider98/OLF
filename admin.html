@@ -20,7 +20,7 @@
   --accent: #c9a84c;
   --success: #2d7a5f;
   --danger: #c0392b;
-  --sidebar-w: 220px;
+  --sidebar-w: 252px;
   --topbar-h: 60px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -143,6 +143,17 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
 .cp-nav-drag-handle:hover { color: rgba(255,255,255,0.5); }
 .cp-nav-item.dragging { opacity: 0.4; }
 .cp-nav-item.drag-over { border-top: 2px solid var(--gold); }
+.cp-nav-arrows {
+  display: flex; align-items: center; gap: 2px;
+  flex-shrink: 0; padding-right: 6px;
+}
+.cp-nav-arrow-btn {
+  background: none; border: none;
+  color: rgba(255,255,255,0.3); font-size: 11px;
+  cursor: pointer; padding: 3px 4px; line-height: 1;
+  border-radius: 3px; transition: color 0.15s, background 0.15s;
+}
+.cp-nav-arrow-btn:hover { color: var(--gold); background: rgba(201,168,76,0.1); }
 .cp-nav-add-btn {
   display: block; width: 100%;
   padding: 8px 12px 8px 10px;
@@ -490,8 +501,6 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
     align-items: center;
     gap: 8px;
     position: fixed;
-    bottom: 24px;
-    right: 20px;
     z-index: 200;
     background: var(--gold);
     color: var(--navy);
@@ -505,10 +514,13 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     cursor: pointer;
     transition: background 0.15s, transform 0.15s;
+    touch-action: none;
+    user-select: none;
   }
   .nav-fab:active { transform: scale(0.96); }
   .nav-fab-icon { font-size: 17px; line-height: 1; }
   .nav-fab.open { background: var(--gold-light); }
+  .nav-fab.fab-dragging { transform: scale(1.05); box-shadow: 0 8px 28px rgba(0,0,0,0.4); transition: box-shadow 0.15s; }
 }
 
 /* Backdrop */
@@ -3110,6 +3122,10 @@ function buildCustomPagesList() {
         '<span class="cp-nav-item-link" onclick="showCpSection(' + pi + ')">' +
           '<span class="cp-nav-item-emoji">' + emoji + '</span>' +
           '<span class="cp-nav-item-label">' + escHtml(label) + '</span>' +
+        '</span>' +
+        '<span class="cp-nav-arrows">' +
+          '<button class="cp-nav-arrow-btn" onclick="moveCpPage(' + pi + ',-1);event.stopPropagation();" title="Move up">↑</button>' +
+          '<button class="cp-nav-arrow-btn" onclick="moveCpPage(' + pi + ',1);event.stopPropagation();" title="Move down">↓</button>' +
         '</span>';
       navList.appendChild(item);
     });
@@ -4087,6 +4103,19 @@ function addCustomPage() {
   autosave();
 }
 
+function moveCpPage(pi, dir) {
+  collectData();
+  const pages = DATA.customPages;
+  const newIdx = pi + dir;
+  if (newIdx < 0 || newIdx >= pages.length) return;
+  [pages[pi], pages[newIdx]] = [pages[newIdx], pages[pi]];
+  // Keep active pi tracking correct after move
+  if (_cpActivePi === pi) _cpActivePi = newIdx;
+  else if (_cpActivePi === newIdx) _cpActivePi = pi;
+  buildCustomPagesList();
+  autosave();
+}
+
 function removeCpPage(pi) {
   if (!confirm('Delete this page? This cannot be undone.')) return;
   collectData();
@@ -4690,6 +4719,138 @@ function closeMobileNav() {
   icon.textContent = '☰';
   label.textContent = 'Menu';
 }
+
+/* =============================================
+   FAB DRAGGABLE POSITIONING
+   ============================================= */
+(function initFabDrag() {
+  const FAB_STORAGE_KEY = 'adminFabPos';
+  const LONG_PRESS_MS = 300;
+  const EDGE_PAD = 16;
+
+  const fab = document.getElementById('navFab');
+  if (!fab) return;
+
+  // Default position: bottom-right
+  const DEFAULT = { bottom: 24, right: EDGE_PAD, side: 'right' };
+
+  function applyPos(pos) {
+    fab.style.bottom = pos.bottom + 'px';
+    fab.style.top = '';
+    if (pos.side === 'right') {
+      fab.style.right = EDGE_PAD + 'px';
+      fab.style.left = '';
+    } else {
+      fab.style.left = EDGE_PAD + 'px';
+      fab.style.right = '';
+    }
+  }
+
+  function savePos(pos) {
+    try { localStorage.setItem(FAB_STORAGE_KEY, JSON.stringify(pos)); } catch(e) {}
+  }
+
+  function loadPos() {
+    try {
+      const s = localStorage.getItem(FAB_STORAGE_KEY);
+      return s ? JSON.parse(s) : null;
+    } catch(e) { return null; }
+  }
+
+  // Restore saved position or apply default
+  const saved = loadPos();
+  applyPos(saved || DEFAULT);
+
+  let longPressTimer = null;
+  let isDragging = false;
+  let startX, startY, startBottom;
+  let lastTap = 0;
+
+  fab.addEventListener('touchstart', e => {
+    const touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+
+    // Double-tap detection — reset to default
+    const now = Date.now();
+    if (now - lastTap < 350) {
+      clearTimeout(longPressTimer);
+      applyPos(DEFAULT);
+      savePos(DEFAULT);
+      lastTap = 0;
+      return;
+    }
+    lastTap = now;
+
+    // Compute current bottom from actual rendered position
+    const rect = fab.getBoundingClientRect();
+    startBottom = window.innerHeight - rect.bottom;
+
+    // Start long-press timer
+    longPressTimer = setTimeout(() => {
+      isDragging = true;
+      fab.classList.add('fab-dragging');
+      // Prevent menu from opening after drag
+      fab.onclick = null;
+    }, LONG_PRESS_MS);
+  }, { passive: true });
+
+  fab.addEventListener('touchmove', e => {
+    const touch = e.touches[0];
+    const dx = Math.abs(touch.clientX - startX);
+    const dy = Math.abs(touch.clientY - startY);
+
+    // Cancel long press if significant movement before timer fires
+    if (!isDragging && (dx > 8 || dy > 8)) {
+      clearTimeout(longPressTimer);
+      return;
+    }
+
+    if (!isDragging) return;
+    e.preventDefault();
+
+    // Move vertically — clamp within viewport
+    const movedY = startY - touch.clientY;
+    const newBottom = Math.max(EDGE_PAD, Math.min(window.innerHeight - fab.offsetHeight - EDGE_PAD, startBottom + movedY));
+    fab.style.bottom = newBottom + 'px';
+    fab.style.top = '';
+
+    // Track horizontal side for snap
+    const midX = window.innerWidth / 2;
+    const currentSide = touch.clientX < midX ? 'left' : 'right';
+    if (currentSide === 'right') {
+      fab.style.right = EDGE_PAD + 'px';
+      fab.style.left = '';
+    } else {
+      fab.style.left = EDGE_PAD + 'px';
+      fab.style.right = '';
+    }
+  }, { passive: false });
+
+  fab.addEventListener('touchend', e => {
+    clearTimeout(longPressTimer);
+
+    if (isDragging) {
+      isDragging = false;
+      fab.classList.remove('fab-dragging');
+
+      // Snap to nearest edge based on final touch position
+      const touch = e.changedTouches[0];
+      const side = touch.clientX < window.innerWidth / 2 ? 'left' : 'right';
+      const rect = fab.getBoundingClientRect();
+      const bottom = Math.max(EDGE_PAD, Math.min(window.innerHeight - fab.offsetHeight - EDGE_PAD, window.innerHeight - rect.bottom));
+
+      const pos = { bottom, side };
+      applyPos(pos);
+      savePos(pos);
+
+      // Restore tap handler after short delay
+      setTimeout(() => {
+        fab.onclick = toggleMobileNav;
+      }, 50);
+    }
+  }, { passive: true });
+})();
 
 window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('dragover', e => e.preventDefault());
