@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Site Admin — Osborne Law Firm</title>
+<title>Site Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -687,9 +687,9 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
   <!-- SIDEBAR -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-section">
-      <div class="sidebar-heading">Firm Info</div>
+      <div class="sidebar-heading">Business Info</div>
       <div class="sidebar-link active" onclick="showSection('firm')" data-section="firm">
-        <span class="sidebar-link-icon">🏛️</span> Firm Details
+        <span class="sidebar-link-icon">🏛️</span> Business Details
       </div>
       <div class="sidebar-link" onclick="showSection('contact-info')" data-section="contact-info">
         <span class="sidebar-link-icon">📞</span> Contact & Hours
@@ -700,28 +700,10 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
       <div class="sidebar-link" onclick="showSection('homepage')" data-section="homepage">
         <span class="sidebar-link-icon">🏠</span> Home Page
       </div>
-      <div class="sidebar-link" onclick="showSection('why')" data-section="why">
-        <span class="sidebar-link-icon">⭐</span> Why Choose Us
+<div class="sidebar-link" onclick="showSection('attorney')" data-section="attorney">
+        <span class="sidebar-link-icon">👥</span> <span id="sidebar-about-label">About Us</span>
       </div>
-      <div class="sidebar-link" onclick="showSection('attorney')" data-section="attorney">
-        <span class="sidebar-link-icon">👥</span> About Us
-      </div>
-      <div class="sidebar-link" onclick="showSection('services')" data-section="services">
-        <span class="sidebar-link-icon">⚖️</span> Services
-      </div>
-      <div class="sidebar-link" onclick="showSection('process')" data-section="process">
-        <span class="sidebar-link-icon">🗺️</span> Process Steps
-      </div>
-      <div class="sidebar-link" onclick="showSection('faqs')" data-section="faqs">
-        <span class="sidebar-link-icon">❓</span> FAQ
-      </div>
-      <div class="sidebar-link" onclick="showSection('testimonials')" data-section="testimonials">
-        <span class="sidebar-link-icon">💬</span> Testimonials
-      </div>
-      <div class="sidebar-link" onclick="showSection('blog')" data-section="blog">
-        <span class="sidebar-link-icon">📝</span> Blog / Resources
-      </div>
-      <div id="cp-nav-list"></div>
+<div id="cp-nav-list"></div>
       <button class="cp-nav-add-btn" onclick="addCustomPage()">＋ Add page</button>
     </div>
     <div class="sidebar-section">
@@ -739,7 +721,7 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
   </nav>
 
   <!-- MAIN -->
-  <main class="main" oninput="autosave()">
+  <main class="main" oninput="autosave()" onchange="autosave()">
 
     <!-- Import Drop Zone -->
     <div class="import-zone" id="importZone"
@@ -753,28 +735,28 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
 
     <!-- FIRM DETAILS -->
     <div class="admin-section active" id="section-firm">
-      <div class="section-badge">🏛️ Firm Details</div>
-      <div class="page-section-title">Firm Information</div>
+      <div class="section-badge">🏛️ Business Details</div>
+      <div class="page-section-title">Business Information</div>
       <div class="page-section-sub">Core firm details used throughout the site.</div>
       <div class="panel open">
         <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">🏛️</span> Firm Identity</div>
+          <div class="panel-title"><span class="panel-title-icon">🏛️</span> Business Identity</div>
           <span class="panel-chevron">▼</span>
         </div>
         <div class="panel-body">
           <div class="form-row-2">
             <div class="field-group">
-              <label>Firm Name</label>
+              <label>Business Name</label>
               <input type="text" id="f_firmName"/>
             </div>
             <div class="field-group">
-              <label>Tagline / Practice Area</label>
+              <label>Tagline / Specialty</label>
               <input type="text" id="f_tagline"/>
             </div>
           </div>
           <div class="field-group">
             <label>Launch Screen Tagline</label>
-            <input type="text" id="f_preloaderTagline" placeholder="Adoption Attorneys · Alabama"/>
+            <input type="text" id="f_preloaderTagline" placeholder="Your Specialty · Your Location"/>
             <div class="field-hint">Text shown beneath the firm name on the splash/loading screen.</div>
           </div>
           <div class="field-group">
@@ -899,7 +881,13 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
           <div class="field-group"><label>Form Heading</label><input type="text" id="f_contactFormHeading"/></div>
           <div class="field-group"><label>Form Intro</label><textarea id="f_contactFormIntro" style="min-height:60px;"></textarea></div>
           <div class="field-group"><label>Privacy Note</label><input type="text" id="f_contactPrivacyNote"/></div>
-          <div class="field-group"><label>Form Endpoint (Formspree/etc.)</label><input type="url" id="f_formEndpoint" placeholder="https://formspree.io/f/xxxxx"/></div>
+          <div class="field-group"><label>Submit Button Label</label><input type="text" id="f_contactSubmitLabel" placeholder="Request Free Consultation"/></div>
+          <div class="field-group"><label>Success Message</label><input type="text" id="f_contactSuccessMsg" placeholder="Thank you! We'll be in touch soon."/></div>
+          <div class="field-group"><label>Formspree Endpoint</label><input type="url" id="f_formEndpoint" placeholder="https://formspree.io/f/xxxxx"/><div class="field-hint">Create a free form at formspree.io and paste the endpoint URL here.</div></div>
+          <div class="divider"></div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Form Fields</div>
+          <div id="contact-form-fields-list"></div>
+          <button class="btn-add" onclick="addContactFormField()">+ Add Field</button>
         </div>
       </div>
       <div class="panel open">
@@ -919,7 +907,7 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
     <div class="admin-section" id="section-attorney">
       <div class="section-badge">👥 About Us</div>
       <div class="page-section-title">About Us</div>
-      <div class="page-section-sub">Page header, attorney profiles, and biography content.</div>
+      <div class="page-section-sub">Page header, team member profiles, and biography content.</div>
       <div class="section-toggle-bar">
         <div>
           <div class="section-toggle-label">About Us Page</div>
@@ -934,9 +922,14 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
           <span class="panel-chevron">▼</span>
         </div>
         <div class="panel-body">
+          <div class="field-group">
+            <label>Nav & Sidebar Label</label>
+            <input type="text" id="f_aboutNavLabel" placeholder="About Us" oninput="updateAboutNavLabel(this)"/>
+            <div class="field-hint">How this page appears in the sidebar and navigation menu.</div>
+          </div>
           <div class="form-row-2">
-            <div class="field-group"><label>Label</label><input type="text" id="ph_about_label"/></div>
-            <div class="field-group"><label>Title</label><input type="text" id="ph_about_title"/></div>
+            <div class="field-group"><label>Banner Label</label><input type="text" id="ph_about_label"/></div>
+            <div class="field-group"><label>Banner Title</label><input type="text" id="ph_about_title"/></div>
           </div>
         </div>
       </div>
@@ -944,7 +937,7 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
       <!-- Repeatable attorney accordions -->
       <div id="attorney-accordions"></div>
 
-      <button class="btn-add" onclick="addAttorney()" style="margin-top:8px;">+ Add Attorney</button>
+      <button class="btn-add" onclick="addAttorney()" style="margin-top:8px;">+ Add Team Member</button>
       </div><!-- /section-panels-wrap -->
     </div>
 
@@ -972,7 +965,56 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
           </div>
           <div class="field-group">
             <label>Trust Bullets (one per line)</label>
-            <textarea id="f_heroTrustBullets" style="min-height:80px;" placeholder="Free Initial Consultation&#10;20+ Years Experience&#10;Statewide Practice"></textarea>
+            <textarea id="f_heroTrustBullets" style="min-height:80px;" placeholder="Free Initial Consultation&#10;20+ Years Experience&#10;Serving Your Area"></textarea>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Primary Button</div>
+          <div class="form-row-2" style="margin-bottom:8px;">
+            <div class="field-group" style="margin:0;">
+              <label>Label</label>
+              <input type="text" id="f_heroPrimaryLabel" placeholder="Free Consultation"/>
+            </div>
+            <div class="field-group" style="margin:0;">
+              <label>Link Type</label>
+              <select id="f_heroPrimaryLinkType" onchange="onHeroBtnLinkTypeChange('primary',this)">
+                <option value="none">None (hide button)</option>
+                <option value="internal">Internal Page</option>
+                <option value="external">External URL</option>
+                <option value="file">File / Document</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group" id="f_heroPrimary_internal" style="display:none;">
+            <label>Page</label>
+            <select id="f_heroPrimaryInternalPage"></select>
+          </div>
+          <div class="field-group" id="f_heroPrimary_url" style="display:none;">
+            <label id="f_heroPrimaryUrlLabel">URL</label>
+            <input type="text" id="f_heroPrimaryUrl" placeholder="https://"/>
+          </div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin:12px 0 8px;">Secondary Button</div>
+          <div class="form-row-2" style="margin-bottom:8px;">
+            <div class="field-group" style="margin:0;">
+              <label>Label</label>
+              <input type="text" id="f_heroSecondaryLabel" placeholder="Our Services"/>
+            </div>
+            <div class="field-group" style="margin:0;">
+              <label>Link Type</label>
+              <select id="f_heroSecondaryLinkType" onchange="onHeroBtnLinkTypeChange('secondary',this)">
+                <option value="none">None (hide button)</option>
+                <option value="internal">Internal Page</option>
+                <option value="external">External URL</option>
+                <option value="file">File / Document</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group" id="f_heroSecondary_internal" style="display:none;">
+            <label>Page</label>
+            <select id="f_heroSecondaryInternalPage"></select>
+          </div>
+          <div class="field-group" id="f_heroSecondary_url" style="display:none;">
+            <label id="f_heroSecondaryUrlLabel">URL</label>
+            <input type="text" id="f_heroSecondaryUrl" placeholder="https://"/>
           </div>
         </div>
       </div>
@@ -1042,60 +1084,36 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
           </div>
 
           <div class="hero-bg-panel" id="hbp-video">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Video 1 (Primary)</div>
-            <div class="form-row-2">
-              <div class="field-group">
-                <label>MP4 Path (H.264)</label>
-                <input type="text" id="f_heroVideoMp4" placeholder="videos/hero.mp4"/>
-                <div class="field-hint">Required. Universal browser support.</div>
-              </div>
-              <div class="field-group">
-                <label>WebM Path (optional)</label>
-                <input type="text" id="f_heroVideoWebm" placeholder="videos/hero.webm"/>
-                <div class="field-hint">Better compression; modern browsers prefer it.</div>
-              </div>
-            </div>
-            <div class="divider" style="margin:12px 0;"></div>
             <div class="field-group">
-              <label>Loop Behavior</label>
-              <select id="f_heroVideoLoop" onchange="updateVideoLoopUI()">
-                <option value="loop">Simple Loop (hard cut)</option>
-                <option value="fade-image">Fade to Image, then replay</option>
-                <option value="crossfade">Crossfade to Second Video</option>
-              </select>
+              <label>Shared Fallback Image</label>
+              <input type="text" id="f_heroVideoFallback" placeholder="images/hero-fallback.jpg"/>
+              <div class="field-hint">Shown on mobile / when a video has no individual fallback set.</div>
             </div>
-            <div id="vloop-fade-image" style="display:none;">
-              <div class="field-group">
-                <label>Fallback / Hold Image</label>
-                <input type="text" id="f_heroVideoFallback" placeholder="images/hero-fallback.jpg"/>
-                <div class="field-hint">Shown on mobile and faded in at the end of the video before it replays.</div>
+            <div class="field-group">
+              <label>Transition Speed</label>
+              <div class="range-row">
+                <input type="range" id="f_heroVideoTransSpeed" min="0.3" max="4" step="0.1" style="width:140px;" oninput="document.getElementById('f_heroVideoTransSpeedVal').textContent=parseFloat(this.value).toFixed(1)+'s'"/>
+                <span class="range-val" id="f_heroVideoTransSpeedVal">1.2s</span>
               </div>
-              <div class="field-group">
-                <label>Image Hold Duration (seconds)</label>
-                <div class="range-row">
-                  <input type="range" id="f_heroVideoHold" min="2" max="12" step="1" oninput="document.getElementById('f_heroVideoHoldVal').textContent=this.value+'s'"/>
-                  <span class="range-val" id="f_heroVideoHoldVal">4s</span>
-                </div>
-              </div>
+              <div class="field-hint">Controls crossfade and fade duration for all clips.</div>
             </div>
-            <div id="vloop-crossfade" style="display:none;">
-              <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:4px 0 10px;">Video 2 (Crossfade Target)</div>
-              <div class="form-row-2">
-                <div class="field-group">
-                  <label>MP4 Path (H.264)</label>
-                  <input type="text" id="f_heroVideo2Mp4" placeholder="videos/hero2.mp4"/>
-                </div>
-                <div class="field-group">
-                  <label>WebM Path (optional)</label>
-                  <input type="text" id="f_heroVideo2Webm" placeholder="videos/hero2.webm"/>
-                </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px 14px;background:var(--navy);border-radius:6px;">
+              <label class="switch" style="flex-shrink:0;">
+                <input type="checkbox" id="f_heroVideoHoldEnabled" onchange="autosave()"/>
+                <span class="switch-slider"></span>
+              </label>
+              <div style="flex:1;">
+                <div style="color:#fff;font-size:13px;font-weight:600;">Hold on fallback between loops</div>
+                <div class="section-toggle-hint">After the last video, show the fallback image before looping back.</div>
               </div>
-              <div class="field-group">
-                <label>Fallback Image (mobile)</label>
-                <input type="text" id="f_heroVideoFallback2" placeholder="images/hero-fallback.jpg"/>
-                <div class="field-hint">Shown on mobile where autoplay is blocked.</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <input type="range" id="f_heroVideoHold" min="1" max="12" step="1" style="width:80px;" oninput="document.getElementById('f_heroVideoHoldVal').textContent=this.value+'s'"/>
+                <span class="range-val" id="f_heroVideoHoldVal">4s</span>
               </div>
             </div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Video Playlist</div>
+            <div id="hero-video-clips-list"></div>
+            <button class="btn-add" onclick="addHeroVideoClip()">+ Add Video</button>
           </div>
 
           <div class="divider"></div>
@@ -1148,243 +1166,6 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
       </div>
     </div>
 
-    <!-- WHY CHOOSE US -->
-    <div class="admin-section" id="section-why">
-      <div class="section-badge">⭐ Why Choose Us</div>
-      <div class="page-section-title">Why Choose Us Section</div>
-      <div class="page-section-sub">The four key differentiators shown on the homepage.</div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">✍️</span> Section Header</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div class="field-group"><label>Heading</label><input type="text" id="f_whyHeading"/></div>
-          <div class="field-group"><label>Subtext</label><textarea id="f_whySubtext" style="min-height:70px;"></textarea></div>
-          <div class="form-row-2">
-            <div class="field-group"><label>Badge Number</label><input type="text" id="f_whyBadgeNum"/></div>
-            <div class="field-group"><label>Badge Label</label><input type="text" id="f_whyBadgeLabel"/></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">📋</span> Bullet Points</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div id="why-bullets-list" class="array-list"></div>
-          <button class="btn-add" onclick="addWhyBullet()">+ Add Bullet</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- SERVICES -->
-    <div class="admin-section" id="section-services">
-      <div class="section-badge">⚖️ Services</div>
-      <div class="page-section-title">Practice Areas / Services</div>
-      <div class="page-section-sub">Each service card shown on the Services page.</div>
-      <div class="section-toggle-bar">
-        <div>
-          <div class="section-toggle-label">Services Page</div>
-          <div class="section-toggle-hint">When off, the Services page is hidden from navigation and redirects home.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="toggle_page_services" onchange="onPageToggle(this)"/><span class="switch-slider"></span></label>
-      </div>
-      <div class="section-panels-wrap" id="toggle_page_services_wrap">
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">🏷️</span> Page Header</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div class="form-row-2">
-            <div class="field-group"><label>Label</label><input type="text" id="ph_services_label"/></div>
-            <div class="field-group"><label>Title</label><input type="text" id="ph_services_title"/></div>
-          </div>
-          <div class="field-group"><label>Subtitle</label><textarea id="ph_services_subtitle" style="min-height:60px;"></textarea></div>
-        </div>
-      </div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">⚖️</span> Services</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div id="services-list" class="array-list"></div>
-          <button class="btn-add" onclick="addService()">+ Add Service</button>
-        </div>
-      </div>
-      </div><!-- /section-panels-wrap -->
-    </div>
-
-    <!-- PROCESS -->
-    <div class="admin-section" id="section-process">
-      <div class="section-badge">🗺️ Process</div>
-      <div class="page-section-title">Adoption Process Steps</div>
-      <div class="page-section-sub">Step-by-step guide shown on the Process page.</div>
-      <div class="section-toggle-bar">
-        <div>
-          <div class="section-toggle-label">Process Page</div>
-          <div class="section-toggle-hint">When off, the Process page is hidden from navigation and redirects home.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="toggle_page_process" onchange="onPageToggle(this)"/><span class="switch-slider"></span></label>
-      </div>
-      <div class="section-panels-wrap" id="toggle_page_process_wrap">
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">🏷️</span> Page Header</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div class="form-row-2">
-            <div class="field-group"><label>Label</label><input type="text" id="ph_process_label"/></div>
-            <div class="field-group"><label>Title</label><input type="text" id="ph_process_title"/></div>
-          </div>
-          <div class="field-group"><label>Subtitle</label><textarea id="ph_process_subtitle" style="min-height:60px;"></textarea></div>
-        </div>
-      </div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">🗺️</span> Process Steps</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div id="process-list" class="array-list"></div>
-          <button class="btn-add" onclick="addProcessStep()">+ Add Step</button>
-        </div>
-      </div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">📋</span> Legal Requirements</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div id="requirements-list" class="array-list"></div>
-          <button class="btn-add" onclick="addRequirement()">+ Add Requirement</button>
-        </div>
-      </div>
-      </div><!-- /section-panels-wrap -->
-    </div>
-
-    <!-- FAQs -->
-    <div class="admin-section" id="section-faqs">
-      <div class="section-badge">❓ FAQ</div>
-      <div class="page-section-title">Frequently Asked Questions</div>
-      <div class="page-section-sub">Q&A pairs shown on the FAQ page.</div>
-      <div class="section-toggle-bar">
-        <div>
-          <div class="section-toggle-label">FAQ Page</div>
-          <div class="section-toggle-hint">When off, the FAQ page is hidden from navigation and redirects home.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="toggle_page_faqs" onchange="onPageToggle(this)"/><span class="switch-slider"></span></label>
-      </div>
-      <div class="section-panels-wrap" id="toggle_page_faqs_wrap">
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">🏷️</span> Page Header</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div class="form-row-2">
-            <div class="field-group"><label>Label</label><input type="text" id="ph_faq_label"/></div>
-            <div class="field-group"><label>Title</label><input type="text" id="ph_faq_title"/></div>
-          </div>
-          <div class="field-group"><label>Subtitle</label><textarea id="ph_faq_subtitle" style="min-height:60px;"></textarea></div>
-        </div>
-      </div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">❓</span> Questions</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div id="faqs-list" class="array-list"></div>
-          <button class="btn-add" onclick="addFaq()">+ Add FAQ</button>
-        </div>
-      </div>
-      </div><!-- /section-panels-wrap -->
-    </div>
-
-    <!-- TESTIMONIALS -->
-    <div class="admin-section" id="section-testimonials">
-      <div class="section-badge">💬 Testimonials</div>
-      <div class="page-section-title">Client Testimonials</div>
-      <div class="page-section-sub">Reviews shown on the Testimonials page and homepage preview.</div>
-      <div class="section-toggle-bar">
-        <div>
-          <div class="section-toggle-label">Testimonials Page</div>
-          <div class="section-toggle-hint">When off, the Testimonials page is hidden from navigation and redirects home.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="toggle_page_testimonials" onchange="onPageToggle(this)"/><span class="switch-slider"></span></label>
-      </div>
-      <div class="section-panels-wrap" id="toggle_page_testimonials_wrap">
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">🏷️</span> Page Header</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div class="form-row-2">
-            <div class="field-group"><label>Label</label><input type="text" id="ph_testimonials_label"/></div>
-            <div class="field-group"><label>Title</label><input type="text" id="ph_testimonials_title"/></div>
-          </div>
-          <div class="field-group"><label>Subtitle</label><textarea id="ph_testimonials_subtitle" style="min-height:60px;"></textarea></div>
-        </div>
-      </div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">💬</span> Reviews</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div id="testimonials-list" class="array-list"></div>
-          <button class="btn-add" onclick="addTestimonial()">+ Add Testimonial</button>
-        </div>
-      </div>
-      </div><!-- /section-panels-wrap -->
-    </div>
-
-    <!-- BLOG -->
-    <div class="admin-section" id="section-blog">
-      <div class="section-badge">📝 Blog</div>
-      <div class="page-section-title">Blog Posts / Resources</div>
-      <div class="page-section-sub">Article cards shown on the Resources page.</div>
-      <div class="section-toggle-bar">
-        <div>
-          <div class="section-toggle-label">Blog / Resources Page</div>
-          <div class="section-toggle-hint">When off, the Blog page is hidden from navigation and redirects home.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="toggle_page_blog" onchange="onPageToggle(this)"/><span class="switch-slider"></span></label>
-      </div>
-      <div class="section-panels-wrap" id="toggle_page_blog_wrap">
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">🏷️</span> Page Header</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div class="form-row-2">
-            <div class="field-group"><label>Label</label><input type="text" id="ph_blog_label"/></div>
-            <div class="field-group"><label>Title</label><input type="text" id="ph_blog_title"/></div>
-          </div>
-          <div class="field-group"><label>Subtitle</label><textarea id="ph_blog_subtitle" style="min-height:60px;"></textarea></div>
-        </div>
-      </div>
-      <div class="panel open">
-        <div class="panel-header" onclick="togglePanel(this)">
-          <div class="panel-title"><span class="panel-title-icon">📝</span> Posts</div>
-          <span class="panel-chevron">▼</span>
-        </div>
-        <div class="panel-body">
-          <div id="blog-list" class="array-list"></div>
-          <button class="btn-add" onclick="addBlogPost()">+ Add Post</button>
-        </div>
-      </div>
-      </div><!-- /section-panels-wrap -->
-    </div>
-
-    <!-- CUSTOM PAGE PANELS (injected dynamically by buildCpNavAndPanels) -->
     <div id="cp-page-panels-wrap"></div>
 
     <!-- DESIGN -->
@@ -1458,7 +1239,7 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
             </div>
           </div>
           <div class="font-preview-box" id="fontPreviewBox">
-            <div class="font-preview-display" id="fontPreviewDisplay">Building Families Through the Law, With Heart.</div>
+            <div class="font-preview-display" id="fontPreviewDisplay">The Quick Brown Fox Jumps Over the Lazy Dog.</div>
             <div class="font-preview-body" id="fontPreviewBody">We guide families through every step of the adoption process — clearly, compassionately, and with deep legal expertise.</div>
           </div>
         </div>
@@ -1490,11 +1271,6 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
         <div class="panel-body">
           <div class="field-group"><label>Home Page Title</label><input type="text" id="f_ptHome"/></div>
           <div class="field-group"><label>About Page Title</label><input type="text" id="f_ptAbout"/></div>
-          <div class="field-group"><label>Services Page Title</label><input type="text" id="f_ptServices"/></div>
-          <div class="field-group"><label>Process Page Title</label><input type="text" id="f_ptProcess"/></div>
-          <div class="field-group"><label>FAQ Page Title</label><input type="text" id="f_ptFaq"/></div>
-          <div class="field-group"><label>Testimonials Page Title</label><input type="text" id="f_ptTestimonials"/></div>
-          <div class="field-group"><label>Blog/Resources Page Title</label><input type="text" id="f_ptBlog"/></div>
           <div class="field-group"><label>Contact Page Title</label><input type="text" id="f_ptContact"/></div>
           <div class="field-group"><label>Privacy Page Title</label><input type="text" id="f_ptPrivacy"/></div>
         </div>
@@ -1547,23 +1323,35 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
 
 <script>
 /* =============================================
+   SITE KEY — scopes localStorage to this folder
+   so multiple site copies don't share storage
+   ============================================= */
+(function() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  // Remove filename (admin.html) — last segment if it contains a dot
+  const folder = parts.length > 0 && parts[parts.length - 1].includes('.')
+    ? parts.slice(0, -1)
+    : parts;
+  window._SITE_KEY = folder.length > 0 ? folder.join('-') : 'default';
+})();
+const LS_DATA    = () => window._SITE_KEY + '_siteAdminData';
+const LS_PREVIEW = () => window._SITE_KEY + '_previewConfig';
+const LS_FAB     = () => window._SITE_KEY + '_adminFabPos';
+
+/* =============================================
    STATE
    ============================================= */
 let DATA = {
   firmName:"Osborne Law Firm, LLC", tagline:"Adoption Attorney", preloaderTagline:"Adoption Attorneys · Alabama",
   pageHeaders:{
     about:        {label:"About Us",         title:"Meet Our Team",                    subtitle:""},
-    services:     {label:"Practice Areas",   title:"Our Adoption Services",            subtitle:"Every adoption journey is unique. We offer comprehensive legal services across all types of adoption in Alabama."},
-    process:      {label:"How It Works",     title:"The Adoption Process",             subtitle:"From your first call to finalization day — here's what to expect when you work with us."},
-    faq:          {label:"Common Questions", title:"Frequently Asked Questions",       subtitle:"Everything you want to know about Alabama adoption law — answered plainly."},
-    testimonials: {label:"Client Reviews",   title:"What Our Clients Say",             subtitle:"Real stories from the families we've been honored to serve."},
-    blog:         {label:"Resources",        title:"Adoption Guides & Insights",       subtitle:"Plain-language resources to help you understand Alabama adoption law."},
     contact:      {label:"Get in Touch"},
   },
   attorneyName:"Amy Michelle Osborne", attorneyDegree:"J.D., Birmingham School of Law",
   attorneyCredentials:["AL State Bar","J.D., Birmingham Law","ABA Member","Super Lawyers","AAAA Member"],
   aboutBio1:"", aboutBio2:"",
   attorneyPhoto:"",
+  aboutNavLabel:"About Us",
   attorneys:[],
   phone:"(205) 515-9271", phoneRaw:"+12055159271",
   fax:"(205) 434-3975", email:"osborneadoptions@gmail.com",
@@ -1586,22 +1374,32 @@ let DATA = {
   fontDisplay:"Playfair Display", fontBody:"DM Sans",
   metaDescription:"", metaKeywords:"",
   googleAnalyticsId:"", formEndpoint:"",
-  pageTitles:{home:"",about:"",services:"",process:"",faq:"",testimonials:"",blog:"",contact:"",privacy:""},
+  pageTitles:{home:"",about:"",contact:"",privacy:""},
   heroBg:{type:"color",bgColor:"#0f2340",imagePath:"",imagePosition:"center center",slides:[],
     transition:"crossfade",transitionSpeed:2,slideDuration:8,pauseOnHover:false,showDots:true,
     autoplay:true,motionType:"zoom-out",motionSpeed:20,overlayColor:"#0f2340",overlayOpacity:0.3},
   heroHeadline:"Building Families Through the Law, With Heart.",
   heroSubline:"We guide adoptive parents, birth parents, and families through every step of the adoption process \u2014 clearly, compassionately, and with deep legal expertise.",
   heroTrustBullets:["Free Initial Consultation","20+ Years Experience","Statewide Alabama Practice"],
+  heroPrimaryLabel:"Free Consultation", heroPrimaryLinkType:"internal", heroPrimaryLinkUrl:"contact",
+  heroSecondaryLabel:"Our Services", heroSecondaryLinkType:"internal", heroSecondaryLinkUrl:"services",
   whyChooseUs:{heading:"A Trusted Partner Through Every Step",subtext:"We know adoption is more than a legal process \u2014 it\u2019s the beginning of a family.",badgeNum:"20+",badgeLabel:"Years",bullets:[]},
   contactHeadline:"Schedule Your Free Consultation",
   contactSubline:"No obligation, no pressure \u2014 just honest answers about your adoption options.",
   contactFormHeading:"Let\u2019s Talk About Your Family",
   contactFormIntro:"Fill out this form and we\u2019ll get back to you within one business day.",
   contactPrivacyNote:"\ud83d\udd12 Your information is strictly confidential.",
+  contactForm:[
+    {type:'text',     label:'First Name',               placeholder:'Jane',                                required:true,  halfWidth:true,  options:[]},
+    {type:'text',     label:'Last Name',                placeholder:'Smith',                               required:true,  halfWidth:true,  options:[]},
+    {type:'email',    label:'Email Address',             placeholder:'jane@email.com',                      required:true,  halfWidth:false, options:[]},
+    {type:'phone',    label:'Phone Number',              placeholder:'(205) 555-0000',                      required:false, halfWidth:false, options:[]},
+    {type:'select',   label:'Adoption Type',             placeholder:'Select adoption type...',             required:false, halfWidth:false, options:['Stepparent Adoption','Relative / Kinship Adoption','Private Placement Adoption','Agency Adoption','Adult Adoption','Interstate Adoption (ICPC)','Contested Adoption','Termination of Parental Rights','Same-Sex / Second-Parent Adoption','Not Sure / General Question']},
+    {type:'textarea', label:'Tell Us About Your Situation', placeholder:"Share as much or as little as you'd like...", required:false, halfWidth:false, options:[]}
+  ],
   services:[], faqs:[], testimonials:[], blogPosts:[], processSteps:[], processRequirements:[],
   ctaLabel:"Free Consultation",
-  pageToggles:{about:true,services:true,process:true,faqs:true,testimonials:true,blog:true,contact:true},
+  pageToggles:{about:true,contact:true},
   homeToggles:{stats:true,why:true,testimonials:true},
   customPages:[]
 };
@@ -1681,6 +1479,7 @@ function syncColorHex(pickerId, hexId) {
   const picker = document.getElementById(pickerId);
   const hexEl = document.getElementById(hexId);
   if (picker && hexEl) hexEl.value = picker.value;
+  applyAdminColors();
 }
 function syncColorPicker(hexId, pickerId) {
   const hexEl = document.getElementById(hexId);
@@ -1688,6 +1487,33 @@ function syncColorPicker(hexId, pickerId) {
   if (hexEl && picker && /^#[0-9a-fA-F]{6}$/.test(hexEl.value)) {
     picker.value = hexEl.value;
   }
+  applyAdminColors();
+}
+
+function applyAdminColors() {
+  const root = document.documentElement;
+  const getHex = id => {
+    const el = document.getElementById(id);
+    return (el && /^#[0-9a-fA-F]{6}$/.test(el.value)) ? el.value : null;
+  };
+  const navy      = getHex('f_colorNavyHex')      || DATA.colors?.navy;
+  const navyLight = getHex('f_colorNavyLightHex') || DATA.colors?.navyLight;
+  const gold      = getHex('f_colorGoldHex')      || DATA.colors?.gold;
+  const goldLight = getHex('f_colorGoldLightHex') || DATA.colors?.goldLight;
+  const goldPale  = getHex('f_colorGoldPaleHex')  || DATA.colors?.goldPale;
+  const warmWhite = getHex('f_colorWarmWhiteHex') || DATA.colors?.warmWhite;
+  const cream     = getHex('f_colorCreamHex')     || DATA.colors?.cream;
+  const chrome    = getHex('f_colorChromeHex')    || DATA.colors?.chrome;
+  if (navy)      root.style.setProperty('--navy',       navy);
+  if (navyLight) root.style.setProperty('--navy-mid',   navyLight);
+  if (gold)      root.style.setProperty('--gold',       gold);
+  if (goldLight) root.style.setProperty('--gold-light', goldLight);
+  if (goldPale)  root.style.setProperty('--gold-pale',  goldPale);
+  if (warmWhite) root.style.setProperty('--warm-white', warmWhite);
+  if (cream)     root.style.setProperty('--cream',      cream);
+  if (chrome)    root.style.setProperty('--chrome',     chrome);
+  // Also update --accent which mirrors --gold in the admin
+  if (gold)      root.style.setProperty('--accent',     gold);
 }
 
 /* =============================================
@@ -1700,7 +1526,7 @@ function loadForm() {
   setVal('f_preloaderTagline', DATA.preloaderTagline||'');
   // Page Headers
   const ph = DATA.pageHeaders || {};
-  const pages = ['about','services','process','faq','testimonials','blog'];
+  const pages = ['about'];
   const fields = ['label','title','subtitle'];
   pages.forEach(p => fields.forEach(f => { const el = document.getElementById('ph_'+p+'_'+f); if(el) el.value = (ph[p]&&ph[p][f]) ? ph[p][f] : ''; }));
   const contactLbl = document.getElementById('ph_contact_label'); if(contactLbl) contactLbl.value = (ph.contact&&ph.contact.label) ? ph.contact.label : '';
@@ -1716,10 +1542,10 @@ function loadForm() {
   setVal('f_heroHeadline', DATA.heroHeadline);
   setVal('f_heroSubline', DATA.heroSubline);
   setVal('f_heroTrustBullets', (DATA.heroTrustBullets||[]).join('\n'));
-  setVal('f_whyHeading', DATA.whyChooseUs.heading);
-  setVal('f_whySubtext', DATA.whyChooseUs.subtext);
-  setVal('f_whyBadgeNum', DATA.whyChooseUs.badgeNum);
-  setVal('f_whyBadgeLabel', DATA.whyChooseUs.badgeLabel);
+  setVal('f_heroPrimaryLabel',   DATA.heroPrimaryLabel   || 'Free Consultation');
+  setVal('f_heroSecondaryLabel', DATA.heroSecondaryLabel || 'Our Services');
+  loadHeroBtnField('primary',   DATA.heroPrimaryLinkType   || 'internal', DATA.heroPrimaryLinkUrl   || 'contact');
+  loadHeroBtnField('secondary', DATA.heroSecondaryLinkType || 'internal', DATA.heroSecondaryLinkUrl || 'services');
   setVal('f_metaDescription', DATA.metaDescription);
   setVal('f_metaKeywords', DATA.metaKeywords);
   setVal('f_gaId', DATA.googleAnalyticsId);
@@ -1730,8 +1556,12 @@ function loadForm() {
   setVal('f_contactFormHeading', DATA.contactFormHeading);
   setVal('f_contactFormIntro', DATA.contactFormIntro);
   setVal('f_contactPrivacyNote', DATA.contactPrivacyNote);
+  setVal('f_contactSubmitLabel', DATA.contactSubmitLabel || '');
+  setVal('f_contactSuccessMsg', DATA.contactSuccessMsg || '');
+  if (!Array.isArray(DATA.contactForm)) DATA.contactForm = [];
+  buildContactFormFields();
   const pt = DATA.pageTitles||{};
-  ['Home','About','Services','Process','Faq','Testimonials','Blog','Contact','Privacy'].forEach(p => {
+  ['Home','About','Contact','Privacy'].forEach(p => {
     setVal('f_pt'+p, pt[p.toLowerCase()]||'');
   });
   setColor('f_colorNavy','f_colorNavyHex', DATA.colors.navy);
@@ -1770,18 +1600,32 @@ function loadForm() {
   setVal('f_heroVideo2Mp4', hb.video2Mp4||'');
   setVal('f_heroVideo2Webm', hb.video2Webm||'');
   setVal('f_heroVideoFallback2', hb.videoFallback2||'');
+  // New playlist fields
+  setVal('f_heroVideoFallback', hb.videoFallback||'');
+  setRange('f_heroVideoHold','f_heroVideoHoldVal', hb.videoHold||4, 's');
+  const holdEnabled = document.getElementById('f_heroVideoHoldEnabled');
+  if (holdEnabled) holdEnabled.checked = hb.videoHoldEnabled === true;
+  // Transition speed
+  const tsEl = document.getElementById('f_heroVideoTransSpeed');
+  const tsValEl = document.getElementById('f_heroVideoTransSpeedVal');
+  if (tsEl) { tsEl.value = hb.videoTransSpeed || 1.2; }
+  if (tsValEl) tsValEl.textContent = parseFloat(hb.videoTransSpeed || 1.2).toFixed(1) + 's';
+  // Backwards compat: migrate old single-video fields to videoClips array
+  if (!Array.isArray(hb.videoClips) || hb.videoClips.length === 0) {
+    hb.videoClips = [];
+    if (hb.videoMp4 || hb.videoWebm) {
+      hb.videoClips.push({ mp4: hb.videoMp4||'', webm: hb.videoWebm||'', fallback: hb.videoFallback||'', transitionIn: 'crossfade' });
+    }
+    if ((hb.videoLoop === 'crossfade') && (hb.video2Mp4 || hb.video2Webm)) {
+      hb.videoClips.push({ mp4: hb.video2Mp4||'', webm: hb.video2Webm||'', fallback: hb.videoFallback2||'', transitionIn: 'crossfade' });
+    }
+  }
+  buildHeroVideoClipsList();
   updateVideoLoopUI();
   buildStatsList();
   buildHoursList();
   buildSocialList();
   buildHeroSlidesList();
-  buildWhyBulletsList();
-  buildServicesList();
-  buildProcessList();
-  buildRequirementsList();
-  buildFaqsList();
-  buildTestimonialsList();
-  buildBlogList();
   // Seed attorneys array from legacy flat fields on first load
   if (!DATA.attorneys || DATA.attorneys.length === 0) {
     DATA.attorneys = [{
@@ -1794,6 +1638,8 @@ function loadForm() {
     }];
   }
   buildAttorneyAccordions();
+  setVal('f_aboutNavLabel', DATA.aboutNavLabel || 'About Us');
+  updateAboutNavLabel({ value: DATA.aboutNavLabel || 'About Us' });
   updateFontPreview();
   loadToggles();
   // Custom pages
@@ -1801,6 +1647,8 @@ function loadForm() {
   buildHomeSectionsList();
   if (!Array.isArray(DATA.customPages)) DATA.customPages = [];
   buildCustomPagesList();
+  // Apply site color scheme to admin UI
+  applyAdminColors();
 }
 
 /* =============================================
@@ -1819,8 +1667,9 @@ function autosave() {
 }
 function persistToLocalStorage() {
   try {
-    localStorage.setItem('siteAdminData', JSON.stringify(DATA));
-    localStorage.setItem('previewConfig', JSON.stringify(DATA));
+    DATA._savedAt = Date.now();
+    localStorage.setItem(LS_DATA(), JSON.stringify(DATA));
+    localStorage.setItem(LS_PREVIEW(), JSON.stringify(DATA));
     document.getElementById('lastSaved').textContent = 'Autosaved ' + new Date().toLocaleTimeString();
   } catch(e) {}
 }
@@ -1831,7 +1680,7 @@ function collectData() {
   DATA.footerBio = getVal('f_footerBio');
   DATA.preloaderTagline = getVal('f_preloaderTagline');
   // Page Headers
-  const phPages = ['about','services','process','faq','testimonials','blog'];
+  const phPages = ['about'];
   const phFields = ['label','title','subtitle'];
   DATA.pageHeaders = {};
   phPages.forEach(p => {
@@ -1851,10 +1700,16 @@ function collectData() {
   DATA.heroHeadline = getVal('f_heroHeadline');
   DATA.heroSubline = getVal('f_heroSubline');
   DATA.heroTrustBullets = getVal('f_heroTrustBullets').split('\n').map(s=>s.trim()).filter(Boolean);
-  DATA.whyChooseUs.heading = getVal('f_whyHeading');
-  DATA.whyChooseUs.subtext = getVal('f_whySubtext');
-  DATA.whyChooseUs.badgeNum = getVal('f_whyBadgeNum');
-  DATA.whyChooseUs.badgeLabel = getVal('f_whyBadgeLabel');
+  DATA.heroPrimaryLabel    = getVal('f_heroPrimaryLabel')    || 'Free Consultation';
+  DATA.heroPrimaryLinkType = getVal('f_heroPrimaryLinkType') || 'none';
+  DATA.heroPrimaryLinkUrl  = DATA.heroPrimaryLinkType === 'internal'
+    ? (document.getElementById('f_heroPrimaryInternalPage')?.value || '')
+    : (getVal('f_heroPrimaryUrl') || '');
+  DATA.heroSecondaryLabel    = getVal('f_heroSecondaryLabel')    || 'Our Services';
+  DATA.heroSecondaryLinkType = getVal('f_heroSecondaryLinkType') || 'none';
+  DATA.heroSecondaryLinkUrl  = DATA.heroSecondaryLinkType === 'internal'
+    ? (document.getElementById('f_heroSecondaryInternalPage')?.value || '')
+    : (getVal('f_heroSecondaryUrl') || '');
   DATA.metaDescription = getVal('f_metaDescription');
   DATA.metaKeywords = getVal('f_metaKeywords');
   DATA.googleAnalyticsId = getVal('f_gaId');
@@ -1865,10 +1720,12 @@ function collectData() {
   DATA.contactFormHeading = getVal('f_contactFormHeading');
   DATA.contactFormIntro = getVal('f_contactFormIntro');
   DATA.contactPrivacyNote = getVal('f_contactPrivacyNote');
+  DATA.contactSubmitLabel = getVal('f_contactSubmitLabel');
+  DATA.contactSuccessMsg = getVal('f_contactSuccessMsg');
+  collectContactForm();
   DATA.pageTitles = {
-    home:getVal('f_ptHome'), about:getVal('f_ptAbout'), services:getVal('f_ptServices'),
-    process:getVal('f_ptProcess'), faq:getVal('f_ptFaq'), testimonials:getVal('f_ptTestimonials'),
-    blog:getVal('f_ptBlog'), contact:getVal('f_ptContact'), privacy:getVal('f_ptPrivacy')
+    home:getVal('f_ptHome'), about:getVal('f_ptAbout'),
+    contact:getVal('f_ptContact'), privacy:getVal('f_ptPrivacy')
   };
   DATA.colors = {
     navy:getVal('f_colorNavyHex'), navyLight:getVal('f_colorNavyLightHex'),
@@ -1892,29 +1749,27 @@ function collectData() {
   DATA.heroBg.motionSpeed = parseInt(document.getElementById('f_heroMotionSpeed').value)||20;
   DATA.heroBg.overlayColor = getVal('f_heroOverlayColorHex');
   DATA.heroBg.overlayOpacity = parseFloat(document.getElementById('f_heroOverlayOpacity').value)||0.3;
-  DATA.heroBg.videoMp4 = getVal('f_heroVideoMp4');
-  DATA.heroBg.videoWebm = getVal('f_heroVideoWebm');
   DATA.heroBg.videoFallback = getVal('f_heroVideoFallback');
-  DATA.heroBg.videoLoop = getVal('f_heroVideoLoop') || 'loop';
+  DATA.heroBg.videoTransSpeed = parseFloat(document.getElementById('f_heroVideoTransSpeed')?.value) || 1.2;
+  DATA.heroBg.videoHoldEnabled = document.getElementById('f_heroVideoHoldEnabled')?.checked || false;
   DATA.heroBg.videoHold = parseInt(document.getElementById('f_heroVideoHold')?.value) || 4;
-  DATA.heroBg.video2Mp4 = getVal('f_heroVideo2Mp4');
-  DATA.heroBg.video2Webm = getVal('f_heroVideo2Webm');
-  DATA.heroBg.videoFallback2 = getVal('f_heroVideoFallback2');
+  collectHeroVideoClips();
   DATA.stats = collectArray('stats-list', ['num','label']);
-  DATA.whyChooseUs.bullets = collectArray('why-bullets-list', ['title','desc']);
-  DATA.services = collectArray('services-list', ['icon','title','desc','full']);
-  DATA.processSteps = collectNumberedArray('process-list', ['title','body']);
-  DATA.processRequirements = collectArray('requirements-list', ['q','a']);
-  DATA.faqs = collectArray('faqs-list', ['q','a']);
-  DATA.testimonials = collectArray('testimonials-list', ['name','initials','stars','text','meta']);
-  DATA.blogPosts = collectBlogPosts();
   DATA.hours = collectArray('hours-list', ['days','hours']);
   DATA.socialLinks = collectArray('social-list', ['platform','url']);
   DATA.heroBg.slides = collectArray('hero-slides-list', ['imagePath','position']);
   DATA.attorneys = collectAttorneys();
+  DATA.aboutNavLabel = getVal('f_aboutNavLabel') || 'About Us';
   collectToggles();
   DATA.homeSections = collectHomeSections();
   DATA.customPages = collectCustomPages();
+  // Mirror primary testimonials source into DATA.testimonials
+  const allSections = [
+    ...(DATA.homeSections || []),
+    ...(DATA.customPages || []).flatMap(pg => pg.sections || [])
+  ];
+  const primaryTestSec = allSections.find(s => s.type === 'testimonials' && s.primarySource === true && Array.isArray(s.items));
+  if (primaryTestSec) DATA.testimonials = primaryTestSec.items;
   // Mirror first attorney into legacy flat fields for config.js back-compat
   if (DATA.attorneys.length > 0) {
     const a = DATA.attorneys[0];
@@ -1922,7 +1777,6 @@ function collectData() {
     DATA.attorneyPhoto = a.photo; DATA.attorneyCredentials = a.credentials;
     DATA.aboutBio1 = a.bio1; DATA.aboutBio2 = a.bio2;
   }
-  localStorage.setItem('siteAdminData', JSON.stringify(DATA));
 }
 
 function collectArray(listId, fields) {
@@ -1950,15 +1804,47 @@ function collectSingleArray(listId, field) {
 /* =============================================
    ATTORNEY ACCORDION BUILDER
    ============================================= */
+function updateAttorneyLabel(input) {
+  const panel = input.closest('.attorney-accordion');
+  if (panel) { const lbl = panel.querySelector('.attorney-label'); if (lbl) lbl.textContent = input.value || 'Team Member'; }
+}
+function updateAboutNavLabel(input) {
+  const val = (typeof input === 'string' ? input : input.value) || 'About Us';
+  const sidebarLbl = document.getElementById('sidebar-about-label');
+  if (sidebarLbl) sidebarLbl.textContent = val;
+}
 function buildAttorneyAccordions() {
   const container = document.getElementById('attorney-accordions');
   if (!container) return;
-  container.innerHTML = (DATA.attorneys||[]).map((a, i) => `
-    <div class="panel open attorney-accordion" data-attorney-idx="${i}">
+  container.innerHTML = (DATA.attorneys||[]).map((a, i) => {
+    // Social links rows
+    const socials = (a.socialLinks||[]);
+    const socialRows = socials.map((s, si) => {
+      const platOpts = SOCIAL_PLATFORMS.map(p =>
+        `<option value="${p.value}"${s.platform===p.value?' selected':''}>${p.label}</option>`).join('');
+      return `<div class="form-row-2" style="margin-bottom:6px;" data-a-social="${i}" data-si="${si}">
+        <div class="field-group" style="margin:0;">
+          <select data-a="${i}" data-field="social-platform" data-si="${si}">${platOpts}</select>
+        </div>
+        <div class="field-group" style="margin:0;display:flex;gap:6px;align-items:center;">
+          <input type="text" data-a="${i}" data-field="social-url" data-si="${si}" value="${escHtml(s.url||'')}" placeholder="https://..." style="flex:1;"/>
+          <button class="btn-remove" onclick="removeAttrneySocial(${i},${si})">×</button>
+        </div>
+      </div>`;
+    }).join('');
+    // Button link type
+    const btnLT = a.btnLinkType || 'none';
+    const btnLTOpts = ['none','internal','external','file'].map(v =>
+      `<option value="${v}"${btnLT===v?' selected':''}>${v==='none'?'None (hide button)':v==='internal'?'Internal Page':v==='external'?'External URL':'File / Document'}</option>`
+    ).join('');
+    const showInt = btnLT === 'internal' ? '' : 'display:none;';
+    const showUrl = (btnLT === 'external' || btnLT === 'file') ? '' : 'display:none;';
+    const intOpts = getInternalPageOptions(btnLT === 'internal' ? (a.btnLinkUrl||'') : '');
+    return `<div class="panel open attorney-accordion" data-attorney-idx="${i}">
       <div class="panel-header" onclick="togglePanel(this)">
         <div class="panel-title">
           <span class="panel-title-icon">\u{1F464}</span>
-          <span class="attorney-label">${a.name || 'Attorney ' + (i+1)}</span>
+          <span class="attorney-label">${escHtml(a.name || 'Team Member ' + (i+1))}</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
           ${DATA.attorneys.length > 1 ? `<button class="btn-remove" onclick="removeAttorney(${i});event.stopPropagation();" title="Remove">\xd7</button>` : ''}
@@ -1968,7 +1854,7 @@ function buildAttorneyAccordions() {
       <div class="panel-body">
         <div class="form-row-2">
           <div class="field-group">
-            <label>Attorney Name</label>
+            <label>Team Member Name</label>
             <input type="text" data-a="${i}" data-field="name" value="${escHtml(a.name||'')}" oninput="updateAttorneyLabel(this)"/>
           </div>
           <div class="field-group">
@@ -1998,12 +1884,33 @@ function buildAttorneyAccordions() {
           <label>Bio Paragraph 2</label>
           <textarea data-a="${i}" data-field="bio2" rows="4">${escHtml(a.bio2||'')}</textarea>
         </div>
+        <div class="divider"></div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Social Links</div>
+        <div class="attorney-social-list" data-a="${i}">${socialRows}</div>
+        <button class="btn-add" style="margin-top:6px;" onclick="addAttorneySocial(${i})">+ Add Social Link</button>
+        <div class="divider"></div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">CTA Button</div>
+        <div class="form-row-2" style="margin-bottom:8px;">
+          <div class="field-group" style="margin:0;">
+            <label>Button Label</label>
+            <input type="text" data-a="${i}" data-field="btnLabel" value="${escHtml(a.btnLabel||'')}" placeholder="Schedule a Consultation"/>
+          </div>
+          <div class="field-group" style="margin:0;">
+            <label>Link Type</label>
+            <select data-a="${i}" data-field="btnLinkType" onchange="onAttorneyBtnLinkChange(${i},this)">${btnLTOpts}</select>
+          </div>
+        </div>
+        <div class="field-group attorney-btn-internal-${i}" style="${showInt}">
+          <label>Page</label>
+          <select data-a="${i}" data-field="btnLinkUrl-internal">${intOpts}</select>
+        </div>
+        <div class="field-group attorney-btn-url-${i}" style="${showUrl}">
+          <label>${btnLT === 'file' ? 'File Path / URL' : 'External URL'}</label>
+          <input type="text" data-a="${i}" data-field="btnLinkUrl-url" value="${escHtml((btnLT==='external'||btnLT==='file') ? (a.btnLinkUrl||'') : '')}" placeholder="https://"/>
+        </div>
       </div>
-    </div>`).join('');
-}
-function updateAttorneyLabel(input) {
-  const panel = input.closest('.attorney-accordion');
-  if (panel) { const lbl = panel.querySelector('.attorney-label'); if (lbl) lbl.textContent = input.value || 'Attorney'; }
+    </div>`;
+  }).join('');
 }
 function updateHeroImagePreview(val) {
   const wrap = document.getElementById('hero-image-preview-wrap');
@@ -2038,25 +1945,70 @@ function updatePhotoPreview(input) {
     wrap.style.display = "none";
   }
 }
-function addAttorney() {
-  DATA.attorneys.push({name:'',degree:'',photo:'',credentials:[],bio1:'',bio2:''});
+function addAttorneySocial(i) {
+  collectData();
+  if (!Array.isArray(DATA.attorneys[i].socialLinks)) DATA.attorneys[i].socialLinks = [];
+  DATA.attorneys[i].socialLinks.push({ platform:'linkedin', url:'' });
   buildAttorneyAccordions();
+  autosave();
+}
+function removeAttrneySocial(i, si) {
+  collectData();
+  DATA.attorneys[i].socialLinks.splice(si, 1);
+  buildAttorneyAccordions();
+  autosave();
+}
+function onAttorneyBtnLinkChange(i, sel) {
+  const val = sel.value;
+  const panel = sel.closest('.attorney-accordion');
+  const intEl  = panel?.querySelector(`.attorney-btn-internal-${i}`);
+  const urlEl  = panel?.querySelector(`.attorney-btn-url-${i}`);
+  const urlLbl = urlEl?.querySelector('label');
+  if (intEl) intEl.style.display = val === 'internal' ? '' : 'none';
+  if (urlEl) urlEl.style.display = (val === 'external' || val === 'file') ? '' : 'none';
+  if (urlLbl) urlLbl.textContent = val === 'file' ? 'File Path / URL' : 'External URL';
+  autosave();
+}
+function addAttorney() {
+  collectData();
+  DATA.attorneys.push({ name:'', degree:'', photo:'', credentials:[], bio1:'', bio2:'', socialLinks:[], btnLabel:'', btnLinkType:'none', btnLinkUrl:'' });
+  buildAttorneyAccordions();
+  autosave();
 }
 function removeAttorney(idx) {
   if (DATA.attorneys.length <= 1) return;
+  collectData();
   DATA.attorneys.splice(idx, 1);
   buildAttorneyAccordions();
-  toast('Attorney removed.','');
+  toast('Team member removed.','');
 }
 function collectAttorneys() {
   const container = document.getElementById('attorney-accordions');
   if (!container) return DATA.attorneys||[];
-  return Array.from(container.querySelectorAll('.attorney-accordion')).map(panel => {
+  return Array.from(container.querySelectorAll('.attorney-accordion')).map((panel, i) => {
     const get = f => { const el = panel.querySelector(`[data-field="${f}"]`); return el ? el.value.trim() : ''; };
+    const getA = f => { const el = panel.querySelector(`[data-a="${i}"][data-field="${f}"]`); return el ? el.value.trim() : ''; };
+    // Collect social links
+    const socialLinks = Array.from(panel.querySelectorAll(`[data-a-social="${i}"]`)).map((row, si) => ({
+      platform: panel.querySelector(`[data-a="${i}"][data-field="social-platform"][data-si="${si}"]`)?.value || 'linkedin',
+      url:      panel.querySelector(`[data-a="${i}"][data-field="social-url"][data-si="${si}"]`)?.value.trim() || '',
+    }));
+    // Collect button
+    const btnLT = getA('btnLinkType') || 'none';
+    const btnUrl = btnLT === 'internal'
+      ? (panel.querySelector(`[data-a="${i}"][data-field="btnLinkUrl-internal"]`)?.value || '')
+      : (panel.querySelector(`[data-a="${i}"][data-field="btnLinkUrl-url"]`)?.value.trim() || '');
     return {
-      name: get('name'), degree: get('degree'), photo: get('photo'),
+      name:        get('name'),
+      degree:      get('degree'),
+      photo:       get('photo'),
       credentials: get('credentials-text').split('\n').map(s=>s.trim()).filter(Boolean),
-      bio1: get('bio1'), bio2: get('bio2')
+      bio1:        get('bio1'),
+      bio2:        get('bio2'),
+      socialLinks,
+      btnLabel:    getA('btnLabel'),
+      btnLinkType: btnLT,
+      btnLinkUrl:  btnUrl,
     };
   });
 }
@@ -2072,7 +2024,7 @@ function arrayItemHtml(idx, fields, values, listId) {
       ${f.type==='textarea' ? `<textarea data-field="${f.key}" rows="2">${escHtml(values[f.key]||'')}</textarea>`
         : `<input type="text" data-field="${f.key}" value="${escHtml(values[f.key]||'')}"/>`}
     </div>`).join('');
-  return `<div class="array-item" draggable="true" data-list-id="${listId}" data-idx="${idx}">
+  return `<div class="array-item" draggable="false" data-list-id="${listId}" data-idx="${idx}">
     <div class="array-item-header">
       <div style="display:flex;align-items:center;gap:8px;">
         <span class="array-item-drag-handle" title="Drag to reorder">⠿</span>
@@ -2099,11 +2051,6 @@ function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'
 function getListRegistry() {
   return {
     'stats-list':        { get: () => DATA.stats,                  set: v => DATA.stats = v,                  rebuild: buildStatsList },
-    'why-bullets-list':  { get: () => DATA.whyChooseUs.bullets,    set: v => DATA.whyChooseUs.bullets = v,    rebuild: buildWhyBulletsList },
-    'services-list':     { get: () => DATA.services,               set: v => DATA.services = v,               rebuild: buildServicesList },
-    'process-list':      { get: () => DATA.processSteps,           set: v => DATA.processSteps = v,           rebuild: buildProcessList, renumber: true },
-    'requirements-list': { get: () => DATA.processRequirements,    set: v => DATA.processRequirements = v,    rebuild: buildRequirementsList },
-    'faqs-list':         { get: () => DATA.faqs,                   set: v => DATA.faqs = v,                   rebuild: buildFaqsList },
     'social-list':       { get: () => DATA.socialLinks,            set: v => DATA.socialLinks = v,            rebuild: buildSocialList },
   };
 }
@@ -2133,9 +2080,11 @@ function initArrayDragDrop(listId) {
   list.querySelectorAll('.array-item').forEach(item => {
     const handle = item.querySelector('.array-item-drag-handle');
     if (!handle) return;
+    item.draggable = false;
 
     // Only start drag from the handle
     handle.addEventListener('mousedown', () => { item.draggable = true; });
+    handle.addEventListener('mouseup',   () => { item.draggable = false; });
     item.addEventListener('dragend',     () => { item.draggable = false; });
 
     item.addEventListener('dragstart', e => {
@@ -2210,7 +2159,7 @@ function buildSocialList() {
     const platformOpts = SOCIAL_PLATFORMS.map(p =>
       `<option value="${p.value}"${s.platform===p.value?' selected':''}>${p.label}</option>`
     ).join('');
-    return `<div class="array-item" draggable="true" data-list-id="social-list" data-idx="${i}">
+    return `<div class="array-item" draggable="false" data-list-id="social-list" data-idx="${i}">
       <div class="array-item-header">
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="array-item-drag-handle" title="Drag to reorder">⠿</span>
@@ -2293,6 +2242,7 @@ function initHeroSlideDragDrop() {
     const handle = item.querySelector('.array-item-drag-handle');
     if (!handle) return;
     handle.addEventListener('mousedown', () => { item.draggable = true; });
+    handle.addEventListener('mouseup',   () => { item.draggable = false; });
     item.addEventListener('dragend', () => { item.draggable = false; });
     item.addEventListener('dragstart', e => {
       dragIdx = parseInt(item.dataset.slideIdx);
@@ -2345,58 +2295,11 @@ function removeHeroSlide(idx) {
 
 function addHeroSlide() { DATA.heroBg.slides.push({imagePath:'',position:'center center'}); buildHeroSlidesList(); }
 
-function buildWhyBulletsList() {
-  const list = document.getElementById('why-bullets-list');
-  list.innerHTML = (DATA.whyChooseUs.bullets||[]).map((b,i) => arrayItemHtml(i,[{key:'title',label:'Title'},{key:'desc',label:'Description',type:'textarea'}],b,'why-bullets-list')).join('');
-  initArrayDragDrop('why-bullets-list');
-}
-function addWhyBullet() { collectData(); DATA.whyChooseUs.bullets.push({title:'',desc:''}); buildWhyBulletsList(); autosave(); }
-
-function buildServicesList() {
-  const list = document.getElementById('services-list');
-  list.innerHTML = (DATA.services||[]).map((s,i) => arrayItemHtml(i,[{key:'icon',label:'Icon (emoji)'},{key:'title',label:'Title'},{key:'desc',label:'Short Description',type:'textarea'},{key:'full',label:'Full Description (modal)',type:'textarea'}],s,'services-list')).join('');
-  initArrayDragDrop('services-list');
-}
-function addService() { collectData(); DATA.services.push({icon:'⚖️',title:'',desc:'',full:''}); buildServicesList(); autosave(); }
-
-function buildProcessList() {
-  const list = document.getElementById('process-list');
-  list.innerHTML = (DATA.processSteps||[]).map((s,i) => arrayItemHtml(i,[{key:'title',label:'Step Title'},{key:'body',label:'Description',type:'textarea'}],s,'process-list')).join('');
-  initArrayDragDrop('process-list');
-}
-function addProcessStep() { collectData(); DATA.processSteps.push({num:DATA.processSteps.length+1,title:'',body:''}); buildProcessList(); autosave(); }
-
-function buildRequirementsList() {
-  const list = document.getElementById('requirements-list');
-  list.innerHTML = (DATA.processRequirements||[]).map((r,i) => arrayItemHtml(i,[{key:'q',label:'Requirement Name'},{key:'a',label:'Description',type:'textarea'}],r,'requirements-list')).join('');
-  initArrayDragDrop('requirements-list');
-}
-function addRequirement() { collectData(); DATA.processRequirements.push({q:'',a:''}); buildRequirementsList(); autosave(); }
-
-function buildFaqsList() {
-  const list = document.getElementById('faqs-list');
-  list.innerHTML = (DATA.faqs||[]).map((f,i) => arrayItemHtml(i,[{key:'q',label:'Question'},{key:'a',label:'Answer',type:'textarea'}],f,'faqs-list')).join('');
-  initArrayDragDrop('faqs-list');
-}
-function addFaq() { collectData(); DATA.faqs.push({q:'',a:''}); buildFaqsList(); autosave(); }
-
-function buildTestimonialsList() {
-  const list = document.getElementById('testimonials-list');
-  list.innerHTML = (DATA.testimonials||[]).map((t,i) => arrayItemHtml(i,[{key:'name',label:'Name'},{key:'initials',label:'Initials (2 letters)'},{key:'stars',label:'Stars (1-5)'},{key:'text',label:'Review Text',type:'textarea'},{key:'meta',label:'Meta (adoption type, city)'}],t,'testimonials-list')).join('');
-  initArrayDragDrop('testimonials-list');
-}
-function addTestimonial() { collectData(); DATA.testimonials.push({name:'',initials:'',stars:'5',text:'',meta:''}); buildTestimonialsList(); autosave(); }
-
 function getInternalPageOptions(currentVal) {
   const core = [
-    { slug: 'home',         label: 'Home' },
-    { slug: 'about',        label: 'About Us' },
-    { slug: 'services',     label: 'Services' },
-    { slug: 'process',      label: 'Process' },
-    { slug: 'faqs',         label: 'FAQ' },
-    { slug: 'testimonials', label: 'Testimonials' },
-    { slug: 'blog',         label: 'Blog / Resources' },
-    { slug: 'contact',      label: 'Contact' },
+    { slug: 'home',    label: 'Home' },
+    { slug: 'about',   label: 'About Us' },
+    { slug: 'contact', label: 'Contact' },
   ];
   const custom = (DATA.customPages||[]).filter(p => p.enabled !== false).map(p => ({
     slug: p.slug, label: p.navLabel || p.slug
@@ -2404,6 +2307,144 @@ function getInternalPageOptions(currentVal) {
   return [...core, ...custom].map(p =>
     `<option value="${p.slug}"${currentVal===p.slug?' selected':''}>${p.label}</option>`
   ).join('');
+}
+
+/* =============================================
+   CONTACT FORM FIELD BUILDER
+   ============================================= */
+function buildContactFormFields() {
+  const list = document.getElementById('contact-form-fields-list');
+  if (!list) return;
+  const fields = DATA.contactForm || [];
+  list.innerHTML = fields.map((f, i) => {
+    const typeOpts = ['text','email','phone','textarea','select','radio','checkbox'].map(t =>
+      `<option value="${t}"${f.type===t?' selected':''}>${t}</option>`).join('');
+    const showOpts = (f.type === 'select' || f.type === 'radio');
+    return `<div class="array-item" data-cf-idx="${i}">
+      <div class="array-item-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="array-item-drag-handle" title="Drag to reorder">⠿</span>
+          <span class="array-item-label">Field #${i+1}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <button class="cp-move-btn" onclick="moveContactFormField(${i},-1)" title="Move up">↑</button>
+          <button class="cp-move-btn" onclick="moveContactFormField(${i},1)" title="Move down">↓</button>
+          <button class="btn-remove" onclick="removeContactFormField(${i})">×</button>
+        </div>
+      </div>
+      <div class="form-row-2" style="margin-bottom:8px;">
+        <div class="field-group" style="margin:0;">
+          <label>Field Type</label>
+          <select data-cf="type" data-idx="${i}" onchange="onContactFieldTypeChange(${i},this)">${typeOpts}</select>
+        </div>
+        <div class="field-group" style="margin:0;">
+          <label>Label</label>
+          <input type="text" data-cf="label" data-idx="${i}" value="${escHtml(f.label||'')}"/>
+        </div>
+      </div>
+      <div class="form-row-2" style="margin-bottom:8px;">
+        <div class="field-group" style="margin:0;">
+          <label>Placeholder</label>
+          <input type="text" data-cf="placeholder" data-idx="${i}" value="${escHtml(f.placeholder||'')}"/>
+        </div>
+        <div class="field-group" style="margin:0;">
+          <label style="display:block;margin-bottom:6px;">Options</label>
+          <div style="display:flex;gap:16px;padding-top:4px;">
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);">
+              <input type="checkbox" data-cf="required" data-idx="${i}" ${f.required?'checked':''}/> Required
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);">
+              <input type="checkbox" data-cf="halfWidth" data-idx="${i}" ${f.halfWidth?'checked':''}/> Half width
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="field-group cf-options-row" style="${showOpts?'':'display:none;'}">
+        <label>Options (one per line)</label>
+        <textarea data-cf="options" data-idx="${i}" rows="4">${escHtml((f.options||[]).join('\n'))}</textarea>
+        <div class="field-hint">Each line becomes a dropdown/radio option.</div>
+      </div>
+    </div>`;
+  }).join('');
+  initContactFormDragDrop();
+}
+
+function initContactFormDragDrop() {
+  const list = document.getElementById('contact-form-fields-list');
+  if (!list) return;
+  let dragIdx = null;
+  list.querySelectorAll('.array-item').forEach(item => {
+    const handle = item.querySelector('.array-item-drag-handle');
+    item.draggable = false;
+    if (handle) {
+      handle.addEventListener('mousedown', () => { item.draggable = true; });
+      handle.addEventListener('mouseup',   () => { item.draggable = false; });
+    }
+    item.addEventListener('dragstart', e => { dragIdx = parseInt(item.dataset.cfIdx); item.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    item.addEventListener('dragend',   () => { item.draggable = false; item.classList.remove('dragging'); list.querySelectorAll('.array-item').forEach(i => i.classList.remove('drag-over')); });
+    item.addEventListener('dragover',  e => { e.preventDefault(); list.querySelectorAll('.array-item').forEach(i => i.classList.remove('drag-over')); item.classList.add('drag-over'); });
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      const dropIdx = parseInt(item.dataset.cfIdx);
+      if (dragIdx === null || dragIdx === dropIdx) return;
+      collectContactForm();
+      const [moved] = DATA.contactForm.splice(dragIdx, 1);
+      DATA.contactForm.splice(dropIdx, 0, moved);
+      buildContactFormFields();
+      autosave();
+      dragIdx = null;
+    });
+  });
+}
+
+function addContactFormField() {
+  collectContactForm();
+  if (!Array.isArray(DATA.contactForm)) DATA.contactForm = [];
+  DATA.contactForm.push({ type:'text', label:'', placeholder:'', required:false, halfWidth:false, options:[] });
+  buildContactFormFields();
+  autosave();
+}
+
+function removeContactFormField(i) {
+  collectContactForm();
+  DATA.contactForm.splice(i, 1);
+  buildContactFormFields();
+  autosave();
+}
+
+function moveContactFormField(i, dir) {
+  collectContactForm();
+  const fields = DATA.contactForm;
+  const newIdx = i + dir;
+  if (newIdx < 0 || newIdx >= fields.length) return;
+  [fields[i], fields[newIdx]] = [fields[newIdx], fields[i]];
+  buildContactFormFields();
+  autosave();
+}
+
+function onContactFieldTypeChange(i, sel) {
+  const item = sel.closest('.array-item');
+  const optRow = item?.querySelector('.cf-options-row');
+  if (optRow) optRow.style.display = (sel.value === 'select' || sel.value === 'radio') ? '' : 'none';
+}
+
+function collectContactForm() {
+  const list = document.getElementById('contact-form-fields-list');
+  if (!list) return;
+  const items = list.querySelectorAll('.array-item');
+  DATA.contactForm = Array.from(items).map((item, i) => {
+    const get = key => item.querySelector(`[data-cf="${key}"][data-idx="${i}"]`);
+    const optEl = get('options');
+    const opts = optEl ? optEl.value.split('\n').map(s => s.trim()).filter(Boolean) : [];
+    return {
+      type:        get('type')?.value        || 'text',
+      label:       get('label')?.value.trim() || '',
+      placeholder: get('placeholder')?.value.trim() || '',
+      required:    get('required')?.checked   || false,
+      halfWidth:   get('halfWidth')?.checked  || false,
+      options:     opts,
+    };
+  });
 }
 
 function buildBlogList() {
@@ -2420,7 +2461,7 @@ function buildBlogList() {
 function buildBlogAdminCard(p, i) {
   const card = document.createElement('div');
   card.className = 'blog-admin-card' + (p.featured ? ' is-featured' : '');
-  card.draggable = true;
+  card.draggable = false;
   card.dataset.idx = i;
 
   const linkType = p.linkType || 'none';
@@ -2611,6 +2652,36 @@ function onStepLinkTypeChange(pi, si, ii, sel) {
   }
 }
 
+function loadHeroBtnField(which, linkType, linkUrl) {
+  const cap = which === 'primary' ? 'Primary' : 'Secondary';
+  const ltEl   = document.getElementById('f_hero' + cap + 'LinkType');
+  const intEl  = document.getElementById('f_hero' + cap + '_internal');
+  const urlEl  = document.getElementById('f_hero' + cap + '_url');
+  const urlLbl = document.getElementById('f_hero' + cap + 'UrlLabel');
+  const intSel = document.getElementById('f_hero' + cap + 'InternalPage');
+  const urlInp = document.getElementById('f_hero' + cap + 'Url');
+  if (ltEl)   ltEl.value = linkType || 'none';
+  if (intEl)  intEl.style.display  = linkType === 'internal' ? '' : 'none';
+  if (urlEl)  urlEl.style.display  = (linkType === 'external' || linkType === 'file') ? '' : 'none';
+  if (urlLbl) urlLbl.textContent   = linkType === 'file' ? 'File Path / URL' : 'External URL';
+  if (intSel) intSel.innerHTML     = getInternalPageOptions(linkType === 'internal' ? (linkUrl||'') : '');
+  if (urlInp) urlInp.value         = (linkType === 'external' || linkType === 'file') ? (linkUrl||'') : '';
+}
+
+function onHeroBtnLinkTypeChange(which, sel) {
+  const val  = sel.value;
+  const cap  = which === 'primary' ? 'Primary' : 'Secondary';
+  const intEl  = document.getElementById('f_hero' + cap + '_internal');
+  const urlEl  = document.getElementById('f_hero' + cap + '_url');
+  const urlLbl = document.getElementById('f_hero' + cap + 'UrlLabel');
+  const intSel = document.getElementById('f_hero' + cap + 'InternalPage');
+  if (intEl)  intEl.style.display  = val === 'internal' ? '' : 'none';
+  if (urlEl)  urlEl.style.display  = (val === 'external' || val === 'file') ? '' : 'none';
+  if (urlLbl) urlLbl.textContent   = val === 'file' ? 'File Path / URL' : 'External URL';
+  if (intSel && val === 'internal') intSel.innerHTML = getInternalPageOptions(intSel.value || '');
+  autosave();
+}
+
 function onFeatureCardLinkTypeChange(pi, si, ii, sel) {
   const val = sel.value;
   const intEl = document.getElementById('cp-fc-internal-' + pi + '-' + si + '-' + ii);
@@ -2651,6 +2722,59 @@ function onBulletLinkTypeChange(pi, si, ii, sel) {
     if (label) label.textContent = val === 'file' ? 'File Path / URL' : 'External URL';
     if (input) input.placeholder = val === 'file' ? 'files/doc.pdf' : 'https://';
   }
+}
+
+function onTestimonialsShowReviewsChange(pi, si, cb) {
+  const secCard = cb.closest('.cp-section-card');
+  if (!secCard) return;
+  const modeOn      = secCard.querySelector('.cp-test-mode-on');
+  const modeOff     = secCard.querySelector('.cp-test-mode-off');
+  const primaryWrap = secCard.querySelector('.cp-test-primary-wrap');
+  if (modeOn)      modeOn.style.display      = cb.checked ? '' : 'none';
+  if (modeOff)     modeOff.style.display     = cb.checked ? 'none' : '';
+  if (primaryWrap) primaryWrap.style.display = cb.checked ? 'none' : 'flex';
+  autosave();
+}
+
+function onTestimonialsPrimaryChange(pi, si, cb) {
+  if (!cb.checked) { autosave(); return; }
+
+  // Check if another section already claims primary source
+  const findExisting = () => {
+    const allSections = [
+      ...(DATA.homeSections || []).map((s, i) => ({ s, label: 'Home section #' + (i+1) })),
+      ...(DATA.customPages || []).flatMap((pg, pi) =>
+        (pg.sections || []).map((s, si) => ({ s, label: (pg.navLabel||'Page') + ' section #' + (si+1) }))
+      )
+    ];
+    return allSections.find(({ s }) =>
+      s.type === 'testimonials' && s.primarySource === true &&
+      !(s === (pi === 'h' ? DATA.homeSections[si] : DATA.customPages[pi]?.sections[si]))
+    );
+  };
+
+  const existing = findExisting();
+  if (existing) {
+    const ok = confirm(
+      '"' + existing.label + '" is already the primary testimonials source.\n\n' +
+      'Switch the source to this section? The previous source will be unset.'
+    );
+    if (!ok) {
+      cb.checked = false;
+      return;
+    }
+    // Unset the previous primary in DATA
+    collectData();
+    (DATA.homeSections || []).forEach(s => { if (s.type === 'testimonials') s.primarySource = false; });
+    (DATA.customPages || []).forEach(pg =>
+      (pg.sections || []).forEach(s => { if (s.type === 'testimonials') s.primarySource = false; })
+    );
+    // Also uncheck any visible checkbox
+    document.querySelectorAll('[data-field="primarySource"]').forEach(el => {
+      if (el !== cb) el.checked = false;
+    });
+  }
+  autosave();
 }
 
 function onCpSubResourceLinkChange(pi, si, ii, sel) {
@@ -2934,7 +3058,7 @@ function collectHomeSingleSection(secCard, si, existing) {
     const visible = els.find(el => {
       let node = el;
       while (node && node !== secCard) {
-        if (node.style && node.style.display === 'none') return false;
+        if (getComputedStyle(node).display === 'none') return false;
         node = node.parentElement;
       }
       return true;
@@ -2970,8 +3094,23 @@ function collectHomeSingleSection(secCard, si, existing) {
     sec.items = Array.from(secCard.querySelectorAll('.cp-sub-item')).map(item => {
       const obj = {};
       arrTypes[type].forEach(f => {
-        const el = item.querySelector('[data-field="' + f + '"]');
-        if (el) obj[f] = el.type === 'checkbox' ? el.checked : el.value.trim();
+        const els = Array.from(item.querySelectorAll('[data-field="' + f + '"]'));
+        if (!els.length) { obj[f] = ''; return; }
+        if (els.length === 1) {
+          obj[f] = els[0].type === 'checkbox' ? els[0].checked : els[0].value.trim();
+          return;
+        }
+        // Multiple elements (e.g. linkUrl has both internal select and external input)
+        // — pick the visible one
+        const visible = els.find(el => {
+          let node = el;
+          while (node && node !== item) {
+            if (getComputedStyle(node).display === 'none') return false;
+            node = node.parentElement;
+          }
+          return true;
+        }) || els[0];
+        obj[f] = visible.type === 'checkbox' ? visible.checked : visible.value.trim();
       });
       return obj;
     });
@@ -3011,10 +3150,19 @@ function collectHomeSingleSection(secCard, si, existing) {
 
   // Testimonials
   if (type === 'testimonials') {
+    sec.showReviews = secCard.querySelector('[data-field="showReviews"]')?.checked !== false;
     sec.count = parseInt(get('count')) || 3;
     const cbEl = secCard.querySelector('[data-field="showReadAll"]');
     sec.showReadAll = cbEl ? cbEl.checked : true;
     sec.readAllLabel = get('readAllLabel') || 'Read All Reviews';
+    sec.primarySource = secCard.querySelector('[data-field="primarySource"]')?.checked || false;
+    sec.items = Array.from(secCard.querySelectorAll('.cp-sub-item')).map(item => ({
+      name:     item.querySelector('[data-field="name"]')?.value.trim() || '',
+      initials: item.querySelector('[data-field="initials"]')?.value.trim() || '',
+      stars:    item.querySelector('[data-field="stars"]')?.value.trim() || '5',
+      text:     item.querySelector('[data-field="text"]')?.value.trim() || '',
+      meta:     item.querySelector('[data-field="meta"]')?.value.trim() || '',
+    }));
   }
 
   // Two-col
@@ -3028,14 +3176,26 @@ function collectHomeSingleSection(secCard, si, existing) {
   if (type === 'feature-cards') {
     sec.badgeNum = get('badgeNum');
     sec.badgeLabel = get('badgeLabel');
-    sec.items = Array.from(secCard.querySelectorAll('.cp-sub-item')).map(item => ({
-      num:       item.querySelector('[data-field="num"]')?.value.trim() || '',
-      title:     item.querySelector('[data-field="title"]')?.value.trim() || '',
-      body:      item.querySelector('[data-field="body"]')?.value.trim() || '',
-      linkLabel: item.querySelector('[data-field="linkLabel"]')?.value.trim() || '',
-      linkType:  item.querySelector('[data-field="linkType"]')?.value || 'none',
-      linkUrl:   item.querySelector('[data-field="linkUrl"]')?.value.trim() || '',
-    }));
+    sec.items = Array.from(secCard.querySelectorAll('.cp-sub-item')).map(item => {
+      // linkUrl has two elements (internal select + external input) — pick the visible one
+      const linkUrlEls = Array.from(item.querySelectorAll('[data-field="linkUrl"]'));
+      const visibleLinkUrl = linkUrlEls.find(el => {
+        let node = el;
+        while (node && node !== item) {
+          if (getComputedStyle(node).display === 'none') return false;
+          node = node.parentElement;
+        }
+        return true;
+      }) || linkUrlEls[0];
+      return {
+        num:       item.querySelector('[data-field="num"]')?.value.trim() || '',
+        title:     item.querySelector('[data-field="title"]')?.value.trim() || '',
+        body:      item.querySelector('[data-field="body"]')?.value.trim() || '',
+        linkLabel: item.querySelector('[data-field="linkLabel"]')?.value.trim() || '',
+        linkType:  item.querySelector('[data-field="linkType"]')?.value || 'none',
+        linkUrl:   visibleLinkUrl?.value.trim() || '',
+      };
+    });
   }
 
   // Jurisdiction
@@ -3054,7 +3214,7 @@ function collectHomeSingleSection(secCard, si, existing) {
       let node = urlEl;
       let visible = true;
       while (node && node !== secCard) {
-        if (node.style && node.style.display === 'none') { visible = false; break; }
+        if (getComputedStyle(node).display === 'none') { visible = false; break; }
         node = node.parentElement;
       }
       if (visible) sec.linkUrl = urlEl.value.trim();
@@ -3074,7 +3234,7 @@ function collectHomeSingleSection(secCard, si, existing) {
       if (urlEl) {
         let node = urlEl; let visible = true;
         while (node && node !== secCard) {
-          if (node.style && node.style.display === 'none') { visible = false; break; }
+          if (getComputedStyle(node).display === 'none') { visible = false; break; }
           node = node.parentElement;
         }
         sec[pref + '_linkUrl'] = visible ? urlEl.value.trim() : (existing[pref + '_linkUrl'] || '');
@@ -3630,32 +3790,75 @@ function buildCpSectionTypeFields(sec, pi, si) {
     }
 
     case 'testimonials': {
+      const showReviews = sec.showReviews !== false;
       const showBtnChecked = sec.showReadAll !== false ? 'checked' : '';
       const countVal = v('count', '3');
+      const isPrimary = sec.primarySource === true;
+      const modeOnDisplay  = showReviews ? '' : 'display:none;';
+      const modeOffDisplay = showReviews ? 'display:none;' : '';
+      const items = (sec.items||[]);
+      const rows = items.map((it,ii) => `<div class="cp-sub-item" data-sub-idx="${ii}">
+          ${cpSubItemHeader('Review #'+(ii+1), pi, si, 'items', ii)}
+          <div class="form-row-2" style="margin-bottom:8px;">
+            <div class="field-group" style="margin:0;"><label>Name</label><input type="text" data-cp="${pi}" data-sec="${si}" data-arr="items" data-idx="${ii}" data-field="name" value="${escHtml(it.name||'')}"/></div>
+            <div class="field-group" style="margin:0;"><label>Initials (2 letters)</label><input type="text" data-cp="${pi}" data-sec="${si}" data-arr="items" data-idx="${ii}" data-field="initials" value="${escHtml(it.initials||'')}" maxlength="2" style="max-width:80px;"/></div>
+          </div>
+          <div class="field-group" style="margin-bottom:8px;"><label>Stars (1–5)</label><input type="number" data-cp="${pi}" data-sec="${si}" data-arr="items" data-idx="${ii}" data-field="stars" value="${escHtml(it.stars||'5')}" min="1" max="5" style="max-width:80px;"/></div>
+          <div class="field-group" style="margin-bottom:8px;"><label>Review Text</label><textarea data-cp="${pi}" data-sec="${si}" data-arr="items" data-idx="${ii}" data-field="text" rows="3">${escHtml(it.text||'')}</textarea></div>
+          <div class="field-group" style="margin-bottom:4px;"><label>Meta (service type, city)</label><input type="text" data-cp="${pi}" data-sec="${si}" data-arr="items" data-idx="${ii}" data-field="meta" value="${escHtml(it.meta||'')}"/></div>
+        </div>`).join('');
       return `
-        <div class="form-row-2">
+        <div class="form-row-2" style="margin-bottom:12px;">
           <div class="field-group"><label>Heading</label><input type="text" ${p} data-field="heading" value="${v('heading')}"/></div>
           <div class="field-group"><label>Subtitle</label><input type="text" ${p} data-field="subtitle" value="${v('subtitle')}"/></div>
         </div>
-        <div class="form-row-2">
-          <div class="field-group">
-            <label>Number to Display</label>
-            <select ${p} data-field="count" style="max-width:120px;">
-              <option value="3" ${countVal==='3'?'selected':''}>3</option>
-              <option value="6" ${countVal==='6'?'selected':''}>6</option>
-              <option value="9" ${countVal==='9'?'selected':''}>9</option>
-            </select>
-            <div class="field-hint">Pulls from the Testimonials page. Add/edit them there.</div>
-          </div>
-          <div class="field-group">
-            <label>Read All Button</label>
-            <div class="switch-row" style="margin-top:6px;">
-              <span class="switch-label" style="font-size:12px;">Show button</span>
-              <label class="switch"><input type="checkbox" ${p} data-field="showReadAll" ${showBtnChecked} onchange="autosave()"/><span class="switch-slider"></span></label>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding:10px 14px;background:var(--navy);border-radius:6px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <label class="switch" style="flex-shrink:0;">
+              <input type="checkbox" ${p} data-field="showReviews" ${showReviews?'checked':''} onchange="onTestimonialsShowReviewsChange(${typeof pi==='string'?("'"+pi+"'"):pi},${si},this)"/>
+              <span class="switch-slider"></span>
+            </label>
+            <div>
+              <div style="color:#fff;font-size:13px;font-weight:600;">Show Reviews</div>
+              <div class="section-toggle-hint">On: use site source. Off: add reviews here.</div>
             </div>
-            <input type="text" ${p} data-field="readAllLabel" value="${v('readAllLabel','Read All Reviews')}" placeholder="Read All Reviews" style="margin-top:8px;"/>
-            <div class="field-hint">Button navigates to the Testimonials page.</div>
           </div>
+          <div class="cp-test-primary-wrap" style="display:flex;align-items:center;gap:8px;${modeOffDisplay}">
+            <div style="text-align:right;">
+              <div style="color:#fff;font-size:12px;font-weight:600;">Site-wide source</div>
+              <div class="section-toggle-hint">Reviews pulled by other sections.</div>
+            </div>
+            <label class="switch" style="flex-shrink:0;">
+              <input type="checkbox" ${p} data-field="primarySource" ${isPrimary?'checked':''} onchange="onTestimonialsPrimaryChange(${typeof pi==='string'?("'"+pi+"'"):pi},${si},this)"/>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="cp-test-mode-on" style="${modeOnDisplay}">
+          <div class="form-row-2">
+            <div class="field-group">
+              <label>Number to Display</label>
+              <select ${p} data-field="count" style="max-width:120px;">
+                <option value="3" ${countVal==='3'?'selected':''}>3</option>
+                <option value="6" ${countVal==='6'?'selected':''}>6</option>
+                <option value="9" ${countVal==='9'?'selected':''}>9</option>
+              </select>
+              <div class="field-hint">Pulls from site testimonials source.</div>
+            </div>
+            <div class="field-group">
+              <label>Read All Button</label>
+              <div class="switch-row" style="margin-top:6px;">
+                <span class="switch-label" style="font-size:12px;">Show button</span>
+                <label class="switch"><input type="checkbox" ${p} data-field="showReadAll" ${showBtnChecked} onchange="autosave()"/><span class="switch-slider"></span></label>
+              </div>
+              <input type="text" ${p} data-field="readAllLabel" value="${v('readAllLabel','Read All Reviews')}" placeholder="Read All Reviews" style="margin-top:8px;"/>
+              <div class="field-hint">Navigates to the Testimonials page.</div>
+            </div>
+          </div>
+        </div>
+        <div class="cp-test-mode-off" style="${modeOffDisplay}">
+          <div class="cp-sub-items" data-cp-drag="${pi}-${si}-items">${rows}</div>
+          <button class="btn-add" onclick="addCpSubItem(${typeof pi==='string'?("'"+pi+"'"):pi},${si},'items',{name:'',initials:'',stars:'5',text:'',meta:''})">+ Add Testimonial</button>
         </div>`;
     }
     case 'resources': {
@@ -4283,6 +4486,7 @@ function initCpSubItemDragDrop(container, pi, si, arr) {
     const handle = item.querySelector('.cp-sub-item-drag-handle');
     if (!handle) return;
     handle.addEventListener('mousedown', () => { item.draggable = true; });
+    handle.addEventListener('mouseup',   () => { item.draggable = false; });
     item.addEventListener('dragend', () => { item.draggable = false; });
     item.addEventListener('dragstart', e => {
       dragIdx = parseInt(item.dataset.subIdx);
@@ -4352,7 +4556,7 @@ function collectCpSections(card, pi, existingSections) {
       const visible = els.find(el => {
         let node = el;
         while (node && node !== secCard) {
-          if (node.style && node.style.display === 'none') return false;
+          if (getComputedStyle(node).display === 'none') return false;
           node = node.parentElement;
         }
         return true;
@@ -4399,9 +4603,12 @@ function collectCpSections(card, pi, existingSections) {
         sec.items = collectCpSubItems(secCard, pi, si, ['q','a','linkLabel','linkType','linkUrl']); break;
       case 'testimonials':
         sec.heading = get('heading'); sec.subtitle = get('subtitle');
+        sec.showReviews = secCard.querySelector('[data-field="showReviews"]')?.checked !== false;
         sec.count = parseInt(get('count')) || 3;
         sec.showReadAll = secCard.querySelector('[data-field="showReadAll"]')?.checked !== false;
         sec.readAllLabel = get('readAllLabel') || 'Read All Reviews';
+        sec.primarySource = secCard.querySelector('[data-field="primarySource"]')?.checked || false;
+        sec.items = collectCpSubItems(secCard, pi, si, ['name','initials','stars','text','meta']);
         break;
       case 'resources':
         sec.heading = get('heading'); sec.subtitle = get('subtitle');
@@ -4455,7 +4662,7 @@ function collectCpSubItems(secCard, pi, si, fields) {
       const visible = matches.find(el => {
         let node = el;
         while (node && node !== secCard) {
-          if (node.style && node.style.display === 'none') return false;
+          if (getComputedStyle(node).display === 'none') return false;
           node = node.parentElement;
         }
         return true;
@@ -4530,11 +4737,154 @@ function updateHeroBgUI() {
   if (val === 'video') updateVideoLoopUI();
 }
 
-function updateVideoLoopUI() {
-  const sel = document.getElementById('f_heroVideoLoop');
-  const val = sel ? sel.value : 'loop';
-  document.getElementById('vloop-fade-image').style.display = val === 'fade-image' ? 'block' : 'none';
-  document.getElementById('vloop-crossfade').style.display  = val === 'crossfade'  ? 'block' : 'none';
+function updateVideoLoopUI() {} // legacy — no-op, kept for safety
+
+/* =============================================
+   HERO VIDEO PLAYLIST
+   ============================================= */
+function buildHeroVideoClipsList() {
+  const list = document.getElementById('hero-video-clips-list');
+  if (!list) return;
+  const clips = DATA.heroBg.videoClips || [];
+  list.innerHTML = clips.map((c, i) => {
+    const transOpts = ['cut','crossfade','fade-from-black'].map(t =>
+      `<option value="${t}"${c.transitionIn===t?' selected':''}>${t==='cut'?'Cut (instant)':t==='crossfade'?'Crossfade':'Fade from Black'}</option>`
+    ).join('');
+    const posOpts = ['center center','top center','bottom center','center left','center right'].map(p =>
+      `<option value="${p}"${(c.objectPosition||'center center')===p?' selected':''}>${p}</option>`
+    ).join('');
+    const rateOpts = [['0.25','0.25x'],['0.5','0.5x'],['0.75','0.75x'],['1','Normal'],['1.25','1.25x'],['1.5','1.5x']].map(([v,l]) =>
+      `<option value="${v}"${(String(c.playbackRate||1))===v?' selected':''}>${l}</option>`
+    ).join('');
+    return `<div class="array-item" data-clip-idx="${i}">
+      <div class="array-item-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="array-item-drag-handle" title="Drag to reorder">⠿</span>
+          <span class="array-item-label">Video ${i+1}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <button class="cp-move-btn" onclick="moveHeroVideoClip(${i},-1)" title="Move up">↑</button>
+          <button class="cp-move-btn" onclick="moveHeroVideoClip(${i},1)" title="Move down">↓</button>
+          <button class="btn-remove" onclick="removeHeroVideoClip(${i})">×</button>
+        </div>
+      </div>
+      <div class="form-row-2" style="margin-bottom:8px;">
+        <div class="field-group" style="margin:0;">
+          <label>MP4 Path</label>
+          <input type="text" data-clip-field="mp4" data-clip-idx="${i}" value="${escHtml(c.mp4||'')}" placeholder="videos/hero.mp4"/>
+        </div>
+        <div class="field-group" style="margin:0;">
+          <label>WebM Path (optional)</label>
+          <input type="text" data-clip-field="webm" data-clip-idx="${i}" value="${escHtml(c.webm||'')}" placeholder="videos/hero.webm"/>
+        </div>
+      </div>
+      <div class="form-row-2" style="margin-bottom:8px;">
+        <div class="field-group" style="margin:0;">
+          <label>Fallback Image (optional)</label>
+          <input type="text" data-clip-field="fallback" data-clip-idx="${i}" value="${escHtml(c.fallback||'')}" placeholder="Inherits shared fallback"/>
+        </div>
+        <div class="field-group" style="margin:0;">
+          <label>Transition In</label>
+          <select data-clip-field="transitionIn" data-clip-idx="${i}" onchange="autosave()">${transOpts}</select>
+        </div>
+      </div>
+      <div class="form-row-2" style="margin-bottom:8px;">
+        <div class="field-group" style="margin:0;">
+          <label>Object Position</label>
+          <select data-clip-field="objectPosition" data-clip-idx="${i}" onchange="autosave()">${posOpts}</select>
+        </div>
+        <div class="field-group" style="margin:0;">
+          <label>Playback Rate</label>
+          <select data-clip-field="playbackRate" data-clip-idx="${i}" onchange="autosave()">${rateOpts}</select>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="field-group" style="margin:0;">
+          <label>Start Time (seconds)</label>
+          <input type="number" data-clip-field="startTime" data-clip-idx="${i}" value="${c.startTime||''}" placeholder="0 (beginning)" min="0" step="0.5"/>
+        </div>
+        <div class="field-group" style="margin:0;">
+          <label>Play Duration (seconds)</label>
+          <input type="number" data-clip-field="playDuration" data-clip-idx="${i}" value="${c.playDuration||''}" placeholder="Empty = full length" min="0.5" step="0.5"/>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  initHeroVideoClipsDragDrop();
+}
+
+function initHeroVideoClipsDragDrop() {
+  const list = document.getElementById('hero-video-clips-list');
+  if (!list) return;
+  let dragIdx = null;
+  list.querySelectorAll('.array-item').forEach(item => {
+    const handle = item.querySelector('.array-item-drag-handle');
+    item.draggable = false;
+    if (handle) {
+      handle.addEventListener('mousedown', () => { item.draggable = true; });
+      handle.addEventListener('mouseup',   () => { item.draggable = false; });
+    }
+    item.addEventListener('dragstart', e => { dragIdx = parseInt(item.dataset.clipIdx); item.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    item.addEventListener('dragend',   () => { item.draggable = false; item.classList.remove('dragging'); list.querySelectorAll('.array-item').forEach(i => i.classList.remove('drag-over')); });
+    item.addEventListener('dragover',  e => { e.preventDefault(); list.querySelectorAll('.array-item').forEach(i => i.classList.remove('drag-over')); item.classList.add('drag-over'); });
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      const dropIdx = parseInt(item.dataset.clipIdx);
+      if (dragIdx === null || dragIdx === dropIdx) return;
+      collectHeroVideoClips();
+      const [moved] = DATA.heroBg.videoClips.splice(dragIdx, 1);
+      DATA.heroBg.videoClips.splice(dropIdx, 0, moved);
+      buildHeroVideoClipsList();
+      autosave();
+      dragIdx = null;
+    });
+  });
+}
+
+function addHeroVideoClip() {
+  collectHeroVideoClips();
+  if (!Array.isArray(DATA.heroBg.videoClips)) DATA.heroBg.videoClips = [];
+  DATA.heroBg.videoClips.push({ mp4:'', webm:'', fallback:'', transitionIn:'crossfade', objectPosition:'center center', playbackRate:1, startTime:0, playDuration:0 });
+  buildHeroVideoClipsList();
+  autosave();
+}
+
+function removeHeroVideoClip(i) {
+  collectHeroVideoClips();
+  DATA.heroBg.videoClips.splice(i, 1);
+  buildHeroVideoClipsList();
+  autosave();
+}
+
+function moveHeroVideoClip(i, dir) {
+  collectHeroVideoClips();
+  const clips = DATA.heroBg.videoClips;
+  const newIdx = i + dir;
+  if (newIdx < 0 || newIdx >= clips.length) return;
+  [clips[i], clips[newIdx]] = [clips[newIdx], clips[i]];
+  buildHeroVideoClipsList();
+  autosave();
+}
+
+function collectHeroVideoClips() {
+  const list = document.getElementById('hero-video-clips-list');
+  if (!list) return;
+  const items = list.querySelectorAll('.array-item');
+  DATA.heroBg.videoClips = Array.from(items).map((item, i) => {
+    const get = field => item.querySelector(`[data-clip-field="${field}"][data-clip-idx="${i}"]`);
+    const startRaw    = parseFloat(get('startTime')?.value)    || 0;
+    const durRaw      = parseFloat(get('playDuration')?.value) || 0;
+    return {
+      mp4:            get('mp4')?.value.trim()            || '',
+      webm:           get('webm')?.value.trim()           || '',
+      fallback:       get('fallback')?.value.trim()       || '',
+      transitionIn:   get('transitionIn')?.value          || 'crossfade',
+      objectPosition: get('objectPosition')?.value        || 'center center',
+      playbackRate:   parseFloat(get('playbackRate')?.value) || 1,
+      startTime:      startRaw  > 0 ? startRaw  : 0,
+      playDuration:   durRaw    > 0 ? durRaw    : 0,
+    };
+  });
 }
 
 /* =============================================
@@ -4568,12 +4918,15 @@ function importConfig(input) {
       const fn = new Function(`return ${match[1]}`);
       const imported = fn();
       DATA = Object.assign({}, DATA, imported);
-      if (imported.colors) DATA.colors = Object.assign({}, DATA.colors, imported.colors);
-      if (imported.fontColors) DATA.fontColors = Object.assign({}, DATA.fontColors, imported.fontColors);
+      if (imported.colors)      DATA.colors      = Object.assign({}, DATA.colors,      imported.colors);
+      if (imported.fontColors)  DATA.fontColors  = Object.assign({}, DATA.fontColors,  imported.fontColors);
       if (imported.whyChooseUs) DATA.whyChooseUs = Object.assign({}, DATA.whyChooseUs, imported.whyChooseUs);
-      if (imported.heroBg) DATA.heroBg = Object.assign({}, DATA.heroBg, imported.heroBg);
-      if (imported.pageTitles) DATA.pageTitles = Object.assign({}, DATA.pageTitles, imported.pageTitles);
-      if (Array.isArray(imported.customPages)) DATA.customPages = imported.customPages;
+      if (imported.heroBg)      DATA.heroBg      = Object.assign({}, DATA.heroBg,      imported.heroBg);
+      if (imported.pageTitles)  DATA.pageTitles  = Object.assign({}, DATA.pageTitles,  imported.pageTitles);
+      if (imported.pageHeaders) DATA.pageHeaders = Object.assign({}, DATA.pageHeaders, imported.pageHeaders);
+      if (Array.isArray(imported.customPages))  DATA.customPages  = imported.customPages;
+      if (Array.isArray(imported.homeSections)) DATA.homeSections = imported.homeSections;
+      if (Array.isArray(imported.attorneys))    DATA.attorneys    = imported.attorneys;
       loadForm();
       collectData();
       persistToLocalStorage();
@@ -4585,7 +4938,6 @@ function importConfig(input) {
   reader.readAsText(file);
   input.value = '';
 }
-
 function handleDrop(e) {
   e.preventDefault();
   document.getElementById('importZone').classList.remove('drag-over');
@@ -4600,6 +4952,7 @@ function handleDrop(e) {
    ============================================= */
 function generateConfigJs() {
   collectData();
+  DATA._savedAt = Date.now();
   const now = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
   return `/**
  * ============================================================
@@ -4620,7 +4973,9 @@ const SITE_CONFIG = ${JSON.stringify(DATA, null, 2)};
 
 function exportConfig() {
   collectData();
-  const content = generateConfigJs();
+  const content = generateConfigJs(); // stamps DATA._savedAt = Date.now()
+  // Sync the exact same timestamp to localStorage so config.js wins on next load
+  try { localStorage.setItem(LS_DATA(), JSON.stringify(DATA)); } catch(e) {}
   const blob = new Blob([content], {type:'text/javascript'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -4637,8 +4992,8 @@ function refreshCodePreview() {
 function saveAndPreview() {
   collectData();
   // Save full DATA to localStorage so index.html can read it for preview
-  localStorage.setItem('siteAdminData', JSON.stringify(DATA));
-  localStorage.setItem('previewConfig', JSON.stringify(DATA));
+  localStorage.setItem(LS_DATA(), JSON.stringify(DATA));
+  localStorage.setItem(LS_PREVIEW(), JSON.stringify(DATA));
   // Open index.html in a new tab — it will pick up the localStorage data automatically
   window.open('index.html', '_blank');
   toast('💾 Saved! Preview opening in new tab.', 'success');
@@ -4661,7 +5016,7 @@ function toast(msg, type='') {
 /* =============================================
    PAGE & SECTION TOGGLES
    ============================================= */
-const PAGE_TOGGLES = ['about','services','process','faqs','testimonials','blog','contact'];
+const PAGE_TOGGLES = ['about','contact'];
 
 function onPageToggle(cb) {
   const wrap = document.getElementById(cb.id + '_wrap');
@@ -4724,7 +5079,7 @@ function closeMobileNav() {
    FAB DRAGGABLE POSITIONING
    ============================================= */
 (function initFabDrag() {
-  const FAB_STORAGE_KEY = 'adminFabPos';
+  const FAB_STORAGE_KEY = LS_FAB();
   const LONG_PRESS_MS = 300;
   const EDGE_PAD = 16;
 
@@ -4855,22 +5210,73 @@ function closeMobileNav() {
 window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('dragover', e => e.preventDefault());
   document.addEventListener('drop', e => e.preventDefault());
-  // Try load from localStorage
-  const saved = localStorage.getItem('siteAdminData');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      DATA = Object.assign({}, DATA, parsed);
-      if (parsed.colors) DATA.colors = Object.assign({}, DATA.colors, parsed.colors);
-      if (parsed.fontColors) DATA.fontColors = Object.assign({}, DATA.fontColors, parsed.fontColors);
-      if (parsed.whyChooseUs) DATA.whyChooseUs = Object.assign({}, DATA.whyChooseUs, parsed.whyChooseUs);
-      if (parsed.heroBg) DATA.heroBg = Object.assign({}, DATA.heroBg, parsed.heroBg);
-      if (parsed.pageTitles) DATA.pageTitles = Object.assign({}, DATA.pageTitles, parsed.pageTitles);
-      if (Array.isArray(parsed.customPages)) DATA.customPages = parsed.customPages;
-    } catch(e) {}
+
+  function applyData(parsed) {
+    DATA = Object.assign({}, DATA, parsed);
+    if (parsed.colors)      DATA.colors      = Object.assign({}, DATA.colors,      parsed.colors);
+    if (parsed.fontColors)  DATA.fontColors  = Object.assign({}, DATA.fontColors,  parsed.fontColors);
+    if (parsed.whyChooseUs) DATA.whyChooseUs = Object.assign({}, DATA.whyChooseUs, parsed.whyChooseUs);
+    if (parsed.heroBg)      DATA.heroBg      = Object.assign({}, DATA.heroBg,      parsed.heroBg);
+    if (parsed.pageTitles)  DATA.pageTitles  = Object.assign({}, DATA.pageTitles,  parsed.pageTitles);
+    if (parsed.pageHeaders) DATA.pageHeaders = Object.assign({}, DATA.pageHeaders, parsed.pageHeaders);
+    if (Array.isArray(parsed.customPages))  DATA.customPages  = parsed.customPages;
+    if (Array.isArray(parsed.homeSections)) DATA.homeSections = parsed.homeSections;
+    if (Array.isArray(parsed.attorneys))    DATA.attorneys    = parsed.attorneys;
   }
-  loadForm();
-  document.getElementById('lastSaved').textContent = saved ? 'Restored from browser' : 'Not saved yet';
+
+  // Read localStorage
+  let localData = null;
+  let localTs = 0;
+  try {
+    const saved = localStorage.getItem(LS_DATA());
+    if (saved) {
+      localData = JSON.parse(saved);
+      localTs = localData._savedAt || 0;
+    }
+  } catch(e) {}
+
+  // Try to fetch config.js and compare timestamps
+  // Note: fetch() fails on file:// protocol — falls back to localStorage or defaults
+  const tryFetch = () => fetch('config.js?_=' + Date.now())
+    .then(r => r.ok ? r.text() : Promise.reject('not ok'))
+    .then(text => {
+      const match = text.match(/const\s+SITE_CONFIG\s*=\s*(\{[\s\S]*\})/);
+      if (!match) throw new Error('no match');
+      const fn = new Function(`return ${match[1]}`);
+      return fn();
+    });
+
+  tryFetch()
+    .then(configData => {
+      const configTs = configData._savedAt || 0;
+      if (configTs >= localTs) {
+        applyData(configData);
+        DATA._savedAt = configTs;
+        try { localStorage.setItem(LS_DATA(), JSON.stringify(DATA)); } catch(e) {}
+        loadForm();
+        document.getElementById('lastSaved').textContent = 'Loaded from config.js';
+        toast('✅ Loaded from config.js', 'success');
+      } else if (localData) {
+        applyData(localData);
+        loadForm();
+        document.getElementById('lastSaved').textContent = 'Restored from browser';
+        toast('✅ Loaded from browser storage', 'success');
+      } else {
+        loadForm();
+      }
+    })
+    .catch(() => {
+      // fetch failed (file:// protocol or config.js not found) — use localStorage
+      if (localData) {
+        applyData(localData);
+        loadForm();
+        document.getElementById('lastSaved').textContent = 'Restored from browser';
+        toast('✅ Loaded from browser storage', 'success');
+      } else {
+        loadForm();
+        document.getElementById('lastSaved').textContent = 'Not saved yet';
+      }
+    });
 });
 </script>
 </body>

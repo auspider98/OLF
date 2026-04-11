@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title id="pageTitle">Osborne Law Firm — Attorney</title>
+<title id="pageTitle">Site</title>
 <meta name="description" id="metaDesc" content=""/>
 <meta name="keywords" id="metaKeys" content=""/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -302,10 +302,13 @@ nav.main-nav { display: none !important; }
   z-index: 2;
   width: 100%;
   max-width: var(--container);
-  padding: 88px var(--gutter) clamp(60px, 10vh, 100px);
+  padding: 88px var(--gutter) clamp(40px, 6vh, 70px);
   box-sizing: border-box;
   max-height: 100%;
   overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 .hero-slides {
   position: absolute; inset: 0;
@@ -365,7 +368,7 @@ nav.main-nav { display: none !important; }
   line-height: 1.1;
   letter-spacing: -0.01em;
   max-width: 780px;
-  margin-bottom: 28px;
+  margin-bottom: clamp(16px, 2.5vh, 28px);
 }
 .hero-headline .line {
   display: block; overflow: hidden;
@@ -384,14 +387,14 @@ nav.main-nav { display: none !important; }
   color: rgba(255,255,255,0.75);
   line-height: 1.7;
   max-width: 540px;
-  margin-bottom: 36px;
+  margin-bottom: clamp(20px, 3vh, 36px);
   opacity: 0;
   animation: heroReveal 0.8s var(--ease-out) 2.5s forwards;
 }
 
 .hero-actions {
   display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
-  margin-bottom: 48px;
+  margin-bottom: clamp(24px, 4vh, 48px);
   opacity: 0;
   animation: heroReveal 0.8s var(--ease-out) 2.7s forwards;
 }
@@ -433,11 +436,14 @@ nav.main-nav { display: none !important; }
 .btn-outline:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.08); }
 
 .hero-trust-strip {
-  display: flex; gap: clamp(20px, 4vw, 48px);
+  display: flex;
+  justify-content: space-between;
+  gap: clamp(12px, 2vw, 32px);
   border-top: 1px solid rgba(255,255,255,0.15);
-  padding-top: 28px;
+  padding-top: clamp(16px, 2vh, 28px);
   opacity: 0;
   animation: heroReveal 0.8s var(--ease-out) 2.9s forwards;
+  animation-fill-mode: forwards;
 }
 .trust-item {
   display: flex; align-items: center; gap: 10px;
@@ -888,10 +894,43 @@ h2.section-title {
 .about-top-grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    "left  right"
+    "socbtn right";
   gap: clamp(40px, 6vw, 80px);
   align-items: start;
-  margin-bottom: 64px;
+  margin-bottom: 0;
 }
+.about-left-col {
+  grid-area: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.about-right-col {
+  grid-area: right;
+  padding-top: 8px;
+}
+.about-social-btn-col {
+  grid-area: socbtn;
+}
+.about-member-socials {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.about-social-icon {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.about-social-icon:hover { color: var(--navy); background: var(--gold); border-color: var(--gold); }
+.about-social-icon svg { width: 16px; height: 16px; }
+.about-member-btn { margin-top: 24px; }
 .about-photo-wrap {
   position: relative;
   width: 100%;
@@ -924,9 +963,7 @@ h2.section-title {
   z-index: 0;
   pointer-events: none;
 }
-.about-identity {
-  padding-top: 8px;
-}
+.about-identity { padding-top: 8px; }
 .about-attorney-name {
   font-family: var(--font-display);
   font-size: clamp(26px, 3.5vw, 38px);
@@ -957,8 +994,7 @@ h2.section-title {
 }
 .about-bio-full {
   display: flex; flex-direction: column; gap: 20px;
-  padding-top: 48px;
-  border-top: 1px solid #e8e3d8;
+  margin-top: 28px;
 }
 .about-bio-full p { font-size: 15px; line-height: 1.9; color: var(--text-body); }
 .about-bio-full p:first-child {
@@ -1549,7 +1585,16 @@ footer {
 }
 @media (max-width: 768px) {
   .hero-trust-strip { flex-direction: column; gap: 12px; }
-  .about-top-grid { grid-template-columns: 1fr; }
+  .about-top-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "left"
+      "right"
+      "socbtn";
+  }
+  .about-left-col { max-width: 380px; }
+  .about-right-col { padding-top: 0; }
+  .about-social-btn-col { padding-top: 0; }
   .why-grid { grid-template-columns: 1fr; }
   .why-card { border-right: none; }
   .cps-fc-grid { grid-template-columns: 1fr; }
@@ -2296,7 +2341,7 @@ footer {
           <button class="btn-primary" id="hero-cta-btn" onclick="showPage('contact')">
             Free Consultation <span>→</span>
           </button>
-          <button class="btn-outline" onclick="showPage('services')">
+          <button class="btn-outline" id="hero-secondary-btn" onclick="showPage('services')">
             Our Services
           </button>
         </div>
@@ -2323,7 +2368,6 @@ footer {
      ABOUT PAGE
      ============================================================ -->
 <div id="page-about" style="display:none;">
-  <!-- Page hero banner -->
   <div class="page-banner">
     <div class="container">
       <div class="section-label" style="margin-bottom:12px;">
@@ -2334,129 +2378,12 @@ footer {
     </div>
   </div>
   <section class="section section-after-banner">
-    <div class="container">
-      <!-- Top: photo left (1/3) + name/title/credentials right (2/3) -->
-      <div class="about-top-grid reveal">
-        <div class="about-photo-wrap">
-          <div class="about-photo-frame">
-            <img src="" alt="" id="about-photo" onerror="this.src='https://placehold.co/400x500/0f2340/c9a84c?text=Attorney+Photo'"/>
-          </div>
-          <div class="about-photo-accent"></div>
-        </div>
-        <div class="about-identity">
-          <h2 class="about-attorney-name" id="about-attorney-name"></h2>
-          <div class="about-attorney-degree" id="about-attorney-degree"></div>
-          <div class="about-credentials" id="about-credentials"></div>
-          <div style="margin-top:32px;">
-            <button class="btn-primary" onclick="showPage('contact')">Schedule a Consultation →</button>
-          </div>
-        </div>
-      </div>
-      <!-- Bottom: full-width biography -->
-      <div class="about-bio-full reveal reveal-delay-1" id="about-bios"></div>
-    </div>
+    <div class="container" id="about-members"></div>
   </section>
 </div>
 
 <!-- ============================================================
      SERVICES PAGE
-     ============================================================ -->
-<div id="page-services" style="display:none;">
-  <div class="page-banner">
-    <div class="container">
-      <div class="section-label" style="margin-bottom:12px;"><div class="section-label-line"></div><span class="section-label-text" id="services-label">Practice Areas</span></div>
-      <h1 class="page-banner-title" id="services-title">Our Adoption Services</h1>
-    </div>
-  </div>
-  <section class="section section-alt section-after-banner">
-    <div class="container">
-      <p class="section-subtitle reveal" id="services-subtitle">Every adoption journey is unique. We offer comprehensive legal services across all types of adoption in Alabama.</p>
-      <div class="services-grid" id="servicesGrid" style="margin-top:40px;"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ============================================================
-     PROCESS PAGE
-     ============================================================ -->
-<div id="page-process" style="display:none;">
-  <div class="page-banner page-banner-dark">
-    <div class="container">
-      <div class="section-label" style="margin-bottom:12px;"><div class="section-label-line"></div><span class="section-label-text" id="process-label">How It Works</span></div>
-      <h1 class="page-banner-title page-banner-title-light" id="process-title">The Adoption Process</h1>
-    </div>
-  </div>
-  <section id="process" class="section section-dark section-after-banner">
-    <div class="container">
-      <p class="section-subtitle reveal" style="color:rgba(255,255,255,0.6);" id="process-subtitle">From your first call to finalization day — here's what to expect when you work with us.</p>
-      <div class="process-timeline" id="processTimeline" style="margin-top:48px;"></div>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container">
-      <div class="section-label reveal"><div class="section-label-line"></div><span class="section-label-text">Legal Requirements</span></div>
-      <h2 class="section-title reveal reveal-delay-1">Alabama Adoption Requirements</h2>
-      <div class="faq-grid" style="margin-top:40px;" id="processRequirements"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ============================================================
-     FAQ PAGE
-     ============================================================ -->
-<div id="page-faq" style="display:none;">
-  <div class="page-banner">
-    <div class="container">
-      <div class="section-label" style="margin-bottom:12px;"><div class="section-label-line"></div><span class="section-label-text" id="faq-label">Common Questions</span></div>
-      <h1 class="page-banner-title" id="faq-title">Frequently Asked Questions</h1>
-    </div>
-  </div>
-  <section id="faq" class="section section-after-banner">
-    <div class="container">
-      <p class="section-subtitle reveal" id="faq-subtitle">Everything you want to know about Alabama adoption law — answered plainly.</p>
-      <div class="faq-grid" id="faqGrid" style="margin-top:40px;"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ============================================================
-     TESTIMONIALS PAGE
-     ============================================================ -->
-<div id="page-testimonials" style="display:none;">
-  <div class="page-banner">
-    <div class="container">
-      <div class="section-label" style="margin-bottom:12px;"><div class="section-label-line"></div><span class="section-label-text" id="testimonials-label">Client Reviews</span></div>
-      <h1 class="page-banner-title" id="testimonials-title">What Our Clients Say</h1>
-    </div>
-  </div>
-  <section id="testimonials" class="section section-alt section-after-banner">
-    <div class="container">
-      <p class="section-subtitle reveal" id="testimonials-subtitle">Real stories from the families we've been honored to serve.</p>
-      <div class="testimonials-track" id="allTestimonials" style="margin-top:40px;"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ============================================================
-     BLOG / RESOURCES PAGE
-     ============================================================ -->
-<div id="page-blog" style="display:none;">
-  <div class="page-banner">
-    <div class="container">
-      <div class="section-label" style="margin-bottom:12px;"><div class="section-label-line"></div><span class="section-label-text" id="blog-label">Resources</span></div>
-      <h1 class="page-banner-title" id="blog-title">Adoption Guides &amp; Insights</h1>
-    </div>
-  </div>
-  <section id="blog" class="section section-alt section-after-banner">
-    <div class="container">
-      <p class="section-subtitle reveal" id="blog-subtitle">Plain-language resources to help you understand Alabama adoption law.</p>
-      <div class="blog-grid" id="blogGrid" style="margin-top:40px;"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ============================================================
-     CONTACT PAGE
      ============================================================ -->
 <div id="page-contact" style="display:none;">
   <div class="page-banner page-banner-dark">
@@ -2501,50 +2428,7 @@ footer {
           </div>
           <div class="contact-hours" id="contact-hours"></div>
         </div>
-        <div class="contact-form">
-          <h3 id="contact-form-heading"></h3>
-          <p id="contact-form-intro"></p>
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name</label>
-              <input type="text" placeholder="Jane"/>
-            </div>
-            <div class="form-group">
-              <label>Last Name</label>
-              <input type="text" placeholder="Smith"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" placeholder="jane@email.com"/>
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" placeholder="(205) 555-0000"/>
-          </div>
-          <div class="form-group">
-            <label>Adoption Type</label>
-            <select>
-              <option value="">Select adoption type...</option>
-              <option>Stepparent Adoption</option>
-              <option>Relative / Kinship Adoption</option>
-              <option>Private Placement Adoption</option>
-              <option>Agency Adoption</option>
-              <option>Adult Adoption</option>
-              <option>Interstate Adoption (ICPC)</option>
-              <option>Contested Adoption</option>
-              <option>Termination of Parental Rights</option>
-              <option>Same-Sex / Second-Parent Adoption</option>
-              <option>Not Sure / General Question</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Tell Us About Your Situation</label>
-            <textarea placeholder="Share as much or as little as you'd like..."></textarea>
-          </div>
-          <p class="form-privacy" id="contact-privacy-note"></p>
-          <button class="btn-submit" id="contact-submit-btn">Request Free Consultation →</button>
-        </div>
+        <div class="contact-form" id="contact-form-wrap"></div>
       </div>
     </div>
   </section>
@@ -2565,11 +2449,11 @@ footer {
       <h2>Privacy Policy</h2>
       <p><em>Last updated: January 1, 2025</em></p>
       <h3>Information We Collect</h3>
-      <p>We collect information you provide directly to us, such as when you fill out our contact form, call our office, or email us. This may include your name, email address, phone number, and details about your legal matter.</p>
+      <p>We collect information you provide directly to us, such as when you fill out our contact form, call our office, or email us. This may include your name, email address, phone number, and details about your inquiry.</p>
       <h3>How We Use Information</h3>
-      <p>We use the information we collect to respond to your inquiries, schedule consultations, and communicate with you about your legal matter. We do not sell, trade, or otherwise transfer your personal information to outside parties.</p>
-      <h3>Attorney-Client Privilege</h3>
-      <p>Information shared with our firm in connection with a legal representation is protected by the attorney-client privilege. We take our duty of confidentiality seriously and have appropriate safeguards in place to protect your information.</p>
+      <p>We use the information we collect to respond to your inquiries, schedule appointments, and communicate with you about your inquiry. We do not sell, trade, or otherwise transfer your personal information to outside parties.</p>
+      <h3>Confidentiality</h3>
+      <p>We take your privacy seriously and have appropriate safeguards in place to protect your information. Any information you share with us will be kept strictly confidential.</p>
       <h3>Cookies</h3>
       <p>Our website may use cookies to enhance your browsing experience. You may disable cookies through your browser settings, though some features of the site may not function properly as a result.</p>
       <h3>Third-Party Services</h3>
@@ -2586,7 +2470,7 @@ footer {
 <div id="custom-pages-container"></div>
 
 <!-- Service Modal -->
-<div class="modal-overlay" id="serviceModal" onclick="closeModal(event)">
+<div class="modal-overlay" id="serviceModal" onclick="if(event.target===this)closeServiceModal()">
   <div class="modal-box">
     <button class="modal-close" onclick="closeServiceModal()">×</button>
     <div class="modal-icon" id="modal-icon"></div>
@@ -2634,6 +2518,17 @@ footer {
 <script src="config.js"></script>
 
 <script>
+/* =============================================
+   SITE KEY — matches admin.html scoping
+   ============================================= */
+(function() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const folder = parts.length > 0 && parts[parts.length - 1].includes('.')
+    ? parts.slice(0, -1)
+    : parts;
+  window._SITE_KEY = folder.length > 0 ? folder.join('-') : 'default';
+})();
+
 /* =============================================
    SITE ENGINE
    ============================================= */
@@ -2684,8 +2579,10 @@ const SITE_DEFAULTS = {
   heroHeadline: "Building Families Through the Law, With Heart.",
   heroSubline: "We guide adoptive parents, birth parents, and families through every step of the adoption process — clearly, compassionately, and with deep legal expertise.",
   heroTrustBullets: ["Free Initial Consultation","20+ Years Experience","Statewide Alabama Practice"],
+  heroPrimaryLabel: "Free Consultation", heroPrimaryLinkType: "internal", heroPrimaryLinkUrl: "contact",
+  heroSecondaryLabel: "Our Services", heroSecondaryLinkType: "internal", heroSecondaryLinkUrl: "services",
   whyChooseUs: { heading:"A Trusted Partner Through Every Step", subtext:"We know adoption is more than a legal process — it's the beginning of a family.", badgeNum:"20+", badgeLabel:"Years", bullets:[] },
-  aboutBio1:"", aboutBio2:"",
+  aboutNavLabel:"About Us", aboutBio1:"", aboutBio2:"",
   attorneyPhoto: "",
   contactHeadline: "Schedule Your Free Consultation",
   ctaLabel: "Free Consultation",
@@ -2714,15 +2611,20 @@ if (!Array.isArray(CFG.customPages)) CFG.customPages = [];
 // Preview mode: if admin saved data to localStorage, use it instead
 (function() {
   try {
-    const preview = localStorage.getItem('previewConfig');
+    const preview = localStorage.getItem(window._SITE_KEY + '_previewConfig');
     if (preview) {
       const parsed = JSON.parse(preview);
-      Object.assign(CFG, parsed);
+      // Merge top-level fields — skip empty arrays so defaults aren't wiped
+      Object.keys(parsed).forEach(k => {
+        if (Array.isArray(parsed[k]) && parsed[k].length === 0 && Array.isArray(CFG[k]) && CFG[k].length > 0) return;
+        CFG[k] = parsed[k];
+      });
       ['colors','fontColors','whyChooseUs','heroBg','pageTitles','pageHeaders'].forEach(k => {
         if (parsed[k]) CFG[k] = Object.assign({}, CFG[k], parsed[k]);
       });
       // Custom pages: fully replace if present in preview
       if (Array.isArray(parsed.customPages)) CFG.customPages = parsed.customPages;
+      if (Array.isArray(parsed.homeSections)) CFG.homeSections = parsed.homeSections;
     }
   } catch(e) {}
 })();
@@ -2775,13 +2677,31 @@ function makeVideoEl(mp4, webm, fallback) {
 }
 
 function initHeroVideo(hb, container) {
-  const hasVideo = hb.videoMp4 || hb.videoWebm;
-  const mode = hb.videoLoop || 'loop';
+  // Backwards compat: build videoClips from legacy single-video fields if needed
+  let clips = Array.isArray(hb.videoClips) && hb.videoClips.length > 0
+    ? hb.videoClips
+    : [];
 
-  // No video paths — show fallback image only
-  if (!hasVideo) {
-    if (hb.videoFallback) {
-      container.style.backgroundImage = `url('${hb.videoFallback}')`;
+  if (clips.length === 0) {
+    if (hb.videoMp4 || hb.videoWebm) {
+      clips = [{ mp4: hb.videoMp4||'', webm: hb.videoWebm||'', fallback: hb.videoFallback||'', transitionIn: 'crossfade' }];
+      if ((hb.videoLoop === 'crossfade') && (hb.video2Mp4 || hb.video2Webm)) {
+        clips.push({ mp4: hb.video2Mp4||'', webm: hb.video2Webm||'', fallback: hb.videoFallback2||'', transitionIn: 'crossfade' });
+      }
+    }
+  }
+
+  const sharedFallback  = hb.videoFallback || '';
+  const holdEnabled     = hb.videoHoldEnabled === true;
+  const holdMs          = (hb.videoHold || 4) * 1000;
+  const transSpeed      = parseFloat(hb.videoTransSpeed) || 1.2;
+  const transSpeedMs    = transSpeed * 1000;
+  const transCss        = `opacity ${transSpeed}s ease`;
+
+  // No clips — show shared fallback or bg color
+  if (!clips.length || !clips.some(c => c.mp4 || c.webm)) {
+    if (sharedFallback) {
+      container.style.backgroundImage = `url('${sharedFallback}')`;
       container.style.backgroundSize = 'cover';
       container.style.backgroundPosition = 'center center';
     } else {
@@ -2790,82 +2710,97 @@ function initHeroVideo(hb, container) {
     return;
   }
 
-  if (mode === 'loop') {
-    // ── Simple loop ──────────────────────────────────────────
-    const vid = makeVideoEl(hb.videoMp4, hb.videoWebm, hb.videoFallback);
-    vid.loop = true;
+  // Build video elements — all stacked, opacity controlled
+  const vids = clips.map(c => {
+    const fb  = c.fallback || sharedFallback;
+    const vid = makeVideoEl(c.mp4, c.webm, fb);
+    vid.style.opacity    = '0';
+    vid.style.transition = transCss;
+    vid.style.objectPosition = c.objectPosition || 'center center';
+    vid.playbackRate     = parseFloat(c.playbackRate) || 1;
     container.appendChild(vid);
+    return vid;
+  });
 
-  } else if (mode === 'fade-image') {
-    // ── Fade to image on end, then replay ───────────────────
-    const holdMs = (hb.videoHold || 4) * 1000;
-    const vid = makeVideoEl(hb.videoMp4, hb.videoWebm, hb.videoFallback);
+  // Poster div for hold-on-fallback
+  const poster = document.createElement('div');
+  poster.className = 'hero-video-poster';
+  if (sharedFallback) poster.style.backgroundImage = `url('${sharedFallback}')`;
+  poster.style.opacity    = '0';
+  poster.style.transition = transCss;
+  container.appendChild(poster);
 
-    const poster = document.createElement('div');
-    poster.className = 'hero-video-poster';
-    if (hb.videoFallback) poster.style.backgroundImage = `url('${hb.videoFallback}')`;
+  let current = 0;
+  let _durationTimer = null;
 
-    container.appendChild(vid);
-    container.appendChild(poster);
+  function showPoster(then) {
+    poster.style.opacity = '1';
+    setTimeout(() => {
+      poster.style.opacity = '0';
+      setTimeout(then, transSpeedMs);
+    }, holdMs);
+  }
 
-    vid.addEventListener('ended', () => {
-      vid.classList.add('fading');
-      poster.classList.add('visible');
-      setTimeout(() => {
-        poster.classList.remove('visible');
-        vid.classList.remove('fading');
-        vid.currentTime = 0;
-        vid.play().catch(() => {});
-      }, 1900 + holdMs);
-    });
+  function playClip(idx, transition) {
+    const vid  = vids[idx];
+    const clip = clips[idx];
 
-  } else if (mode === 'crossfade') {
-    // ── Crossfade between two videos ────────────────────────
-    const has2 = hb.video2Mp4 || hb.video2Webm;
-    if (!has2) {
-      // No second video — fall back to simple loop
-      const vid = makeVideoEl(hb.videoMp4, hb.videoWebm, hb.videoFallback);
-      vid.loop = true;
-      container.appendChild(vid);
-      return;
+    // Clear any previous duration timer
+    if (_durationTimer) { clearTimeout(_durationTimer); _durationTimer = null; }
+
+    // Apply per-clip settings
+    const startTime    = parseFloat(clip.startTime)    || 0;
+    const playDuration = parseFloat(clip.playDuration) || 0;
+    const rate         = parseFloat(clip.playbackRate) || 1;
+
+    vid.playbackRate  = rate;
+    vid.currentTime   = startTime;
+    vid.play().catch(() => {});
+
+    const trans = transition || clip.transitionIn || 'crossfade';
+
+    if (trans === 'cut') {
+      vids.forEach((v, i) => { v.style.transition = 'none'; v.style.opacity = i === idx ? '1' : '0'; });
+      setTimeout(() => { vids.forEach(v => { v.style.transition = transCss; }); }, 50);
+    } else if (trans === 'fade-from-black') {
+      vids.forEach(v => { v.style.opacity = '0'; });
+      container.style.background = '#000';
+      setTimeout(() => { vid.style.opacity = '1'; container.style.background = ''; }, 100);
+    } else {
+      // crossfade
+      vids.forEach((v, i) => { v.style.opacity = i === idx ? '1' : '0'; });
     }
 
-    const vid1 = makeVideoEl(hb.videoMp4,  hb.videoWebm,  hb.videoFallback);
-    const vid2 = makeVideoEl(hb.video2Mp4, hb.video2Webm, hb.videoFallback);
+    function onClipEnd() {
+      const nextIdx  = (idx + 1) % vids.length;
+      const isLooping = nextIdx === 0;
 
-    // vid2 sits below vid1, starts invisible
-    vid2.style.opacity = '0';
-    vid1.style.zIndex  = '1';
-    vid2.style.zIndex  = '0';
-
-    container.appendChild(vid2);
-    container.appendChild(vid1);
-
-    let active = 1;
-
-    function crossfadeToNext() {
-      if (active === 1) {
-        // Fade vid1 out, reveal vid2
-        vid2.currentTime = 0;
-        vid2.play().catch(() => {});
-        vid1.style.opacity = '0';
-        vid2.style.opacity = '1';
-        active = 2;
-        vid2.addEventListener('ended', crossfadeToNext, { once: true });
+      if (isLooping && holdEnabled) {
+        vid.style.opacity = '0';
+        setTimeout(() => {
+          showPoster(() => {
+            current = 0;
+            playClip(0, clips[0].transitionIn);
+          });
+        }, transSpeedMs * 0.5);
       } else {
-        // Fade vid2 out, reveal vid1
-        vid1.currentTime = 0;
-        vid1.play().catch(() => {});
-        vid2.style.opacity = '0';
-        vid1.style.opacity = '1';
-        active = 1;
-        vid1.addEventListener('ended', crossfadeToNext, { once: true });
+        current = nextIdx;
+        playClip(nextIdx, clips[nextIdx].transitionIn);
       }
     }
 
-    vid1.addEventListener('ended', crossfadeToNext, { once: true });
-    vid1.play().catch(() => {});
+    if (playDuration > 0) {
+      // Use timer instead of ended event
+      // Adjust for playback rate: real elapsed time = playDuration / rate
+      const realMs = (playDuration / rate) * 1000;
+      _durationTimer = setTimeout(onClipEnd, realMs);
+    } else {
+      vid.addEventListener('ended', onClipEnd, { once: true });
+    }
   }
+
+  // Start first clip
+  playClip(0, 'crossfade');
 }
 
 /* =============================================
@@ -2938,21 +2873,53 @@ function buildHero() {
     }
   }
 
-  // Headline split
+  // Hero buttons
+  const primaryBtn   = document.getElementById('hero-cta-btn');
+  const secondaryBtn = document.getElementById('hero-secondary-btn');
+
+  function applyHeroBtn(btn, label, linkType, linkUrl) {
+    if (!btn) return;
+    if (!linkType || linkType === 'none') {
+      btn.style.display = 'none';
+      return;
+    }
+    btn.style.display = '';
+    btn.innerHTML = `${label} <span>→</span>`;
+    btn.onclick = () => openSmartLink(linkType, linkUrl);
+  }
+
+  applyHeroBtn(primaryBtn,
+    CFG.heroPrimaryLabel   || 'Free Consultation',
+    CFG.heroPrimaryLinkType   || (CFG.heroPrimaryDest   ? 'internal' : 'none'),
+    CFG.heroPrimaryLinkUrl    || CFG.heroPrimaryDest    || 'contact'
+  );
+  applyHeroBtn(secondaryBtn,
+    CFG.heroSecondaryLabel || 'Our Services',
+    CFG.heroSecondaryLinkType || (CFG.heroSecondaryDest ? 'internal' : 'none'),
+    CFG.heroSecondaryLinkUrl  || CFG.heroSecondaryDest  || 'services'
+  );
   const headEl = document.getElementById('hero-headline');
-  const parts = CFG.heroHeadline.split(',').map(s => s.trim());
-  headEl.innerHTML = parts.map((p,i) => `<span class="line"><span style="animation-delay:${2+i*0.12}s">${p}${i < parts.length-1 ? ',' : ''}</span></span>`).join('');
+  if (headEl && CFG.heroHeadline) {
+    const parts = CFG.heroHeadline.split(',').map(s => s.trim());
+    headEl.innerHTML = parts.map((p,i) => `<span class="line"><span style="animation-delay:${2+i*0.12}s">${p}${i < parts.length-1 ? ',' : ''}</span></span>`).join('');
+  }
 
   // Subline
-  document.getElementById('hero-subline').textContent = CFG.heroSubline;
+  const sublineEl = document.getElementById('hero-subline');
+  if (sublineEl) sublineEl.textContent = CFG.heroSubline || '';
 
-  // Trust strip
+  // Trust strip — fall back to SITE_DEFAULTS if CFG has empty array
   const strip = document.getElementById('heroTrustStrip');
-  strip.innerHTML = (CFG.heroTrustBullets||[]).map(b => `
+  if (strip) {
+    const bullets = (CFG.heroTrustBullets && CFG.heroTrustBullets.length)
+      ? CFG.heroTrustBullets
+      : (SITE_DEFAULTS.heroTrustBullets || []);
+    strip.innerHTML = bullets.map(b => `
     <div class="trust-item">
       <div class="trust-dot"></div>
       <span class="trust-text">${b}</span>
     </div>`).join('');
+  }
 }
 
 /* =============================================
@@ -2970,162 +2937,19 @@ function buildStats() {
 /* =============================================
    WHY CHOOSE US
    ============================================= */
-function buildWhy() {
-  const w = CFG.whyChooseUs;
-  const elH = document.getElementById('why-heading');
-  const elS = document.getElementById('why-subtext');
-  const elBN = document.getElementById('why-badge-num');
-  const elBL = document.getElementById('why-badge-label');
-  const grid = document.getElementById('whyGrid');
-  if (elH) elH.textContent = w.heading;
-  if (elS) elS.textContent = w.subtext;
-  if (elBN) elBN.textContent = w.badgeNum;
-  if (elBL) elBL.textContent = w.badgeLabel;
-  if (grid) grid.innerHTML = (w.bullets||[]).map((b,i) => `
-    <div class="why-card reveal reveal-delay-${(i%4)+1}">
-      <div class="why-card-num">0${i+1}</div>
-      <h3>${b.title}</h3>
-      <p>${b.desc}</p>
-    </div>`).join('');
-}
-
-/* =============================================
-   SERVICES
-   ============================================= */
-function buildServices() {
-  const grid = document.getElementById('servicesGrid');
-  grid.innerHTML = (CFG.services||[]).map((s,i) => `
-    <div class="service-card reveal reveal-delay-${(i%3)+1}" onclick="openServiceModal(${i})">
-      <div class="service-icon">${s.icon||'⚖️'}</div>
-      <h3 class="service-title">${s.title}</h3>
-      <p class="service-desc">${s.desc}</p>
-      <div class="service-more">Learn More <span>→</span></div>
-    </div>`).join('');
-}
-
-function openServiceModal(i) {
-  const s = CFG.services[i];
-  if (!s) return;
-  document.getElementById('modal-icon').textContent = s.icon||'⚖️';
-  document.getElementById('modal-title').textContent = s.title;
-  document.getElementById('modal-body').textContent = s.full || s.desc;
-  document.getElementById('serviceModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeServiceModal() {
-  document.getElementById('serviceModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function closeModal(e) {
-  if (e.target === e.currentTarget) closeServiceModal();
-}
-
-/* =============================================
-   ABOUT
-   ============================================= */
-function buildAbout() {
-  document.getElementById('about-title').textContent = `Meet Our Team`;
-  document.getElementById('about-attorney-name').textContent = CFG.attorneyName;
-  const degEl = document.getElementById('about-attorney-degree');
-  if (degEl) degEl.textContent = CFG.attorneyDegree || '';
-  const photo = document.getElementById('about-photo');
-  photo.src = CFG.attorneyPhoto || '';
-  photo.alt = CFG.attorneyName;
-  const bios = document.getElementById('about-bios');
-  bios.innerHTML = [CFG.aboutBio1, CFG.aboutBio2]
-    .filter(Boolean).map(b => `<p>${b}</p>`).join('');
-  const creds = document.getElementById('about-credentials');
-  creds.innerHTML = (CFG.attorneyCredentials||[]).map(c => `<div class="credential-pill">${c}</div>`).join('');
-}
-
-/* =============================================
-   PROCESS
-   ============================================= */
-function buildProcess() {
-  const tl = document.getElementById('processTimeline');
-  tl.innerHTML = (CFG.processSteps||[]).map(s => `
-    <div class="process-step" data-step="${s.num}">
-      <div class="step-num-wrap">
-        <span class="step-num">${s.num}</span>
-      </div>
-      <div class="step-body">
-        <h3 class="step-title">${s.title}</h3>
-        <p class="step-desc">${s.body}</p>
-      </div>
-    </div>`).join('');
-
-  // Activate first step immediately
-  const steps = tl.querySelectorAll('.process-step');
-  if (steps.length) steps[0].classList.add('step-active');
-
-  // Scroll-based circle activation
-  initProcessObserver();
-
-  const req = document.getElementById('processRequirements');
-  req.innerHTML = (CFG.processRequirements||[]).map((r,i) => `
-    <div class="faq-item" id="preq-${i}">
-      <div class="faq-question" onclick="toggleFaq('preq-${i}')">
-        <span class="faq-question-text">${r.q}</span>
-        <div class="faq-toggle"><span class="faq-toggle-icon">+</span></div>
-      </div>
-      <div class="faq-answer"><div class="faq-answer-inner">${r.a}</div></div>
-    </div>`).join('');
-}
-
-function initProcessObserver() {
-  // Activate the step whose circle is nearest the vertical centre of the viewport
-  const updateActiveStep = () => {
-    const steps = document.querySelectorAll('.process-step');
-    if (!steps.length) return;
-    const mid = window.innerHeight / 2;
-    let closest = null, closestDist = Infinity;
-    steps.forEach(step => {
-      const rect = step.getBoundingClientRect();
-      const stepMid = rect.top + rect.height / 2;
-      const dist = Math.abs(stepMid - mid);
-      if (dist < closestDist) { closestDist = dist; closest = step; }
-    });
-    if (closest) {
-      steps.forEach(s => s.classList.remove('step-active'));
-      closest.classList.add('step-active');
-    }
-  };
-
-  // Use IntersectionObserver per step as a trigger, then refine with scroll
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) updateActiveStep(); });
-  }, { threshold: 0.4 });
-
-  window.addEventListener('scroll', updateActiveStep, { passive: true });
-  document.querySelectorAll('.process-step').forEach(s => obs.observe(s));
-}
-
-/* =============================================
-   FAQ
-   ============================================= */
-function buildFaq() {
-  const grid = document.getElementById('faqGrid');
-  grid.innerHTML = (CFG.faqs||[]).map((f,i) => `
-    <div class="faq-item" id="faq-${i}">
-      <div class="faq-question" onclick="toggleFaq('faq-${i}')">
-        <span class="faq-question-text">${f.q}</span>
-        <div class="faq-toggle"><span class="faq-toggle-icon">+</span></div>
-      </div>
-      <div class="faq-answer"><div class="faq-answer-inner">${f.a}</div></div>
-    </div>`).join('');
-}
-
 function toggleFaq(id) {
   const item = document.getElementById(id);
+  if (!item) return;
   const wasOpen = item.classList.contains('open');
   // Close all in same container
-  const parent = item.closest('.faq-grid, .process-timeline ~ .section .faq-grid');
+  const parent = item.closest('.faq-grid');
   if (parent) parent.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
 
 /* =============================================
-   TESTIMONIALS
+   SHARED CARD RENDERERS
+   (used by custom section types)
    ============================================= */
 function testimonialCard(t) {
   const stars = '★'.repeat(parseInt(t.stars)||5);
@@ -3135,7 +2959,7 @@ function testimonialCard(t) {
       <div class="testimonial-stars">${stars}</div>
       <p class="testimonial-text">${t.text}</p>
       <div class="testimonial-author">
-        <div class="testimonial-initials">${t.initials}</div>
+        <div class="testimonial-initials">${t.initials||''}</div>
         <div>
           <div class="testimonial-name">${t.name}</div>
           <div class="testimonial-meta">${t.meta||''}</div>
@@ -3143,17 +2967,7 @@ function testimonialCard(t) {
       </div>
     </div>`;
 }
-function buildTestimonials() {
-  const all = CFG.testimonials||[];
-  const home = document.getElementById('homeTestimonials');
-  if (home) home.innerHTML = all.slice(0,3).map(testimonialCard).join('');
-  const full = document.getElementById('allTestimonials');
-  if (full) full.innerHTML = all.map(testimonialCard).join('');
-}
 
-/* =============================================
-   BLOG
-   ============================================= */
 function buildBlogCardHtml(p, i, delayClass, noFeatured) {
   const hasLink = p.linkType && p.linkType !== 'none' && p.linkUrl;
   const isFeatured = p.featured && !noFeatured;
@@ -3203,15 +3017,67 @@ function buildBlogCardHtml(p, i, delayClass, noFeatured) {
   </div>`;
 }
 
-function buildBlog() {
-  const grid = document.getElementById('blogGrid');
-  if (!grid) return;
-  const posts = [...(CFG.blogPosts || [])];
-  // Sort: featured first
-  const featured = posts.filter(p => p.featured);
-  const rest = posts.filter(p => !p.featured);
-  const ordered = [...featured, ...rest];
-  grid.innerHTML = ordered.map((p, i) => buildBlogCardHtml(p, i)).join('');
+/* =============================================
+   ABOUT
+   ============================================= */
+function buildAbout() {
+  const container = document.getElementById('about-members');
+  if (!container) return;
+
+  // Social SVGs (same as footer)
+  const SOCIAL_SVGS = {
+    facebook:  `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>`,
+    instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+    linkedin:  `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>`,
+    x:         `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+    youtube:   `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="white" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>`,
+    tiktok:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.15a8.16 8.16 0 0 0 4.77 1.52V7.21a4.85 4.85 0 0 1-1-.52z"/></svg>`,
+    custom:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  };
+
+  const attorneys = (CFG.attorneys && CFG.attorneys.length > 0)
+    ? CFG.attorneys
+    : [{ name: CFG.attorneyName||'', degree: CFG.attorneyDegree||'', photo: CFG.attorneyPhoto||'',
+         credentials: CFG.attorneyCredentials||[], bio1: CFG.aboutBio1||'', bio2: CFG.aboutBio2||'',
+         socialLinks:[], btnLabel:'', btnLinkType:'none', btnLinkUrl:'' }];
+
+  container.innerHTML = attorneys.map((a, idx) => {
+    const creds = (a.credentials||[]).map(c => `<div class="credential-pill">${c}</div>`).join('');
+    const socials = (a.socialLinks||[]).filter(s => s.url).map(s =>
+      `<a class="about-social-icon" onclick="openSmartLink('external','${escAttr(s.url)}')" title="${escAttr(s.platform)}">${SOCIAL_SVGS[s.platform]||SOCIAL_SVGS.custom}</a>`
+    ).join('');
+    const bios = [a.bio1, a.bio2].filter(Boolean).map(b => `<p>${b}</p>`).join('');
+    const btnLT  = a.btnLinkType || 'none';
+    const btnUrl = a.btnLinkUrl  || '';
+    const btnLabel = a.btnLabel || '';
+    const btnHtml = (btnLT !== 'none' && btnLabel)
+      ? `<div class="about-member-btn"><button class="btn-primary" onclick="openSmartLink('${escAttr(btnLT)}','${escAttr(btnUrl)}')">${btnLabel} →</button></div>`
+      : '';
+    const delay = idx === 0 ? 'reveal' : 'reveal reveal-delay-1';
+
+    return `<div class="about-member ${delay}" style="${idx > 0 ? 'margin-top:80px;padding-top:80px;border-top:1px solid var(--border);' : ''}">
+      <div class="about-top-grid">
+        <div class="about-left-col">
+          <div class="about-photo-wrap">
+            <div class="about-photo-frame">
+              <img src="${escAttr(a.photo||'')}" alt="${escAttr(a.name||'')}" onerror="this.src='https://placehold.co/400x500/0f2340/c9a84c?text=Photo'"/>
+            </div>
+            <div class="about-photo-accent"></div>
+          </div>
+          ${creds ? `<div class="about-credentials" style="margin-top:24px;">${creds}</div>` : ''}
+        </div>
+        <div class="about-right-col">
+          <h2 class="about-attorney-name">${a.name||''}</h2>
+          <div class="about-attorney-degree">${a.degree||''}</div>
+          <div class="about-bio-full">${bios}</div>
+        </div>
+        <div class="about-social-btn-col">
+          ${socials ? `<div class="about-member-socials">${socials}</div>` : ''}
+          ${btnHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 /* =============================================
@@ -3221,9 +3087,6 @@ function buildContact() {
   const hl = document.getElementById('contact-headline');
   if (hl) hl.textContent = CFG.contactHeadline;
   document.getElementById('contact-subline').textContent = CFG.contactSubline;
-  document.getElementById('contact-form-heading').textContent = CFG.contactFormHeading;
-  document.getElementById('contact-form-intro').textContent = CFG.contactFormIntro;
-  document.getElementById('contact-privacy-note').textContent = CFG.contactPrivacyNote;
   document.getElementById('contact-info-firm').textContent = CFG.firmName;
   const pl = document.getElementById('contact-phone-link');
   pl.href = `tel:${CFG.phoneRaw}`; pl.textContent = CFG.phone;
@@ -3235,6 +3098,74 @@ function buildContact() {
   hours.innerHTML = `<div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Office Hours</div>` +
     (CFG.hours||[]).map(h => `<div class="hours-row"><span class="hours-days">${h.days}</span><span class="hours-time">${h.hours}</span></div>`).join('');
   document.getElementById('privacy-email').textContent = CFG.email;
+
+  // Build dynamic contact form
+  const wrap = document.getElementById('contact-form-wrap');
+  if (!wrap) return;
+  const formId = 'contact-main-form';
+  const fields = CFG.contactForm || [];
+  const endpoint = CFG.formEndpoint || '';
+  const submitLabel = CFG.contactSubmitLabel || 'Request Free Consultation';
+  const successMsg = CFG.contactSuccessMsg || "Thank you! We'll be in touch soon.";
+  const heading = CFG.contactFormHeading || '';
+  const intro = CFG.contactFormIntro || '';
+  const privacyNote = CFG.contactPrivacyNote || '';
+
+  function renderContactField(f, fi) {
+    const fieldId = `${formId}-f${fi}`;
+    const reqAttr = f.required ? 'required' : '';
+    const reqStar = f.required ? '<span class="req-star">*</span>' : '';
+    const ph = f.placeholder ? `placeholder="${escAttr(f.placeholder)}"` : '';
+    const label = f.label ? `<label for="${fieldId}">${f.label}${reqStar}</label>` : '';
+    let input = '';
+    switch (f.type) {
+      case 'email':    input = `<input type="email" id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}/>`; break;
+      case 'phone':    input = `<input type="tel"   id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}/>`; break;
+      case 'textarea': input = `<textarea id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}></textarea>`; break;
+      case 'select': {
+        const opts = (f.options||[]).map(o => `<option value="${escAttr(o)}">${o}</option>`).join('');
+        input = `<select id="${fieldId}" name="${escAttr(f.label)}" ${reqAttr}><option value="">${f.placeholder || 'Select an option…'}</option>${opts}</select>`;
+        break;
+      }
+      case 'radio': {
+        const opts = (f.options||[]).map(o => `<label><input type="radio" name="${escAttr(f.label)}" value="${escAttr(o)}" ${reqAttr}/>${o}</label>`).join('');
+        input = `<div class="cps-form-radio-group">${opts}</div>`;
+        break;
+      }
+      case 'checkbox':
+        input = `<div class="cps-form-checkbox-wrap"><label><input type="checkbox" name="${escAttr(f.label)}" ${reqAttr}/>${f.label||''}</label></div>`;
+        break;
+      default:
+        input = `<input type="text" id="${fieldId}" name="${escAttr(f.label)}" ${ph} ${reqAttr}/>`;
+    }
+    return `<div class="form-group">${label}${input}</div>`;
+  }
+
+  let fieldsHtml = '';
+  let fi = 0;
+  while (fi < fields.length) {
+    const f = fields[fi];
+    if (f.halfWidth && fi + 1 < fields.length) {
+      fieldsHtml += `<div class="form-row">${renderContactField(f, fi)}${renderContactField(fields[fi+1], fi+1)}</div>`;
+      fi += 2;
+    } else {
+      fieldsHtml += renderContactField(f, fi);
+      fi++;
+    }
+  }
+
+  wrap.innerHTML = `
+    ${heading ? `<h3>${heading}</h3>` : ''}
+    ${intro   ? `<p>${intro}</p>`    : ''}
+    <form id="${formId}" onsubmit="submitCpsForm(event,'${formId}','${escAttr(endpoint)}','${escAttr(successMsg)}')">
+      ${fieldsHtml}
+      ${privacyNote ? `<p class="form-privacy">${privacyNote}</p>` : ''}
+      <button type="submit" class="btn-submit" id="contact-submit-btn">${submitLabel} →</button>
+    </form>
+    <div class="cps-form-success" id="${formId}-success" style="display:none;">
+      <div class="cps-form-success-icon">✅</div>
+      <div class="cps-form-success-msg"></div>
+    </div>`;
 }
 
 /* =============================================
@@ -3279,12 +3210,7 @@ function buildFooter() {
 function buildNav() {
   const pt = CFG.pageToggles || {};
   const navPages = [
-    { key: 'about',        label: 'About'        },
-    { key: 'services',     label: 'Services'     },
-    { key: 'process',      label: 'Process'      },
-    { key: 'faq',          label: 'FAQ',         toggleKey: 'faqs' },
-    { key: 'testimonials', label: 'Testimonials' },
-    { key: 'blog',         label: 'Resources'    },
+    { key: 'about',        label: CFG.aboutNavLabel || CFG.pageHeaders?.about?.label || 'About' },
   ];
   const nav = document.getElementById('drawer-links');
   if (!nav) return;
@@ -3330,7 +3256,7 @@ function buildNav() {
   parts.forEach(el => nav.appendChild(el));
   // Update active state
   document.getElementById('mobile-nav').querySelectorAll('.nav-link').forEach(l => {
-    l.classList.toggle('active', l.textContent.toLowerCase().includes(currentPage === 'blog' ? 'resource' : currentPage));
+    l.classList.toggle('active', l.textContent.toLowerCase().includes(currentPage));
   });
   buildFooterNav();
 }
@@ -3338,13 +3264,8 @@ function buildNav() {
 function buildFooterNav() {
   const pt = CFG.pageToggles || {};
   const footerPages = [
-    { key: 'home',         label: 'Home'         },
-    { key: 'about',        label: 'About'        },
-    { key: 'services',     label: 'Services'     },
-    { key: 'process',      label: 'Process'      },
-    { key: 'faq',          label: 'FAQ',         toggleKey: 'faqs' },
-    { key: 'testimonials', label: 'Testimonials' },
-    { key: 'blog',         label: 'Resources'    },
+    { key: 'home',    label: 'Home'  },
+    { key: 'about',   label: CFG.aboutNavLabel || CFG.pageHeaders?.about?.label || 'About' },
   ];
   const container = document.getElementById('footer-nav-links');
   if (!container) return;
@@ -3389,35 +3310,15 @@ function applyHomepageToggles() {
 
 function buildPageHeaders() {
   const h = Object.assign({
-    about:        { label: "About Us",         title: "Meet Our Team",              subtitle: "" },
-    services:     { label: "Practice Areas",   title: "Our Adoption Services",      subtitle: "" },
-    process:      { label: "How It Works",     title: "The Adoption Process",       subtitle: "" },
-    faq:          { label: "Common Questions", title: "Frequently Asked Questions", subtitle: "" },
-    testimonials: { label: "Client Reviews",   title: "What Our Clients Say",       subtitle: "" },
-    blog:         { label: "Resources",        title: "Adoption Guides & Insights", subtitle: "" },
-    contact:      { label: "Get in Touch" },
+    about:   { label: "About Us",     title: "Meet Our Team", subtitle: "" },
+    contact: { label: "Get in Touch" },
   }, CFG.pageHeaders || {});
 
   const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.textContent = val; };
 
-  set("about-label",            h.about?.label);
-  set("about-title",            h.about?.title);
-  set("services-label",         h.services?.label);
-  set("services-title",         h.services?.title);
-  set("services-subtitle",      h.services?.subtitle);
-  set("process-label",          h.process?.label);
-  set("process-title",          h.process?.title);
-  set("process-subtitle",       h.process?.subtitle);
-  set("faq-label",              h.faq?.label);
-  set("faq-title",              h.faq?.title);
-  set("faq-subtitle",           h.faq?.subtitle);
-  set("testimonials-label",     h.testimonials?.label);
-  set("testimonials-title",     h.testimonials?.title);
-  set("testimonials-subtitle",  h.testimonials?.subtitle);
-  set("blog-label",             h.blog?.label);
-  set("blog-title",             h.blog?.title);
-  set("blog-subtitle",          h.blog?.subtitle);
-  set("contact-label",          h.contact?.label);
+  set("about-label",   h.about?.label);
+  set("about-title",   h.about?.title);
+  set("contact-label", h.contact?.label);
 }
 
 function buildHeader() {
@@ -3429,17 +3330,13 @@ function buildHeader() {
   document.getElementById('metaKeys').content = CFG.metaKeywords;
 }
 function applyCTALabel() {
-  const label = CFG.ctaLabel || 'Free Consultation';
-  const hero = document.getElementById('hero-cta-btn');
-  if (hero) hero.innerHTML = label + ' <span>→</span>';
-  const submit = document.getElementById('contact-submit-btn');
-  if (submit) submit.textContent = label + ' →';
+  // ctaLabel is used for nav/footer CTA buttons; hero button is controlled by heroPrimaryLabel in buildHero
 }
 
 /* =============================================
    PAGE NAVIGATION
    ============================================= */
-const PAGES = ['home','about','services','process','faq','testimonials','blog','contact','privacy'];
+const PAGES = ['home','about','contact','privacy'];
 let currentPage = 'home';
 
 let _suppressHistoryPush = false;
@@ -3447,8 +3344,8 @@ let _suppressHistoryPush = false;
 function showPage(name) {
   // Redirect to home if core page is disabled
   const pt = CFG.pageToggles || {};
-  const disableable = ['about','services','process','faq','testimonials','blog','contact'];
-  const toggleKey = name === 'faq' ? 'faqs' : name;
+  const disableable = ['about','contact'];
+  const toggleKey = name;
   if (disableable.includes(name) && pt[toggleKey] === false) name = 'home';
 
   // Check if it's a custom page slug
@@ -3483,7 +3380,7 @@ function showPage(name) {
     const lText = l.textContent.toLowerCase().trim();
     const isActive = isCustom
       ? l.dataset.slug === name
-      : lText.includes(name === 'blog' ? 'resource' : name);
+      : lText.includes(name);
     l.classList.toggle('active', isActive);
   });
 
@@ -3513,7 +3410,7 @@ function showPage(name) {
     document.title = titles[name] || CFG.firmName;
   }
 
-  setTimeout(initReveal, 100);
+  setTimeout(() => { initReveal(); initProcessObserver(); }, 100);
 }
 
 // Back / forward button support
@@ -3558,6 +3455,34 @@ window.addEventListener('scroll', () => {
 /* =============================================
    SCROLL REVEAL
    ============================================= */
+function initProcessObserver() {
+  // Activate the step whose circle is nearest the vertical centre of the viewport
+  const updateActiveStep = () => {
+    const steps = document.querySelectorAll('.process-step');
+    if (!steps.length) return;
+    const mid = window.innerHeight / 2;
+    let closest = null, closestDist = Infinity;
+    steps.forEach(step => {
+      const rect = step.getBoundingClientRect();
+      const stepMid = rect.top + rect.height / 2;
+      const dist = Math.abs(stepMid - mid);
+      if (dist < closestDist) { closestDist = dist; closest = step; }
+    });
+    if (closest) {
+      steps.forEach(s => s.classList.remove('step-active'));
+      closest.classList.add('step-active');
+    }
+  };
+
+  // Use IntersectionObserver per step as a trigger, then refine with scroll
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) updateActiveStep(); });
+  }, { threshold: 0.4 });
+
+  window.addEventListener('scroll', updateActiveStep, { passive: true });
+  document.querySelectorAll('.process-step').forEach(s => obs.observe(s));
+}
+
 function initReveal() {
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
@@ -3887,9 +3812,13 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── TESTIMONIALS ─────────────────────────────────────────────
     case 'testimonials': {
-      const count = parseInt(sec.count) || 3;
-      const items = (CFG.testimonials || []).slice(0, count).map(testimonialCard).join('');
-      const showBtn = sec.showReadAll !== false;
+      const showReviews = sec.showReviews !== false;
+      // Mode 1: pull from CFG.testimonials; Mode 2: use sec.items
+      const source = showReviews
+        ? (CFG.testimonials || []).slice(0, parseInt(sec.count) || 3)
+        : (sec.items || []);
+      const items = source.map(testimonialCard).join('');
+      const showBtn = showReviews && sec.showReadAll !== false;
       const btnLabel = sec.readAllLabel || 'Read All Reviews';
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
@@ -4241,6 +4170,12 @@ function openSmartLink(linkType, linkUrl) {
 let _modalBtnLinkType = 'internal';
 let _modalBtnLinkUrl = 'contact';
 
+function closeServiceModal() {
+  const m = document.getElementById('serviceModal');
+  if (m) m.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 function openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl) {
   document.getElementById('modal-icon').textContent = icon;
   document.getElementById('modal-title').textContent = title;
@@ -4300,45 +4235,50 @@ async function submitCpsForm(e, formId, endpoint, successMsg) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  applyColors();
-  loadFonts();
-  buildHeader();
-  buildNav();
-  // Set page title from config immediately on load
-  document.title = CFG.pageTitles.home || CFG.firmName;
-  buildPageHeaders();
-  buildHero();
+  const _run = (fn, name) => { try { fn(); } catch(e) { console.error('Error in ' + name + ':', e); } };
+
+  _run(applyColors,       'applyColors');
+  _run(loadFonts,         'loadFonts');
+  _run(buildHeader,       'buildHeader');
+  _run(buildNav,          'buildNav');
+  try { document.title = CFG.pageTitles.home || CFG.firmName; } catch(e) {}
+  _run(buildPageHeaders,  'buildPageHeaders');
+  _run(buildHero,         'buildHero');
+
   // Start header fully transparent — scroll handler fades it in on home page
-  const header = document.getElementById('site-header');
-  header.style.background = 'rgba(9, 20, 38, 0)';
-  header.style.backdropFilter = '';
-  buildStats();
-  buildHomeSections();
-  buildWhy();
-  buildServices();
-  buildAbout();
-  buildProcess();
-  buildFaq();
-  buildTestimonials();
-  buildBlog();
-  buildContact();
-  buildFooter();
-  applyCTALabel();
-  buildCustomPages();
-  initReveal();
+  try {
+    const header = document.getElementById('site-header');
+    header.style.background = 'rgba(9, 20, 38, 0)';
+    header.style.backdropFilter = '';
+  } catch(e) {}
+
+  _run(buildStats,        'buildStats');
+  _run(buildHomeSections, 'buildHomeSections');
+  _run(buildAbout,        'buildAbout');
+  _run(buildContact,      'buildContact');
+  _run(buildFooter,       'buildFooter');
+  _run(applyCTALabel,     'applyCTALabel');
+  _run(buildCustomPages,  'buildCustomPages');
+  _run(initReveal,           'initReveal');
+  _run(initProcessObserver,  'initProcessObserver');
 
   // Seed initial history state and navigate to hash if present
-  const initialPage = window.location.hash.replace('#', '') || 'home';
-  _suppressHistoryPush = true;
-  showPage(initialPage);
-  _suppressHistoryPush = false;
-  history.replaceState({ page: initialPage }, '', window.location.hash || window.location.pathname);
+  try {
+    const initialPage = window.location.hash.replace('#', '') || 'home';
+    _suppressHistoryPush = true;
+    showPage(initialPage);
+    _suppressHistoryPush = false;
+    history.replaceState({ page: initialPage }, '', window.location.hash || window.location.pathname);
+  } catch(e) { console.error('Error in showPage init:', e); }
 
-  // Preloader
-  setTimeout(() => {
+  // Preloader — guaranteed to dismiss
+  const _dismissPreloader = () => {
     const pl = document.getElementById('preloader');
-    pl.classList.add('hidden');
-  }, 2200);
+    if (pl) pl.classList.add('hidden');
+  };
+  setTimeout(_dismissPreloader, 2200);
+  // Fallback: force dismiss after 5s no matter what
+  setTimeout(_dismissPreloader, 5000);
 });
 
 // GA
