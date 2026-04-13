@@ -1685,31 +1685,137 @@ function loadForm() {
 /* =============================================
    RICH TEXT EDITOR HELPERS
    ============================================= */
+// ── Rich Text Editor Helpers ──────────────────────────────────
+function rtGetEditor(btn) {
+  const tb = btn.closest('.rt-toolbar');
+  return tb ? tb.nextElementSibling : null;
+}
+
 function rtCmd(btn, cmd) {
-  // Focus the sibling editor
-  const toolbar = btn.closest('.rt-toolbar');
-  const editor  = toolbar ? toolbar.nextElementSibling : null;
-  if (editor) editor.focus();
+  const editor = rtGetEditor(btn);
+  if (!editor) return;
+  editor.focus();
   document.execCommand(cmd, false, null);
-  rtUpdateToolbar(toolbar);
+  rtUpdateToolbar(btn.closest('.rt-toolbar'));
   autosave();
 }
 
+// Bd: convert current block back to a plain paragraph with body font/color/size
+function rtBody(btn) {
+  const editor = rtGetEditor(btn);
+  if (!editor) return;
+  editor.focus();
+  document.execCommand('formatBlock', false, 'p');
+  const fontName   = (document.getElementById('f_fontBody')   || {}).value || 'DM Sans';
+  const bodyColor  = (document.getElementById('f_fcBodyHex')  || {}).value || '';
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    let node = sel.anchorNode;
+    while (node && node !== editor) {
+      if (node.nodeName === 'P') {
+        node.style.fontFamily  = "'" + fontName + "', system-ui, sans-serif";
+        node.style.fontWeight  = '';
+        node.style.fontSize    = '';
+        if (bodyColor) node.style.color = bodyColor;
+        break;
+      }
+      node = node.parentElement;
+    }
+  }
+  rtUpdateToolbar(btn.closest('.rt-toolbar'));
+  autosave();
+}
+
+// Size: use execCommand fontSize then replace <font size> with styled spans
 const RT_SIZE_MAP = { small: '1', normal: '3', large: '4', xlarge: '5' };
+const RT_SIZE_PX  = { small: '13px', normal: '17px', large: '22px', xlarge: '30px' };
 function rtSize(btn, size) {
-  const toolbar = btn.closest('.rt-toolbar');
-  const editor  = toolbar ? toolbar.nextElementSibling : null;
-  if (editor) editor.focus();
+  const editor = rtGetEditor(btn);
+  if (!editor) return;
+  editor.focus();
   document.execCommand('fontSize', false, RT_SIZE_MAP[size] || '3');
-  rtUpdateToolbar(toolbar);
+  editor.querySelectorAll('font[size]').forEach(el => {
+    const span = document.createElement('span');
+    span.style.fontSize = RT_SIZE_PX[size] || '17px';
+    while (el.firstChild) span.appendChild(el.firstChild);
+    el.replaceWith(span);
+  });
+  rtUpdateToolbar(btn.closest('.rt-toolbar'));
+  autosave();
+}
+
+// H1/H2: wrap current block in a heading with the display font
+function rtHeading(btn, tag) {
+  const editor = rtGetEditor(btn);
+  if (!editor) return;
+  editor.focus();
+  document.execCommand('formatBlock', false, tag);
+  // Read the actual font name and heading color from the admin selectors
+  const fontName = (document.getElementById('f_fontDisplay') || {}).value || 'Playfair Display';
+  const headingColor = (document.getElementById('f_fcHeadingHex') || {}).value || '';
+  // Find the newly created heading element and apply the font directly
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    let node = sel.anchorNode;
+    while (node && node !== editor) {
+      if (node.nodeName === tag.toUpperCase()) {
+        node.style.fontFamily = "'" + fontName + "', Georgia, serif";
+        node.style.fontWeight = '500';
+        if (headingColor) node.style.color = headingColor;
+        break;
+      }
+      node = node.parentElement;
+    }
+    // Fallback: query all matching heading tags in editor that lack font-family
+    editor.querySelectorAll(tag + ':not([style*="font-family"])').forEach(el => {
+      el.style.fontFamily = "'" + fontName + "', Georgia, serif";
+      el.style.fontWeight = '500';
+      if (headingColor) el.style.color = headingColor;
+    });
+  }
+  rtUpdateToolbar(btn.closest('.rt-toolbar'));
+  autosave();
+}
+
+// Size: use execCommand fontSize then immediately re-tag the inserted <font> elements
+
+function rtOnPaste(e) {
+  e.preventDefault();
+  const html = e.clipboardData.getData('text/html');
+  const text = e.clipboardData.getData('text/plain');
+  let clean = '';
+  if (html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    const allowed = new Set(['B','STRONG','I','EM','U','BR','P','UL','OL','LI','SPAN','A','H1','H2','H3']);
+    function stripNode(node) {
+      if (node.nodeType === 3) return;
+      if (node.nodeType === 1) {
+        if (!allowed.has(node.tagName)) {
+          const frag = document.createDocumentFragment();
+          Array.from(node.childNodes).forEach(c => { stripNode(c); frag.appendChild(c); });
+          node.replaceWith(frag);
+          return;
+        }
+        Array.from(node.attributes).forEach(attr => {
+          if (!(node.tagName === 'A' && attr.name === 'href')) node.removeAttribute(attr.name);
+        });
+        Array.from(node.childNodes).forEach(stripNode);
+      }
+    }
+    Array.from(tmp.childNodes).forEach(stripNode);
+    clean = tmp.innerHTML;
+  } else {
+    clean = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
+    clean = '<p>' + clean + '</p>';
+  }
+  document.execCommand('insertHTML', false, clean);
   autosave();
 }
 
 function rtOnInput(editor) {
-  // If editor is completely empty, clear any residual HTML
-  if (!editor.textContent.trim() && !editor.querySelector('img')) {
-    editor.innerHTML = '';
-  }
+  if (!editor.textContent.trim() && !editor.querySelector('img')) editor.innerHTML = '';
   autosave();
 }
 
@@ -4245,24 +4351,31 @@ function buildCpSectionTypeFields(sec, pi, si) {
         <div class="field-group" style="margin-bottom:16px;">
           <label>Rich Text</label>
           <div class="rt-toolbar" data-cp="${pi}" data-sec="${si}">
-            <button type="button" class="rt-btn" onclick="rtCmd(this,'bold')"          title="Bold"><b>B</b></button>
-            <button type="button" class="rt-btn" onclick="rtCmd(this,'italic')"        title="Italic"><i>I</i></button>
-            <button type="button" class="rt-btn" onclick="rtCmd(this,'underline')"     title="Underline"><u>U</u></button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtCmd(this,'bold')"               title="Bold"><b>B</b></button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtCmd(this,'italic')"             title="Italic"><i>I</i></button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtCmd(this,'underline')"          title="Underline"><u>U</u></button>
             <span class="rt-divider"></span>
-            <button type="button" class="rt-btn" onclick="rtCmd(this,'insertUnorderedList')" title="Bullet list">≡•</button>
-            <button type="button" class="rt-btn" onclick="rtCmd(this,'insertOrderedList')"   title="Numbered list">1.</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtCmd(this,'insertUnorderedList')" title="Bullet list">≡•</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtCmd(this,'insertOrderedList')"   title="Numbered list">1.</button>
             <span class="rt-divider"></span>
-            <button type="button" class="rt-btn" onclick="rtSize(this,'small')"   title="Small text">S</button>
-            <button type="button" class="rt-btn" onclick="rtSize(this,'normal')"  title="Normal text">M</button>
-            <button type="button" class="rt-btn" onclick="rtSize(this,'large')"   title="Large text">L</button>
-            <button type="button" class="rt-btn" onclick="rtSize(this,'xlarge')"  title="Extra large">XL</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtHeading(this,'h1')" title="Heading 1 (display font, large)" style="font-weight:700;">H1</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtHeading(this,'h2')" title="Heading 2 (display font, medium)" style="font-weight:700;">H2</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtBody(this)" title="Body text (body font, normal size)">Bd</button>
             <span class="rt-divider"></span>
-            <button type="button" class="rt-btn" onclick="rtCmd(this,'removeFormat')" title="Clear formatting">✕</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtSize(this,'small')"   title="Small text">S</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtSize(this,'normal')"  title="Normal text">M</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtSize(this,'large')"   title="Large text">L</button>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtSize(this,'xlarge')"  title="Extra large">XL</button>
+            <span class="rt-divider"></span>
+            <button type="button" class="rt-btn" onmousedown="event.preventDefault()" onclick="rtCmd(this,'removeFormat')" title="Clear formatting">✕</button>
           </div>
           <div class="rt-editor"
             contenteditable="true"
             data-cp="${pi}" data-sec="${si}" data-field="richContent"
             oninput="rtOnInput(this)"
+            onmouseup="rtSaveRange(this)"
+            onkeyup="rtSaveRange(this)"
+            onpaste="rtOnPaste(event)"
           >${sec.richContent || ''}</div>
         </div>
         <div class="form-row-2" style="margin-bottom:12px;">
@@ -5416,8 +5529,23 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     const saved = localStorage.getItem(LS_DATA());
     if (saved) {
-      localData = JSON.parse(saved);
-      localTs = localData._savedAt || 0;
+      const candidate = JSON.parse(saved);
+      // Integrity check: if customPages have sections with items where ALL titles
+      // are empty, the data was likely corrupted by a collect cycle on collapsed cards
+      const isCorrupted = (candidate.customPages || []).some(pg =>
+        (pg.sections || []).some(sec =>
+          Array.isArray(sec.items) && sec.items.length > 0 &&
+          sec.items.every(item => !item.title && !item.name && !item.q && !item.service && !item.date)
+        )
+      );
+      if (!isCorrupted) {
+        localData = candidate;
+        localTs = localData._savedAt || 0;
+      } else {
+        console.warn('Discarding corrupted localStorage data — section items have empty titles');
+        localStorage.removeItem(LS_DATA());
+        localStorage.removeItem(LS_PREVIEW());
+      }
     }
   } catch(e) {}
 
