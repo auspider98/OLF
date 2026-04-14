@@ -1666,8 +1666,7 @@ footer {
   align-items: start;
 }
 .cps-two-col.image-right { }
-.cps-two-col.image-left { direction: rtl; }
-.cps-two-col.image-left > * { direction: ltr; }
+.cps-two-col.image-left { }
 .cps-two-col-text .cps-heading {
   font-family: var(--font-display);
   font-size: clamp(22px, 2.8vw, 34px);
@@ -1705,8 +1704,7 @@ footer {
   font-size: 48px;
 }
 @media (max-width: 768px) {
-  .cps-two-col { grid-template-columns: 1fr; direction: ltr; }
-  .cps-two-col.image-left > * { direction: ltr; }
+  .cps-two-col { grid-template-columns: 1fr; }
 }
 
 /* Stats Bar (custom) */
@@ -2423,6 +2421,7 @@ footer {
   <section class="section section-after-banner">
     <div class="container" id="about-members"></div>
   </section>
+  <div id="about-custom-sections"></div>
 </div>
 
 <!-- ============================================================
@@ -2678,6 +2677,7 @@ if (!Array.isArray(CFG.customPages)) CFG.customPages = [];
         else CFG.customPages = parsed.customPages;
       }
       if (Array.isArray(parsed.homeSections)) CFG.homeSections = parsed.homeSections;
+      if (Array.isArray(parsed.aboutSections)) CFG.aboutSections = parsed.aboutSections;
     }
   } catch(e) {}
 })();
@@ -3131,6 +3131,19 @@ function buildAbout() {
       </div>
     </div>`;
   }).join('');
+
+  // Render aboutSections custom sections below attorney block
+  const aboutSections = CFG.aboutSections || [];
+  if (aboutSections.length) {
+    const aboutCustomWrap = document.getElementById('about-custom-sections');
+    if (aboutCustomWrap) {
+      aboutCustomWrap.innerHTML = '';
+      aboutSections.forEach((sec, idx) => {
+        const el = renderCustomSection(sec, idx, false, aboutSections);
+        if (el) aboutCustomWrap.appendChild(el);
+      });
+    }
+  }
 }
 
 /* =============================================
@@ -3796,7 +3809,14 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
     // ── SERVICES GRID ────────────────────────────────────────────
     case 'services': {
       const items = (sec.items || []).map((s, i) => `
-        <div class="service-card reveal reveal-delay-${(i%3)+1}" ${s.detail ? `onclick="openCpsModal('${escAttr(s.title)}','${escAttr(s.icon||'⚖️')}','${escAttr(s.detail || s.desc)}','${escAttr(s.btnLabel||'')}','${escAttr(s.btnLinkType||'internal')}','${escAttr(s.btnLinkUrl||'contact')}')"` : ''}>
+        <div class="service-card reveal reveal-delay-${(i%3)+1}"
+          ${s.detail ? `onclick="openCpsModalFromCard(this)"
+            data-svc-title="${escAttr(s.title)}"
+            data-svc-icon="${escAttr(s.icon||'⚖️')}"
+            data-svc-detail="${escAttr(s.detail || s.desc)}"
+            data-svc-btn-label="${escAttr(s.btnLabel||'')}"
+            data-svc-btn-type="${escAttr(s.btnLinkType||'internal')}"
+            data-svc-btn-url="${escAttr(s.btnLinkUrl||'contact')}"` : ''}>
           <div class="service-icon">${s.icon || '⚖️'}</div>
           <h3 class="service-title">${s.title}</h3>
           <p class="service-desc">${s.desc}</p>
@@ -3908,21 +3928,31 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
     // ── CTA BANNER ───────────────────────────────────────────────
     case 'cta': {
+      const primLabel = sec.cta_primary_linkLabel || sec.ctaLabel || '';
+      const primType  = sec.cta_primary_linkType    || 'internal';
+      const primUrl   = sec.cta_primary_linkUrl     || 'contact';
+      const secLabel  = sec.cta_secondary_linkLabel || sec.secondaryLabel || '';
+      const secType   = sec.cta_secondary_linkType  || 'internal';
+      const secUrl    = sec.cta_secondary_linkUrl   || sec.secondaryTarget || 'services';
+      const primClick = primType === 'internal'
+        ? `onclick="showPage('${escAttr(primUrl)}')" `
+        : `onclick="openSmartLink('${escAttr(primType)}','${escAttr(primUrl)}')" `;
+      const secClick  = secType === 'internal'
+        ? `onclick="showPage('${escAttr(secUrl)}')" `
+        : `onclick="openSmartLink('${escAttr(secType)}','${escAttr(secUrl)}')" `;
+      const primBtn   = primLabel ? `<button class="btn-primary" ${primClick}>${escAttr(primLabel)} →</button>` : '';
+      const secBtn    = secLabel  ? `<button class="btn-outline" ${secClick}>${escAttr(secLabel)}</button>` : '';
       wrapper.classList.add('cps-cta-wrapper');
       wrapper.innerHTML = `<div class="cps-cta-banner">
         <div class="container">
           ${sec.heading ? `<${headTag} class="${headClass} cps-heading reveal">${sec.heading}</${headTag}>` : ''}
           ${sec.body ? `<div class="cps-body reveal reveal-delay-1">${sec.body}</div>` : ''}
-          <div class="cps-actions reveal reveal-delay-2">
-            <button class="btn-primary" onclick="showPage('contact')">${sec.ctaLabel || CFG.ctaLabel || 'Free Consultation'} →</button>
-            ${sec.secondaryLabel ? `<button class="btn-outline" onclick="showPage('${sec.secondaryTarget||'services'}')">${sec.secondaryLabel}</button>` : ''}
-          </div>
+          ${(primBtn || secBtn) ? `<div class="cps-actions reveal reveal-delay-2">${primBtn}${secBtn}</div>` : ''}
         </div>
       </div>`;
       break;
     }
 
-    // ── DOCUMENT CHECKLIST ───────────────────────────────────────
     case 'checklist': {
       const cats = (sec.categories || []).map(cat => {
         const docItems = (cat.items || []).map(item =>
@@ -4279,6 +4309,16 @@ function closeServiceModal() {
   const m = document.getElementById('serviceModal');
   if (m) m.classList.remove('open');
   document.body.style.overflow = '';
+}
+
+function openCpsModalFromCard(el) {
+  const title      = el.dataset.svcTitle    || '';
+  const icon       = el.dataset.svcIcon     || '⚖️';
+  const body       = el.dataset.svcDetail   || '';
+  const btnLabel   = el.dataset.svcBtnLabel || '';
+  const btnLinkType = el.dataset.svcBtnType || 'internal';
+  const btnLinkUrl  = el.dataset.svcBtnUrl  || 'contact';
+  openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl);
 }
 
 function openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl) {

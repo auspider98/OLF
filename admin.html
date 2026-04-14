@@ -965,6 +965,14 @@ html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; backgr
       <div id="attorney-accordions"></div>
 
       <button class="btn-add" onclick="addAttorney()" style="margin-top:8px;">+ Add Team Member</button>
+
+      <div class="divider" style="margin:28px 0 20px;"></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Additional Sections</div>
+      <div id="about-sections-list"></div>
+      <div class="cp-add-section-bar">
+        <select id="about-type-select"></select>
+        <button class="btn btn-gold btn-sm" onclick="addAboutSection()">+ Add Section</button>
+      </div>
       </div><!-- /section-panels-wrap -->
     </div>
 
@@ -1428,7 +1436,8 @@ let DATA = {
   ctaLabel:"Free Consultation",
   pageToggles:{about:true,contact:true},
   homeToggles:{stats:true,why:true,testimonials:true},
-  customPages:[]
+  customPages:[],
+  aboutSections:[]
 };
 
 /* =============================================
@@ -1672,6 +1681,8 @@ function loadForm() {
   // Custom pages
   if (!Array.isArray(DATA.homeSections)) DATA.homeSections = [];
   buildHomeSectionsList();
+  if (!Array.isArray(DATA.aboutSections)) DATA.aboutSections = [];
+  buildAboutSectionsList();
   if (!Array.isArray(DATA.customPages)) DATA.customPages = [];
   buildCustomPagesList();
   // Apply site color scheme to admin UI
@@ -1950,6 +1961,7 @@ function collectData() {
   DATA.aboutNavLabel = getVal('f_aboutNavLabel') || 'About Us';
   collectToggles();
   DATA.homeSections = collectHomeSections();
+  DATA.aboutSections = collectAboutSections();
   DATA.customPages = collectCustomPages();
   // Mirror primary testimonials source into DATA.testimonials
   const allSections = [
@@ -2770,6 +2782,11 @@ function onCpLinkTypeChange(pi, si, pref, sel) {
   }
 }
 
+function onCtaBtnLabelInput(pi, si, pref, input) {
+  const wrap = document.getElementById(`cp-cta-btn-wrap-${pi}-${si}-${pref}`);
+  if (wrap) wrap.style.display = input.value.trim() ? 'block' : 'none';
+}
+
 function onJurisdictionLinkTypeChange(pi, si, sel) {
   const val = sel.value;
   const intEl = document.getElementById('cp-jur-internal-' + pi + '-' + si);
@@ -3228,6 +3245,66 @@ function addHomeSection() {
   toast('Section added.', 'success');
 }
 
+function buildAboutSectionsList() {
+  const container = document.getElementById('about-sections-list');
+  if (!container) return;
+
+  // Populate type select if empty
+  const sel = document.getElementById('about-type-select');
+  if (sel && !sel.children.length) {
+    sel.innerHTML = CP_SECTION_TYPES.map(t => '<option value="' + t.value + '">' + t.label + '</option>').join('');
+  }
+
+  // Snapshot open section cards
+  const openSections = new Set();
+  container.querySelectorAll('.cp-section-card').forEach(card => {
+    if (card.classList.contains('open')) openSections.add(card.dataset.si);
+  });
+
+  container.innerHTML = (DATA.aboutSections || []).map((sec, si) => buildCustomSectionHtml(sec, 'a', si)).join('');
+
+  // Restore open states
+  container.querySelectorAll('.cp-section-card').forEach(card => {
+    if (!openSections.has(card.dataset.si)) card.classList.remove('open');
+  });
+
+  // Wire sub-item drag-drop
+  container.querySelectorAll('[data-cp-drag]').forEach(el => {
+    const parts = el.dataset.cpDrag.split('-');
+    const si = parseInt(parts[1]);
+    const arr = parts.slice(2).join('-');
+    initCpSubItemDragDrop(el, 'a', si, arr);
+  });
+}
+
+function addAboutSection() {
+  const sel = document.getElementById('about-type-select');
+  if (!sel) return;
+  const type = sel.value;
+  const defaults = { type, label: '', background: 'light' };
+  if (['stats','bullets','services','steps','faq','timeline','fees'].includes(type)) defaults.items = [];
+  if (type === 'checklist') defaults.categories = [];
+  if (type === 'form') { defaults.fields = []; defaults.submitLabel = 'Send Message'; defaults.successMsg = "Thank you! We'll be in touch soon."; }
+  if (type === 'link') { defaults.linkType = 'none'; defaults.linkUrl = ''; defaults.linkLabel = ''; }
+  if (type === 'button') { defaults.primary_linkType = 'none'; defaults.primary_linkUrl = ''; defaults.primary_linkLabel = ''; defaults.secondary_linkType = 'none'; defaults.secondary_linkUrl = ''; defaults.secondary_linkLabel = ''; }
+  if (type === 'richtext') { defaults.background = 'inherit'; defaults.richContent = ''; defaults.imagePath = ''; defaults.imagePos = 'none'; defaults.imageSize = 'md'; defaults.imageCaption = ''; defaults.fullWidth = false; }
+  if (!Array.isArray(DATA.aboutSections)) DATA.aboutSections = [];
+  DATA.aboutSections.push(defaults);
+  buildAboutSectionsList();
+  // Open and scroll to new section card
+  const container = document.getElementById('about-sections-list');
+  if (container) {
+    const cards = container.querySelectorAll('.cp-section-card');
+    const newCard = cards[cards.length - 1];
+    if (newCard) {
+      newCard.classList.add('open');
+      newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+  autosave();
+  toast('Section added.', 'success');
+}
+
 function collectHomeSections() {
   const container = document.getElementById('home-sections-list');
   if (!container) return DATA.homeSections || [];
@@ -3240,10 +3317,24 @@ function collectHomeSections() {
   });
 }
 
+function collectAboutSections() {
+  const container = document.getElementById('about-sections-list');
+  if (!container) return DATA.aboutSections || [];
+  const sectionCards = container.querySelectorAll('.cp-section-card[data-pi="a"]');
+  return Array.from(sectionCards).map((secCard, si) => {
+    const existing = (DATA.aboutSections || [])[si] || {};
+    return collectHomeSingleSection_forPi(secCard, 'a', si, existing);
+  });
+}
+
 function collectHomeSingleSection(secCard, si, existing) {
+  return collectHomeSingleSection_forPi(secCard, 'h', si, existing);
+}
+
+function collectHomeSingleSection_forPi(secCard, pi, si, existing) {
   const type = existing.type || '';
   const get = (field) => {
-    const els = Array.from(secCard.querySelectorAll('[data-cp="h"][data-sec="' + si + '"][data-field="' + field + '"]'));
+    const els = Array.from(secCard.querySelectorAll('[data-cp="' + pi + '"][data-sec="' + si + '"][data-field="' + field + '"]'));
     if (!els.length) return (existing[field] ?? '');
     // Use visible-element detection via parent style traversal
     const visible = els.find(el => {
@@ -3334,9 +3425,23 @@ function collectHomeSingleSection(secCard, si, existing) {
 
   // CTA
   if (type === 'cta') {
-    sec.ctaLabel = get('ctaLabel');
-    sec.ctaLinkType = get('ctaLinkType') || existing.ctaLinkType || 'none';
-    sec.ctaLinkUrl = get('ctaLinkUrl') || existing.ctaLinkUrl || '';
+    sec.cta_primary_linkLabel   = get('cta_primary_linkLabel')   || get('ctaLabel')       || '';
+    sec.cta_secondary_linkLabel = get('cta_secondary_linkLabel') || get('secondaryLabel') || '';
+    sec.cta_primary_linkType    = get('cta_primary_linkType')    || 'none';
+    sec.cta_secondary_linkType  = get('cta_secondary_linkType')  || 'none';
+    // URL: read from visible smart link field
+    const primKey = `${pi}-${si}-cta_primary_`;
+    const secKey  = `${pi}-${si}-cta_secondary_`;
+    const readUrl = (key, linkType) => {
+      if (linkType === 'internal') {
+        const sel = document.getElementById(`cp-link-isel-${key}`);
+        return sel ? sel.value : '';
+      }
+      const inp = document.getElementById(`cp-link-url-${key}`);
+      return inp ? inp.value.trim() : '';
+    };
+    sec.cta_primary_linkUrl   = readUrl(primKey, sec.cta_primary_linkType);
+    sec.cta_secondary_linkUrl = readUrl(secKey,  sec.cta_secondary_linkType);
   }
 
   // Testimonials
@@ -3685,7 +3790,7 @@ function buildCustomSectionHtml(sec, pi, si) {
 
   return `<div class="cp-section-card open" data-pi="${pi}" data-si="${si}">
     <div class="cp-section-header" onclick="toggleCpSection(this)">
-      <span class="cp-section-type-badge">${typeLabel}</span>
+      <span class="cp-section-type-badge">${typeLabel}${sec.label ? ' — ' + escHtml(sec.label) : ''}</span>
       <div class="cp-section-controls">
         <button class="cp-move-btn" onclick="moveCpSection(${typeof pi==='string'?("'"+pi+"'"):pi},${si},-1);event.stopPropagation();" title="Move up">↑</button>
         <button class="cp-move-btn" onclick="moveCpSection(${typeof pi==='string'?("'"+pi+"'"):pi},${si},1);event.stopPropagation();" title="Move down">↓</button>
@@ -4131,14 +4236,104 @@ function buildCpSectionTypeFields(sec, pi, si) {
         <button class="btn-add" onclick="addCpSubItem(${typeof pi==='string'?("'"+pi+"'"):pi},${si},'items',{emoji:'📋',tag:'',imagePath:'',title:'',excerpt:'',date:'',readTime:'',featured:false,linkType:'none',linkUrl:'',ctaLabel:''})">+ Add Post</button>`;
     }
 
-    case 'cta':
+    case 'cta': {
+      const ctaPrimLabel     = sec.cta_primary_linkLabel  || sec.ctaLabel       || '';
+      const ctaSecLabel      = sec.cta_secondary_linkLabel || sec.secondaryLabel || '';
+      const ctaPrimType      = sec.cta_primary_linkType    || 'none';
+      const ctaSecType       = sec.cta_secondary_linkType  || 'none';
+      const ctaPrimUrl       = sec.cta_primary_linkUrl     || '';
+      const ctaSecUrl        = sec.cta_secondary_linkUrl   || '';
+      const showPrimLinkCls  = (ctaPrimLabel && ctaPrimType !== 'none') ? ' visible' : '';
+      const showSecLinkCls   = (ctaSecLabel  && ctaSecType  !== 'none') ? ' visible' : '';
+      const showPrimWrapDisp = ctaPrimLabel ? 'block' : 'none';
+      const showSecWrapDisp  = ctaSecLabel  ? 'block' : 'none';
+      const primIntOpts      = getInternalPageOptions(ctaPrimUrl);
+      const secIntOpts       = getInternalPageOptions(ctaSecUrl);
+      const piStr            = typeof pi === 'string' ? ("'" + pi + "'") : pi;
+      const primSelNone      = ctaPrimType === 'none'     ? ' selected' : '';
+      const primSelInt       = ctaPrimType === 'internal' ? ' selected' : '';
+      const primSelExt       = ctaPrimType === 'external' ? ' selected' : '';
+      const primSelFile      = ctaPrimType === 'file'     ? ' selected' : '';
+      const secSelNone       = ctaSecType  === 'none'     ? ' selected' : '';
+      const secSelInt        = ctaSecType  === 'internal' ? ' selected' : '';
+      const secSelExt        = ctaSecType  === 'external' ? ' selected' : '';
+      const secSelFile       = ctaSecType  === 'file'     ? ' selected' : '';
+      const primIntDisp      = ctaPrimType === 'internal'                             ? 'block' : 'none';
+      const primExtDisp      = (ctaPrimType === 'external' || ctaPrimType === 'file') ? 'block' : 'none';
+      const secIntDisp       = ctaSecType  === 'internal'                             ? 'block' : 'none';
+      const secExtDisp       = (ctaSecType  === 'external' || ctaSecType  === 'file') ? 'block' : 'none';
+      const primUrlLabel     = ctaPrimType === 'file' ? 'File Path / URL' : 'External URL';
+      const primUrlPh        = ctaPrimType === 'file' ? 'files/doc.pdf'   : 'https://';
+      const secUrlLabel      = ctaSecType  === 'file' ? 'File Path / URL' : 'External URL';
+      const secUrlPh         = ctaSecType  === 'file' ? 'files/doc.pdf'   : 'https://';
       return `
         <div class="field-group"><label>Heading</label><input type="text" ${p} data-field="heading" value="${v('heading')}"/></div>
         <div class="field-group"><label>Body Text</label><textarea ${p} data-field="body" rows="2">${v('body')}</textarea></div>
-        <div class="form-row-2">
-          <div class="field-group"><label>Primary Button Label</label><input type="text" ${p} data-field="ctaLabel" value="${v('ctaLabel')}" placeholder="Free Consultation"/></div>
-          <div class="field-group"><label>Secondary Button Label (optional)</label><input type="text" ${p} data-field="secondaryLabel" value="${v('secondaryLabel')}"/></div>
+        <div class="form-row-2" style="align-items:flex-start;">
+          <div>
+            <div class="field-group"><label>Primary Button Label</label>
+              <input type="text" ${p} data-field="cta_primary_linkLabel" value="${escHtml(ctaPrimLabel)}" placeholder="Free Consultation"
+                oninput="onCtaBtnLabelInput(${piStr},${si},'cta_primary_',this)"/>
+            </div>
+            <div id="cp-cta-btn-wrap-${pi}-${si}-cta_primary_" style="display:${showPrimWrapDisp};">
+              <div class="field-group" style="margin-bottom:6px;"><label>Primary Link Type</label>
+                <select ${p} data-field="cta_primary_linkType"
+                  onchange="onCpLinkTypeChange(${piStr},${si},'cta_primary_',this)">
+                  <option value="none"${primSelNone}>None</option>
+                  <option value="internal"${primSelInt}>Internal Page</option>
+                  <option value="external"${primSelExt}>External URL</option>
+                  <option value="file"${primSelFile}>File / Document</option>
+                </select>
+              </div>
+              <div class="cp-smart-link-wrap${showPrimLinkCls}" id="cp-link-wrap-${pi}-${si}-cta_primary_">
+                <div id="cp-link-internal-${pi}-${si}-cta_primary_" style="display:${primIntDisp};">
+                  <div class="field-group" style="margin:0;"><label>Internal Page</label>
+                    <select ${p} data-field="cta_primary_linkUrl" id="cp-link-isel-${pi}-${si}-cta_primary_">${primIntOpts}</select>
+                  </div>
+                </div>
+                <div id="cp-link-external-${pi}-${si}-cta_primary_" style="display:${primExtDisp};">
+                  <div class="field-group" style="margin:0;">
+                    <label>${primUrlLabel}</label>
+                    <input type="text" ${p} data-field="cta_primary_linkUrl" id="cp-link-url-${pi}-${si}-cta_primary_"
+                      value="${escHtml(ctaPrimUrl)}" placeholder="${primUrlPh}"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="field-group"><label>Secondary Button Label (optional)</label>
+              <input type="text" ${p} data-field="cta_secondary_linkLabel" value="${escHtml(ctaSecLabel)}"
+                oninput="onCtaBtnLabelInput(${piStr},${si},'cta_secondary_',this)"/>
+            </div>
+            <div id="cp-cta-btn-wrap-${pi}-${si}-cta_secondary_" style="display:${showSecWrapDisp};">
+              <div class="field-group" style="margin-bottom:6px;"><label>Secondary Link Type</label>
+                <select ${p} data-field="cta_secondary_linkType"
+                  onchange="onCpLinkTypeChange(${piStr},${si},'cta_secondary_',this)">
+                  <option value="none"${secSelNone}>None</option>
+                  <option value="internal"${secSelInt}>Internal Page</option>
+                  <option value="external"${secSelExt}>External URL</option>
+                  <option value="file"${secSelFile}>File / Document</option>
+                </select>
+              </div>
+              <div class="cp-smart-link-wrap${showSecLinkCls}" id="cp-link-wrap-${pi}-${si}-cta_secondary_">
+                <div id="cp-link-internal-${pi}-${si}-cta_secondary_" style="display:${secIntDisp};">
+                  <div class="field-group" style="margin:0;"><label>Internal Page</label>
+                    <select ${p} data-field="cta_secondary_linkUrl" id="cp-link-isel-${pi}-${si}-cta_secondary_">${secIntOpts}</select>
+                  </div>
+                </div>
+                <div id="cp-link-external-${pi}-${si}-cta_secondary_" style="display:${secExtDisp};">
+                  <div class="field-group" style="margin:0;">
+                    <label>${secUrlLabel}</label>
+                    <input type="text" ${p} data-field="cta_secondary_linkUrl" id="cp-link-url-${pi}-${si}-cta_secondary_"
+                      value="${escHtml(ctaSecUrl)}" placeholder="${secUrlPh}"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>`;
+    }
 
     case 'checklist': {
       const cats = (sec.categories||[]);
@@ -4697,13 +4892,15 @@ function addCpSection(pi) {
   toast('Section added.','success');
 }
 
-// Resolve pi to the correct sections array ('h' = homeSections, number = customPages[pi].sections)
+// Resolve pi to the correct sections array ('h' = homeSections, 'a' = aboutSections, number = customPages[pi].sections)
 function cpSections(pi) {
   if (pi === 'h') return DATA.homeSections || (DATA.homeSections = []);
+  if (pi === 'a') return DATA.aboutSections || (DATA.aboutSections = []);
   return DATA.customPages[pi]?.sections;
 }
 function rebuildAfterMutation(pi) {
   if (pi === 'h') buildHomeSectionsList();
+  else if (pi === 'a') buildAboutSectionsList();
   else buildCustomPagesList();
 }
 
@@ -4902,7 +5099,13 @@ function collectCpSections(card, pi, existingSections) {
         sec.items = collectCpSubItems(secCard, pi, si, ['emoji','tag','imagePath','title','excerpt','date','readTime','featured','linkType','linkUrl','ctaLabel']); break;
       case 'cta':
         sec.heading = get('heading'); sec.body = get('body');
-        sec.ctaLabel = get('ctaLabel'); sec.secondaryLabel = get('secondaryLabel'); break;
+        sec.cta_primary_linkLabel   = get('cta_primary_linkLabel')   || get('ctaLabel')       || '';
+        sec.cta_secondary_linkLabel = get('cta_secondary_linkLabel') || get('secondaryLabel') || '';
+        sec.cta_primary_linkType    = get('cta_primary_linkType')    || 'none';
+        sec.cta_secondary_linkType  = get('cta_secondary_linkType')  || 'none';
+        sec.cta_primary_linkUrl     = collectCpSmartLinkUrl(secCard, pi, si, 'cta_primary_',   sec.cta_primary_linkType);
+        sec.cta_secondary_linkUrl   = collectCpSmartLinkUrl(secCard, pi, si, 'cta_secondary_', sec.cta_secondary_linkType);
+        break;
       case 'checklist':
         sec.heading = get('heading'); sec.subtitle = get('subtitle');
         sec.categories = collectCpChecklistCategories(secCard, pi, si); break;
@@ -5225,6 +5428,7 @@ function importConfig(input) {
       if (imported.pageHeaders) DATA.pageHeaders = Object.assign({}, DATA.pageHeaders, imported.pageHeaders);
       if (Array.isArray(imported.customPages))  DATA.customPages  = imported.customPages;
       if (Array.isArray(imported.homeSections)) DATA.homeSections = imported.homeSections;
+      if (Array.isArray(imported.aboutSections)) DATA.aboutSections = imported.aboutSections;
       if (Array.isArray(imported.attorneys))    DATA.attorneys    = imported.attorneys;
       loadForm();
       collectData();
@@ -5290,11 +5494,12 @@ function refreshCodePreview() {
 
 function saveAndPreview() {
   collectData();
+  DATA._savedAt = Date.now();
   // Save full DATA to localStorage so index.html can read it for preview
   localStorage.setItem(LS_DATA(), JSON.stringify(DATA));
   localStorage.setItem(LS_PREVIEW(), JSON.stringify(DATA));
-  // Open index.html in a new tab — it will pick up the localStorage data automatically
-  window.open('index.html', '_blank');
+  // Append timestamp to bust cache and force a fresh load even if tab is reused
+  window.open('index.html?preview=' + DATA._savedAt, '_blank');
   toast('💾 Saved! Preview opening in new tab.', 'success');
   document.getElementById('lastSaved').textContent = 'Saved ' + new Date().toLocaleTimeString();
 }
@@ -5520,6 +5725,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (parsed.pageHeaders) DATA.pageHeaders = Object.assign({}, DATA.pageHeaders, parsed.pageHeaders);
     if (Array.isArray(parsed.customPages))  DATA.customPages  = parsed.customPages;
     if (Array.isArray(parsed.homeSections)) DATA.homeSections = parsed.homeSections;
+    if (Array.isArray(parsed.aboutSections)) DATA.aboutSections = parsed.aboutSections;
     if (Array.isArray(parsed.attorneys))    DATA.attorneys    = parsed.attorneys;
   }
 
@@ -5563,7 +5769,7 @@ window.addEventListener('DOMContentLoaded', () => {
   tryFetch()
     .then(configData => {
       const configTs = configData._savedAt || 0;
-      if (configTs >= localTs) {
+      if (configTs > localTs) {
         applyData(configData);
         DATA._savedAt = configTs;
         try { localStorage.setItem(LS_DATA(), JSON.stringify(DATA)); } catch(e) {}
