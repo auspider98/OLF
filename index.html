@@ -17,9 +17,11 @@
    ============================================= */
 :root {
   --navy:       #0f2340;
+  --navy-rgb:   15,35,64;
   --navy-light: #1a3560;
   --navy-mid:   #162d50;
   --gold:       #c9a84c;
+  --gold-rgb:   201,168,76;
   --gold-light: #e8c97a;
   --gold-pale:  #faf6ec;
   --chrome:     #000000;
@@ -179,6 +181,151 @@ nav.main-nav { display: none !important; }
 .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.search-highlight-overlay {
+  position: absolute; pointer-events: none; z-index: 9999;
+  background: rgba(var(--gold-rgb), 0.35);
+  border-radius: 3px;
+  transition: opacity 1.5s ease-out;
+}
+
+/* Search nav button */
+.search-nav-btn {
+  background: none; border: none; cursor: pointer;
+  color: #fff; padding: 8px; display: flex; align-items: center; justify-content: center;
+  opacity: 0.85; transition: opacity 0.2s;
+}
+.search-nav-btn:hover { opacity: 1; }
+
+/* Search overlay */
+.search-overlay {
+  position: fixed; inset: 0; z-index: 3000;
+  background: rgba(var(--navy-rgb), 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex; align-items: flex-start; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s var(--ease-out);
+}
+.search-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+.search-overlay-inner {
+  width: min(720px, 92vw);
+  margin-top: clamp(60px, 12vh, 120px);
+  transform: translateY(-16px);
+  transition: transform 0.3s var(--ease-out);
+}
+.search-overlay.open .search-overlay-inner {
+  transform: translateY(0);
+}
+.search-close-btn {
+  position: fixed; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.1); border: none;
+  color: #fff; font-size: 18px; width: 40px; height: 40px;
+  border-radius: 50%; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  transition: background 0.2s; z-index: 1;
+}
+.search-close-btn:hover { background: rgba(255,255,255,0.2); }
+.search-input-wrap {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px; padding: 14px 20px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.search-input-wrap:focus-within {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.14);
+}
+.search-input-icon { color: rgba(255,255,255,0.5); flex-shrink: 0; }
+.search-input {
+  flex: 1; background: none; border: none; outline: none;
+  color: #fff; font-family: var(--font-body);
+  font-size: clamp(18px, 3vw, 24px); font-weight: 400;
+}
+.search-input::placeholder { color: rgba(255,255,255,0.35); }
+
+.search-suggestions {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 12px; min-height: 0;
+}
+.search-suggestion-chip {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.85);
+  padding: 5px 14px; border-radius: 20px;
+  font-size: 13px; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.search-suggestion-chip:hover {
+  background: rgba(var(--gold-rgb), 0.2);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Search results */
+.search-results {
+  margin-top: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+.search-quick-links {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px;
+}
+.search-quick-chip {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.8);
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 13px; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.search-quick-chip:hover { background: rgba(var(--gold-rgb), 0.2); border-color: var(--gold); color: var(--gold); }
+.search-quick-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(255,255,255,0.35);
+  margin-bottom: 12px;
+}
+.search-group { margin-bottom: 24px; }
+.search-group-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 8px; padding-bottom: 6px;
+  border-bottom: 1px solid rgba(var(--gold-rgb), 0.2);
+}
+.search-result-item {
+  padding: 12px 14px; border-radius: 8px; cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 2px;
+}
+.search-result-item:hover, .search-result-item.selected {
+  background: rgba(255,255,255,0.08);
+}
+.search-result-title {
+  font-size: 15px; font-weight: 600; color: #fff;
+  margin-bottom: 4px;
+}
+.search-result-snippet {
+  font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.5);
+}
+.search-result-snippet mark {
+  background: none; color: var(--gold); font-weight: 600;
+}
+.search-no-results {
+  text-align: center; padding: 48px 20px;
+}
+.search-no-results-msg {
+  font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 8px;
+}
+.search-no-results-sub {
+  font-size: 14px; color: rgba(255,255,255,0.45);
+}
+
 
 /* Drawer nav */
 .nav-clip {
@@ -569,7 +716,8 @@ h2.section-title {
   font-size: clamp(15px, 1.5vw, 17px);
   color: var(--text-muted);
   line-height: 1.75;
-  max-width: 560px;
+  width: 100%;
+  max-width: 900px;
   margin-top: 16px;
 }
 .section-dark .section-subtitle { color: rgba(255,255,255,0.6); }
@@ -1097,7 +1245,7 @@ h2.section-title {
   font-size: 14px;
   line-height: 1.8;
   color: rgba(255,255,255,0.5);
-  max-width: 680px;
+  max-width: 900px;
   transition: color 0.3s;
 }
 .process-step.step-active .step-desc { color: rgba(255,255,255,0.75); }
@@ -1242,7 +1390,7 @@ h2.section-title {
 }
 .faq-item-link:hover { opacity: 0.75; }
 .cps-section-dark .faq-item-link { color: var(--gold-light); }
-.faq-item.open .faq-answer { max-height: 300px; }
+.faq-item.open .faq-answer { max-height: 2000px; }
 
 /* FAQ dark/alt section theming */
 .cps-section-dark .faq-item { border-color: rgba(255,255,255,0.12); }
@@ -1628,7 +1776,9 @@ footer {
   .cps-fc-card { border-right: none; }
   .cps-fc-header { flex-direction: column; }
   .cps-fc-badge { display: none; }
-  .services-grid .service-card { flex: 1 1 100%; }
+  .services-grid .service-card,
+  .services-grid[data-cols="2"] .service-card,
+  .services-grid[data-cols="3"] .service-card { flex: 1 1 100%; }
   .testimonials-track { grid-template-columns: 1fr; }
   .blog-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
@@ -1800,6 +1950,8 @@ footer {
   padding: clamp(48px, 7vw, 80px) var(--gutter);
   text-align: center;
 }
+.cps-section-light .cps-cta-banner { background: var(--cream); }
+.cps-section-alt .cps-cta-banner { background: var(--gold-pale); }
 .cps-cta-banner .cps-heading {
   font-family: var(--font-display);
   font-size: clamp(26px, 3.5vw, 44px);
@@ -1808,12 +1960,27 @@ footer {
   margin-bottom: 16px;
   line-height: 1.2;
 }
+.cps-section-light .cps-cta-banner .cps-heading,
+.cps-section-alt .cps-cta-banner .cps-heading { color: var(--text-head); }
 .cps-cta-banner .cps-body {
   font-size: 16px;
   color: rgba(255,255,255,0.65);
   line-height: 1.7;
   max-width: 560px;
   margin: 0 auto 32px;
+}
+.cps-section-light .cps-cta-banner .cps-body,
+.cps-section-alt .cps-cta-banner .cps-body { color: var(--text-muted); }
+.cps-section-light .cps-cta-banner .btn-outline,
+.cps-section-alt .cps-cta-banner .btn-outline {
+  background: transparent;
+  color: var(--navy);
+  border-color: var(--navy);
+}
+.cps-section-light .cps-cta-banner .btn-outline:hover,
+.cps-section-alt .cps-cta-banner .btn-outline:hover {
+  background: rgba(15,35,64,0.06);
+  border-color: var(--navy);
 }
 .cps-cta-banner .cps-actions {
   display: flex;
@@ -1879,6 +2046,18 @@ footer {
   .cps-doc-item { border-right: none; }
   .cps-doc-items .cps-doc-item:nth-last-child(2):nth-child(odd) { border-bottom: 1px solid #e8e3d8; }
 }
+
+/* Checklist dark section theming */
+.cps-section-dark .cps-doc-category { border-color: rgba(255,255,255,0.12); }
+.cps-section-dark .cps-doc-category-title { background: rgba(255,255,255,0.07); color: var(--gold); }
+.cps-section-dark .cps-doc-item { color: rgba(255,255,255,0.75); border-right-color: rgba(255,255,255,0.08); border-bottom-color: rgba(255,255,255,0.08); }
+.cps-section-dark .cps-doc-items--full .cps-doc-item:nth-last-child(2):nth-child(n) { border-bottom-color: rgba(255,255,255,0.08); }
+.cps-section-dark .cps-doc-check { background: rgba(255,255,255,0.06); border-color: rgba(201,168,76,0.5); color: var(--gold); }
+
+/* Checklist alt section theming */
+.cps-section-alt .cps-doc-category { border-color: var(--border); }
+.cps-section-alt .cps-doc-item { border-right-color: var(--border); border-bottom-color: var(--border); }
+.cps-section-alt .cps-doc-items--full .cps-doc-item:nth-last-child(2):nth-child(n) { border-bottom-color: var(--border); }
 
 /* Timeline */
 .cps-timeline { }
@@ -1948,6 +2127,7 @@ footer {
   font-size: 14px;
   line-height: 1.8;
   color: var(--text-muted);
+  max-width: 900px;
 }
 .cps-timeline-date {
   font-size: 11px;
@@ -1970,6 +2150,7 @@ footer {
   margin-top: 32px;
   font-size: 14px;
 }
+.cps-fee-wrap { overflow-x: auto; }
 .cps-fee-table thead tr {
   background: var(--navy);
   color: var(--gold);
@@ -1989,6 +2170,7 @@ footer {
   color: var(--text-body);
   vertical-align: top;
 }
+.cps-fee-detail { color: var(--text-muted); font-size: 13px; }
 .cps-fee-table tbody tr:last-child td { border-bottom: none; }
 .cps-fee-table tbody tr:hover td { background: var(--gold-pale); }
 .cps-fee-amount {
@@ -2017,10 +2199,48 @@ footer {
 /* Fee table dark/alt section theming */
 .cps-section-dark .cps-fee-table thead tr { background: rgba(255,255,255,0.07); }
 .cps-section-dark .cps-fee-table td { border-bottom-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75); }
+.cps-section-dark .cps-fee-detail { color: rgba(255,255,255,0.5); }
 .cps-section-dark .cps-fee-table tbody tr:hover td { background: rgba(255,255,255,0.05); }
 .cps-section-dark .cps-fee-amount { color: #fff; }
-.cps-section-dark .cps-fee-note { color: rgba(255,255,255,0.5); }
+.cps-section-dark .cps-fee-note { color: rgba(255,255,255,0.4); }
 .cps-section-alt .cps-fee-table td { border-bottom-color: var(--border); }
+
+/* Mobile card layout */
+@media (max-width: 600px) {
+  .cps-fee-wrap { overflow-x: visible; }
+  .cps-fee-table thead { display: none; }
+  .cps-fee-table tbody, .cps-fee-table tr, .cps-fee-table td { display: block; width: 100%; }
+  .cps-fee-table tr {
+    border: 1px solid #e8e3d8;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .cps-fee-table tbody tr:last-child td { border-bottom: 1px solid #e8e3d8; }
+  .cps-fee-table tbody tr:last-child td:last-child { border-bottom: none; }
+  .cps-fee-table td { border-bottom: 1px solid #e8e3d8; border-radius: 0; }
+  .cps-fee-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-family: var(--font-body);
+  }
+  .cps-fee-table tbody tr:hover td { background: var(--gold-pale); }
+  .cps-section-dark .cps-fee-table tbody tr:hover td { background: rgba(255,255,255,0.05); }
+  .cps-fee-amount { white-space: normal; }
+  /* Dark mobile card */
+  .cps-section-dark .cps-fee-table tr { border-color: rgba(255,255,255,0.1); }
+  .cps-section-dark .cps-fee-table td { border-bottom-color: rgba(255,255,255,0.1); }
+  .cps-section-dark .cps-fee-table tbody tr:last-child td:last-child { border-bottom: none; }
+  /* Alt mobile card */
+  .cps-section-alt .cps-fee-table tr { border-color: var(--border); }
+  .cps-section-alt .cps-fee-table td { border-bottom-color: var(--border); }
+}
 
 /* Jurisdiction Notice */
 .cps-jurisdiction {
@@ -2352,6 +2572,565 @@ footer {
 @media (max-width: 580px) {
   .cps-form-field-row { grid-template-columns: 1fr; gap: 18px; }
 }
+
+/* Tight padding for marquee and logo strip — content doesn't need full section breathing room */
+.cps-section-marquee { padding: 12px 0; }
+/* Logo strip: tight only when no header content (strip mode); header mode uses normal section padding */
+.cps-section-logo-strip { padding: calc(var(--section-pad) / 2) 0; }
+.cps-section-logo-strip.logo-strip-mode { padding: 12px 0; }
+.cps-accordion { margin-top: 40px; }
+.cps-acc-item {
+  border-bottom: 1px solid #e8e3d8;
+}
+.cps-acc-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+  cursor: pointer;
+}
+.cps-acc-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-head);
+  line-height: 1.4;
+  flex: 1;
+}
+.cps-acc-chevron {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid #e8e3d8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  color: var(--text-muted);
+  transition: background 0.2s, border-color 0.2s, transform 0.35s;
+  line-height: 1;
+}
+.cps-acc-item.open .cps-acc-chevron {
+  background: var(--gold); border-color: var(--gold);
+  color: var(--navy); transform: rotate(45deg);
+}
+.cps-acc-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s var(--ease-out);
+}
+.cps-acc-item.open .cps-acc-body { max-height: 2000px; }
+.cps-acc-inner {
+  padding-bottom: 24px;
+  font-size: 14px; line-height: 1.85; color: var(--text-muted);
+}
+/* image positions */
+.cps-acc-img-top { margin-bottom: 16px; border-radius: 4px; overflow: hidden; aspect-ratio: 16/9; }
+.cps-acc-img-top img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cps-acc-img-side {
+  display: flex; gap: 24px; align-items: flex-start;
+}
+.cps-acc-img-side .cps-acc-thumb {
+  flex-shrink: 0; width: 200px; border-radius: 4px; overflow: hidden;
+  aspect-ratio: 16/9;
+}
+.cps-acc-img-side .cps-acc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cps-acc-img-side .cps-acc-text-part { flex: 1; }
+@media (max-width: 600px) {
+  .cps-acc-img-side { flex-direction: column; }
+  .cps-acc-img-side .cps-acc-thumb { width: 100%; }
+}
+/* dark/alt theming */
+.cps-section-dark .cps-acc-item { border-bottom-color: rgba(255,255,255,0.12); }
+.cps-section-dark .cps-acc-title { color: #fff; }
+.cps-section-dark .cps-acc-chevron { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.6); }
+.cps-section-dark .cps-acc-item.open .cps-acc-chevron { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+.cps-section-dark .cps-acc-inner { color: rgba(255,255,255,0.65); }
+.cps-section-alt .cps-acc-item { border-bottom-color: #ddd8cc; }
+
+/* ── LOGO STRIP ─────────────────────────────────────────────── */
+.cps-logo-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-top: 32px;
+}
+/* Strip mode (no heading) — no top margin, full vertical centering handled by section padding */
+.logo-strip-mode .cps-logo-strip { margin-top: 0; }
+.cps-logo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+.cps-logo-item:hover { opacity: 0.8; }
+.cps-logo-img-wrap { display: flex; align-items: center; justify-content: center; }
+.cps-logo-img-wrap img {
+  display: block;
+  object-fit: contain;
+  height: auto;
+}
+/* size variants */
+.cps-logo-strip--small  .cps-logo-img-wrap img { width: 80px; }
+.cps-logo-strip--medium .cps-logo-img-wrap img { width: 120px; }
+.cps-logo-strip--large  .cps-logo-img-wrap img { width: 160px; }
+.cps-logo-caption {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+/* dark/alt theming */
+.cps-section-dark .cps-logo-caption { color: rgba(255,255,255,0.5); }
+@media (max-width: 600px) {
+  .cps-logo-strip { gap: 24px; }
+  .cps-logo-strip--large .cps-logo-img-wrap img { width: 120px; }
+}
+
+/* ── MARQUEE / TICKER ────────────────────────────────────────── */
+.cps-marquee-outer {
+  overflow: hidden;
+  position: relative;
+  padding: 20px 0;
+}
+/* fade edges */
+.cps-marquee-outer::before,
+.cps-marquee-outer::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+  pointer-events: none;
+}
+.cps-marquee-outer::before { left: 0; background: linear-gradient(to right, var(--warm-white), transparent); }
+.cps-marquee-outer::after  { right: 0; background: linear-gradient(to left, var(--warm-white), transparent); }
+.cps-section-dark .cps-marquee-outer::before { background: linear-gradient(to right, var(--navy), transparent); }
+.cps-section-dark .cps-marquee-outer::after  { background: linear-gradient(to left, var(--navy), transparent); }
+.cps-section-alt  .cps-marquee-outer::before { background: linear-gradient(to right, var(--cream), transparent); }
+.cps-section-alt  .cps-marquee-outer::after  { background: linear-gradient(to left, var(--cream), transparent); }
+
+.cps-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 0;
+}
+/* RTL direction */
+.cps-marquee-outer.dir-left  .cps-marquee-track { animation: marqueeLeft  var(--marquee-dur, 30s) linear infinite; }
+.cps-marquee-outer.dir-right .cps-marquee-track { animation: marqueeRight var(--marquee-dur, 30s) linear infinite; }
+.cps-marquee-outer.pause-hover:hover .cps-marquee-track { animation-play-state: paused; }
+
+@keyframes marqueeLeft  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes marqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* Text mode items */
+.cps-mq-text-item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+}
+.cps-mq-text-content {
+  font-family: var(--font-display);
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--text-body);
+  padding: 0 8px;
+}
+.cps-mq-sep {
+  font-size: 18px;
+  color: var(--gold);
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+/* Logo mode items */
+.cps-mq-logo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+}
+.cps-mq-logo-item img {
+  display: block;
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+/* Dark theming */
+.cps-section-dark .cps-mq-text-content { color: rgba(255,255,255,0.8); }
+
+/* ── VIDEO EMBED ─────────────────────────────────────────────── */
+.cps-video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #000;
+}
+.cps-video-frame iframe,
+.cps-video-frame video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Full-width layout */
+.cps-video-layout--full .cps-video-frame { width: 100%; }
+
+/* Contained layout */
+.cps-video-layout--contained {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Two-column layout */
+.cps-video-layout--two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 80px);
+  align-items: start;
+}
+.cps-video-layout--two-col.video-right { }
+.cps-video-col { min-width: 0; }
+.cps-video-text { }
+.cps-video-text .cps-heading {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.8vw, 34px);
+  font-weight: 500;
+  color: var(--text-head);
+  margin-bottom: 16px;
+  line-height: 1.25;
+}
+.cps-video-text .cps-body {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-body);
+}
+.cps-video-text .cps-body p { margin-bottom: 14px; }
+.cps-video-text .cps-video-cta { margin-top: 28px; }
+
+/* Dark section overrides */
+.cps-section-dark .cps-video-text .cps-heading { color: #fff; }
+.cps-section-dark .cps-video-text .cps-body { color: rgba(255,255,255,0.65); }
+
+/* Mobile: two-col stacks, video always on top */
+@media (max-width: 768px) {
+  .cps-video-layout--two-col {
+    grid-template-columns: 1fr;
+  }
+  .cps-video-layout--two-col.video-right .cps-video-col { order: -1; }
+}
+
+/* ── IMAGE GALLERY ───────────────────────────────────────────── */
+.cps-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 40px;
+}
+.cps-gallery-grid[data-cols="2"] { grid-template-columns: repeat(2, 1fr); }
+.cps-gallery-grid[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
+.cps-gallery-grid[data-cols="5"] { grid-template-columns: repeat(5, 1fr); }
+.cps-gallery-grid[data-cols="6"] { grid-template-columns: repeat(6, 1fr); }
+
+.cps-gallery-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--navy);
+}
+.cps-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+.cps-gallery-item:hover img { transform: scale(1.05); }
+.cps-gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(9,20,38,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+.cps-gallery-item:hover .cps-gallery-overlay { background: rgba(9,20,38,0.4); }
+.cps-gallery-expand {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.cps-gallery-item:hover .cps-gallery-expand { opacity: 1; transform: scale(1); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .cps-gallery-grid[data-cols="4"] { grid-template-columns: repeat(3, 1fr); }
+  .cps-gallery-grid[data-cols="5"] { grid-template-columns: repeat(4, 1fr); }
+  .cps-gallery-grid[data-cols="6"] { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 768px) {
+  .cps-gallery-grid,
+  .cps-gallery-grid[data-cols="3"],
+  .cps-gallery-grid[data-cols="4"],
+  .cps-gallery-grid[data-cols="5"],
+  .cps-gallery-grid[data-cols="6"] { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .cps-gallery-grid,
+  .cps-gallery-grid[data-cols="2"],
+  .cps-gallery-grid[data-cols="3"],
+  .cps-gallery-grid[data-cols="4"],
+  .cps-gallery-grid[data-cols="5"],
+  .cps-gallery-grid[data-cols="6"] { grid-template-columns: 1fr; }
+}
+
+/* Lightbox */
+.cps-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(5,10,20,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  padding: 20px;
+}
+.cps-lightbox.open { opacity: 1; pointer-events: all; }
+.cps-lightbox-inner {
+  position: relative;
+  max-width: min(90vw, 1100px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cps-lightbox-img {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 2px;
+  display: block;
+}
+.cps-lightbox-caption {
+  margin-top: 16px;
+  text-align: center;
+  color: rgba(255,255,255,0.85);
+}
+.cps-lightbox-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.cps-lightbox-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+}
+.cps-lightbox-close {
+  position: fixed;
+  top: 20px; right: 24px;
+  background: none; border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 32px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+  z-index: 2101;
+}
+.cps-lightbox-close:hover { color: #fff; }
+.cps-lightbox-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 22px;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 2101;
+}
+.cps-lightbox-arrow:hover { background: rgba(255,255,255,0.2); }
+.cps-lightbox-prev { left: 16px; }
+.cps-lightbox-next { right: 16px; }
+@media (max-width: 600px) {
+  .cps-lightbox-arrow { display: none; }
+}
+
+/* ── TIER CARDS ──────────────────────────────────────────────── */
+.cps-tier-grid {
+  display: grid;
+  gap: var(--gutter);
+  margin: 48px auto 0;
+  align-items: stretch;
+  max-width: 880px;
+}
+@media (max-width: 560px) {
+  .cps-tier-grid { padding: 0 16px; }
+}
+.cps-tier-grid[data-cols="1"] { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+.cps-tier-grid[data-cols="2"] { grid-template-columns: repeat(2, 1fr); }
+.cps-tier-grid[data-cols="3"] { grid-template-columns: repeat(3, 1fr); }
+.cps-tier-grid[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1024px) { .cps-tier-grid[data-cols="4"] { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+  .cps-tier-grid[data-cols="3"],
+  .cps-tier-grid[data-cols="4"] { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .cps-tier-grid[data-cols="2"],
+  .cps-tier-grid[data-cols="3"],
+  .cps-tier-grid[data-cols="4"] { grid-template-columns: 1fr; }
+  .cps-tier-grid[data-cols="1"] { max-width: 100%; }
+}
+
+.cps-tier-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: none;
+  transition: box-shadow 0.3s;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out), box-shadow 0.3s;
+}
+.cps-tier-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out), box-shadow 0.3s;
+}
+.cps-tier-card.visible:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(15,35,64,0.12); }
+.cps-tier-card--light    { background: var(--warm-white); }
+.cps-tier-card--alt      { border: 1px solid #ddd8cc; background: var(--cream); }
+.cps-tier-card--dark     { border: none; background: var(--navy); }
+.cps-tier-card--gold     { border: none; background: var(--gold); }
+.cps-tier-card--featured { border-top: 3px solid var(--gold); box-shadow: 0 8px 32px rgba(201,168,76,0.2); }
+.cps-tier-card--dark.cps-tier-card--featured { border-top-color: var(--gold-light); }
+.cps-tier-card--gold.cps-tier-card--featured { border-top-color: var(--navy); }
+/* Featured pulse + shimmer */
+@keyframes tierPulse {
+  0%, 100% { box-shadow: 0 8px 32px rgba(201,168,76,0.25); }
+  50%       { box-shadow: 0 12px 64px rgba(201,168,76,0.7); }
+}
+.cps-tier-card--featured.cps-tier-pulse { animation: tierPulse 2.8s ease-in-out infinite; }
+
+@keyframes tierShimmer {
+  0%   { transform: translateX(-130%) skewX(-20deg); }
+  100% { transform: translateX(230%) skewX(-20deg); }
+}
+.cps-tier-card--featured::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255,255,255,0.12) 50%,
+    transparent 100%
+  );
+  transform: translateX(-130%) skewX(-20deg);
+  animation: tierShimmer 3.5s ease-in-out infinite;
+  animation-delay: 1s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cps-tier-ribbon {
+  position: absolute; top: 16px; right: -28px;
+  background: var(--gold); color: var(--navy);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 36px; transform: rotate(45deg); white-space: nowrap; z-index: 2;
+}
+.cps-tier-card--dark .cps-tier-ribbon { background: var(--gold-light); }
+.cps-tier-card--gold .cps-tier-ribbon { background: var(--navy); color: var(--gold); }
+
+.cps-tier-img { width: 100%; display: block; object-fit: cover; }
+.cps-tier-img--sm { height: 120px; }
+.cps-tier-img--md { height: 200px; }
+.cps-tier-img--lg { height: 280px; }
+.cps-tier-img--sq { aspect-ratio: 1/1; height: auto; }
+.cps-tier-body { flex: 1; display: flex; flex-direction: column; padding: clamp(24px, 4vw, 36px); }
+.cps-tier-icon { font-size: 36px; margin-bottom: 16px; line-height: 1; }
+.cps-tier-name {
+  font-family: var(--font-display); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
+}
+.cps-tier-card--dark .cps-tier-name { color: var(--gold-light); }
+.cps-tier-card--gold .cps-tier-name { color: var(--navy); opacity: 0.7; }
+.cps-tier-tagline { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+.cps-tier-card--dark .cps-tier-tagline { color: rgba(255,255,255,0.55); }
+.cps-tier-card--gold .cps-tier-tagline { color: rgba(15,35,64,0.65); }
+.cps-tier-price-wrap { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.cps-tier-price {
+  font-family: var(--font-display); font-size: clamp(32px, 5vw, 48px);
+  font-weight: 600; color: var(--text-head); line-height: 1;
+}
+.cps-tier-card--dark .cps-tier-price { color: #fff; }
+.cps-tier-card--gold .cps-tier-price { color: var(--navy); }
+.cps-tier-period { font-size: 13px; color: var(--text-muted); }
+.cps-tier-card--dark .cps-tier-period { color: rgba(255,255,255,0.5); }
+.cps-tier-card--gold .cps-tier-period { color: rgba(15,35,64,0.6); }
+.cps-tier-divider { height: 1px; background: #e8e3d8; margin: 20px 0; }
+.cps-tier-card--dark .cps-tier-divider { background: rgba(255,255,255,0.12); }
+.cps-tier-card--alt  .cps-tier-divider { background: #ddd8cc; }
+.cps-tier-card--gold .cps-tier-divider { background: rgba(15,35,64,0.15); }
+.cps-tier-features { flex: 1; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.cps-tier-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; line-height: 1.5; color: var(--text-body); }
+.cps-tier-card--dark .cps-tier-feature { color: rgba(255,255,255,0.75); }
+.cps-tier-card--gold .cps-tier-feature { color: var(--navy); }
+.cps-tier-feature--excluded { opacity: 0.4; }
+.cps-tier-feature-icon {
+  flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; margin-top: 1px;
+}
+.cps-tier-feature-icon--yes     { background: rgba(45,122,95,0.12);  color: #2d7a5f; }
+.cps-tier-feature-icon--no      { background: rgba(180,60,60,0.1);   color: #b43c3c; }
+.cps-tier-feature-icon--partial { background: rgba(201,168,76,0.15); color: var(--gold); }
+.cps-tier-card--dark .cps-tier-feature-icon--yes     { background: rgba(45,200,130,0.15); color: #2dc882; }
+.cps-tier-card--dark .cps-tier-feature-icon--no      { background: rgba(255,80,80,0.12);  color: #ff6b6b; }
+.cps-tier-card--gold .cps-tier-feature-icon--yes     { background: rgba(15,35,64,0.12);   color: var(--navy); }
+.cps-tier-card--gold .cps-tier-feature-icon--no      { background: rgba(15,35,64,0.08);   color: rgba(15,35,64,0.5); }
+.cps-tier-group-header {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-muted); padding-top: 8px; border-top: 1px solid #e8e3d8; margin-top: 4px;
+}
+.cps-tier-group-header:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.cps-tier-card--dark .cps-tier-group-header { color: rgba(255,255,255,0.35); border-top-color: rgba(255,255,255,0.1); }
+.cps-tier-card--gold .cps-tier-group-header { color: rgba(15,35,64,0.5);    border-top-color: rgba(15,35,64,0.15); }
+.cps-tier-note { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 12px; line-height: 1.6; }
+.cps-tier-card--dark .cps-tier-note { color: rgba(255,255,255,0.35); }
+.cps-tier-card--gold .cps-tier-note { color: rgba(15,35,64,0.5); }
+.cps-tier-cta { margin-top: auto; }
+.cps-tier-card--gold .btn-primary { background: var(--navy); color: var(--gold); }
+.cps-tier-card--gold .btn-primary:hover { background: var(--navy-light); }
+/* Tier card hover lift */
+.cps-tier-card:not(.cps-tier-card--featured):hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(15,35,64,0.12); }
 </style>
 </head>
 <body>
@@ -2375,9 +3154,14 @@ footer {
         <div class="logo-name" id="header-firm-name"></div>
         <div class="logo-tagline" id="header-tagline"></div>
       </div>
-      <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="search-nav-btn" id="searchNavBtn" onclick="openSearch()" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </div>
 </header>
@@ -2512,7 +3296,7 @@ footer {
     </div>
   </div>
   <section id="privacy">
-    <div class="container" style="max-width:800px;padding-top:60px;padding-bottom:80px;">
+    <div class="container" style="max-width:900px;padding-top:60px;padding-bottom:80px;">
       <h2>Privacy Policy</h2>
       <p><em>Last updated: January 1, 2025</em></p>
       <h3>Information We Collect</h3>
@@ -2535,6 +3319,17 @@ footer {
      CUSTOM PAGES — dynamically rendered by buildCustomPages()
      ============================================================ -->
 <div id="custom-pages-container"></div>
+
+<!-- Image Gallery Lightbox -->
+<div class="cps-lightbox" id="cpsLightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="cps-lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="cps-lightbox-arrow cps-lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <button class="cps-lightbox-arrow cps-lightbox-next" onclick="lightboxNav(1)">›</button>
+  <div class="cps-lightbox-inner">
+    <img class="cps-lightbox-img" id="cpsLightboxImg" src="" alt=""/>
+    <div class="cps-lightbox-caption" id="cpsLightboxCaption"></div>
+  </div>
+</div>
 
 <!-- Service Modal -->
 <div class="modal-overlay" id="serviceModal" onclick="if(event.target===this)closeServiceModal()">
@@ -2652,12 +3447,19 @@ const SITE_DEFAULTS = {
   testimonials: [],
   blogPosts: [],
   processSteps: [],
-  processRequirements: []
+  processRequirements: [],
+  search: {
+    placeholder: 'Search...',
+    noResultsMessage: "No results for '{query}'",
+    noResultsSubtext: 'Try a different search term.',
+    resultsPerPage: 5,
+    excludedPages: [],
+  }
 };
 
 const CFG = Object.assign({}, SITE_DEFAULTS, typeof SITE_CONFIG !== 'undefined' ? SITE_CONFIG : {});
 // Deep merge nested objects
-['colors','fontColors','whyChooseUs','heroBg','pageTitles','pageHeaders'].forEach(k => {
+['colors','fontColors','whyChooseUs','heroBg','pageTitles','pageHeaders','search'].forEach(k => {
   if (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG[k]) {
     CFG[k] = Object.assign({}, SITE_DEFAULTS[k], SITE_CONFIG[k]);
   }
@@ -2676,7 +3478,7 @@ if (!Array.isArray(CFG.customPages)) CFG.customPages = [];
         if (Array.isArray(parsed[k]) && parsed[k].length === 0 && Array.isArray(CFG[k]) && CFG[k].length > 0) return;
         CFG[k] = parsed[k];
       });
-      ['colors','fontColors','whyChooseUs','heroBg','pageTitles','pageHeaders'].forEach(k => {
+      ['colors','fontColors','whyChooseUs','heroBg','pageTitles','pageHeaders','search'].forEach(k => {
         if (parsed[k]) CFG[k] = Object.assign({}, CFG[k], parsed[k]);
       });
       // Custom pages: fully replace if present in preview, but only if items have valid titles
@@ -2742,6 +3544,17 @@ function applyColors() {
   if (c.warmWhite) document.documentElement.style.setProperty('--warm-white', c.warmWhite);
   if (c.cream)     document.documentElement.style.setProperty('--cream', c.cream);
   if (c.chrome)    document.documentElement.style.setProperty('--chrome', c.chrome);
+  // Set RGB component vars for use in rgba() overlays
+  const navyRgb = hexToRgb(c.navy);
+  const goldRgb = hexToRgb(c.gold);
+  if (navyRgb) document.documentElement.style.setProperty('--navy-rgb', navyRgb);
+  if (goldRgb) document.documentElement.style.setProperty('--gold-rgb', goldRgb);
+}
+
+function hexToRgb(hex) {
+  if (!hex) return null;
+  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r ? `${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}` : null;
 }
 
 /* =============================================
@@ -3014,21 +3827,30 @@ function buildStats() {
   el.dataset.count = stats.length;
   el.innerHTML = stats.map(s => `
     <div class="stat-cell">
-      <div class="stat-num">${s.num}</div>
+      <div class="stat-num" data-stat-animate="${s.animate ? '1' : '0'}">${s.num}</div>
       <div class="stat-label">${s.label}</div>
     </div>`).join('');
+  if (CFG.animateStats) initStatAnimations(el);
 }
 
 /* =============================================
    WHY CHOOSE US
    ============================================= */
-function toggleFaq(id) {
-  const item = document.getElementById(id);
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
   if (!item) return;
   const wasOpen = item.classList.contains('open');
-  // Close all in same container
   const parent = item.closest('.faq-grid');
   if (parent) parent.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+function toggleAccordion(el) {
+  const item = el.closest('.cps-acc-item');
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+  const parent = item.closest('.cps-accordion');
+  if (parent) parent.querySelectorAll('.cps-acc-item.open').forEach(i => i.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
 
@@ -3439,7 +4261,8 @@ let currentPage = 'home';
 
 let _suppressHistoryPush = false;
 
-function showPage(name) {
+function showPage(name, anchor) {
+  clearSearchHighlights();
   // Redirect to home if core page is disabled
   const pt = CFG.pageToggles || {};
   const disableable = ['about','contact'];
@@ -3483,7 +4306,24 @@ function showPage(name) {
   });
 
   currentPage = name;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (anchor) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const target = document.getElementById(anchor);
+          if (target) {
+            const headerH = document.getElementById('site-header')?.offsetHeight || 88;
+            const rect = target.getBoundingClientRect();
+            const top = rect.top + window.scrollY - headerH - 16;
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+          }
+        });
+      });
+    }, 100);
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   // Header solid on non-home pages
   const header = document.getElementById('site-header');
@@ -3508,6 +4348,14 @@ function showPage(name) {
     document.title = titles[name] || CFG.firmName;
   }
 
+  // Reset reveals on the newly active page synchronously (before repaint) so no flash
+  const activePage = document.querySelector(`#page-${name}, #page-custom-${name}`);
+  if (activePage) {
+    activePage.querySelectorAll('.reveal.visible').forEach(el => el.classList.remove('visible'));
+    activePage.querySelectorAll('.cps-tier-card.visible').forEach(el => {
+      el.classList.remove('visible', 'cps-tier-pulse');
+    });
+  }
   setTimeout(() => { initReveal(); initProcessObserver(); }, 100);
 }
 
@@ -3581,11 +4429,391 @@ function initProcessObserver() {
   document.querySelectorAll('.process-step').forEach(s => obs.observe(s));
 }
 
+// ── SEARCH ENGINE ────────────────────────────────────────────────────────────
+
+let _searchIndex = null;
+let _searchResultsShown = 0;
+let _searchAllResults = [];
+let _searchSelectedIdx = -1;
+let _searchPrevPage = null;
+
+function buildSearchIndex() {
+  if (_searchIndex) return;
+  _searchIndex = [];
+  const srchCfg = CFG.search || {};
+  const excluded = srchCfg.excludedPages || [];
+
+  function addPage(pageKey, pageLabel, containerSelector) {
+    if (excluded.includes(pageKey)) return;
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    container.querySelectorAll(':scope > .section').forEach(sec => {
+      const headingEl = sec.querySelector('h1,h2,h3,h4,.cps-heading,.section-label');
+      const bodyEls   = sec.querySelectorAll('p, li, .step-desc, .step-title, .cps-timeline-body p, .cps-timeline-body h4, .cps-rt-body, .section-subtitle, .service-title, .faq-question-text, .cps-fc-title, .cps-doc-category-title, .cps-jurisdiction-title, .cps-team-name, .cps-team-title, .cps-tier-name, .cps-acc-title, .cps-fee-amount, .checklist-item, .bullet-title, .cps-logo-caption');
+      const heading   = headingEl ? headingEl.textContent.trim() : '';
+      const body      = Array.from(bodyEls).map(el => el.textContent.trim()).filter(Boolean).join(' ');
+      const anchorId  = sec.id || '';
+      const text      = (heading + ' ' + body).replace(/\s+/g, ' ').trim();
+      if (text.length < 10) return;
+      _searchIndex.push({ pageKey, pageLabel, heading, body: body.slice(0, 300), anchorId, text: text.toLowerCase() });
+    });
+  }
+
+  // Force-render all pages silently so their content is in the DOM
+  const allPageEls = Array.from(document.querySelectorAll('[id^="page-"]'));
+  // Snapshot current display state before touching anything
+  const prevDisplay = new Map(allPageEls.map(el => [el, el.style.display]));
+
+  allPageEls.forEach(el => { el.style.visibility = 'hidden'; el.style.display = ''; });
+
+  if (!excluded.includes('home'))  addPage('home',  'Home',     '#page-home');
+  if (!excluded.includes('about')) addPage('about', 'About Us', '#page-about');
+
+  (CFG.customPages || []).forEach((p, i) => {
+    const key = 'cp-' + i;
+    if (!excluded.includes(key) && p.enabled !== false) {
+      addPage(key, p.navLabel || p.slug || ('Page ' + i), '#page-custom-' + p.slug);
+    }
+  });
+
+  // Restore exactly what was there before
+  allPageEls.forEach(el => {
+    el.style.visibility = '';
+    el.style.display = prevDisplay.get(el);
+  });
+}
+
+function searchQuery(raw) {
+  const tokens = raw.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  if (!tokens.length) return [];
+  return _searchIndex.filter(item => tokens.every(t => item.text.includes(t)));
+}
+
+function highlightSnippet(body, tokens) {
+  let snippet = body.slice(0, 200);
+  // Find best position — near first token hit
+  const lower = body.toLowerCase();
+  let pos = tokens.map(t => lower.indexOf(t)).filter(p => p >= 0).sort((a,b)=>a-b)[0] ?? 0;
+  if (pos > 60) { pos = Math.max(0, pos - 60); snippet = '…' + body.slice(pos, pos + 180); }
+  // Highlight tokens
+  tokens.forEach(t => {
+    snippet = snippet.replace(new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), m => `<mark>${m}</mark>`);
+  });
+  return snippet;
+}
+
+function buildWordIndex() {
+  if (!_searchIndex) return new Set();
+  const words = new Set();
+  _searchIndex.forEach(r => {
+    r.text.split(/\s+/).forEach(w => {
+      const clean = w.replace(/[^a-z0-9']/g, '');
+      if (clean.length > 3) words.add(clean);
+    });
+  });
+  return words;
+}
+
+let _wordIndex = null;
+
+function renderSuggestions(query) {
+  const container = document.getElementById('searchSuggestions');
+  if (!container) return;
+  const trimmed = query.trimStart();
+  if (!trimmed) { container.innerHTML = ''; return; }
+
+  // Get the last word being typed
+  const parts = trimmed.split(/\s+/);
+  const lastWord = parts[parts.length - 1].toLowerCase();
+  if (lastWord.length < 2) { container.innerHTML = ''; return; }
+
+  // Build word index once
+  if (!_wordIndex) _wordIndex = buildWordIndex();
+
+  // Find words that start with the last typed word (but aren't identical)
+  const suggestions = Array.from(_wordIndex)
+    .filter(w => w.startsWith(lastWord) && w !== lastWord)
+    .sort((a, b) => a.length - b.length)
+    .slice(0, 6);
+
+  if (!suggestions.length) { container.innerHTML = ''; return; }
+
+  // Clicking a suggestion replaces the last word in the input
+  const prefix = parts.slice(0, -1).join(' ');
+  container.innerHTML = suggestions.map(w =>
+    `<div class="search-suggestion-chip" onclick="applySuggestion('${prefix ? prefix + ' ' : ''}${w}')">${w}</div>`
+  ).join('');
+}
+
+function applySuggestion(word) {
+  const input = document.getElementById('searchInput');
+  input.value = word + ' ';
+  input.focus();
+  renderSuggestions(input.value);
+  renderSearchResults(input.value);
+}
+
+function renderSearchResults(query) {
+  const container = document.getElementById('searchResults');
+  const srchCfg = CFG.search || {};
+  const perPage = srchCfg.resultsPerPage || 5;
+
+  if (!query.trim()) {
+    // Show quick links
+    const pages = [
+      { key:'home', label:'Home' },
+      { key:'about', label:'About Us' },
+      ...(CFG.customPages||[]).filter(p=>p.enabled!==false).map((p,i)=>({ key:'cp-'+i, label: p.navLabel||p.slug||'Page '+i }))
+    ];
+    const excluded = (srchCfg.excludedPages || []);
+    const chips = pages.filter(p => !excluded.includes(p.key)).map(p =>
+      `<div class="search-quick-chip" onclick="closeSearch();${p.key==='home'?"showPage('home')":p.key==='about'?"showPage('about')":`showPage('${(CFG.customPages||[])[parseInt(p.key.replace('cp-',''))]?.slug||''}')`}">${p.label}</div>`
+    ).join('');
+    container.innerHTML = `<div class="search-quick-label">Quick Links</div><div class="search-quick-links">${chips}</div>`;
+    return;
+  }
+
+  _searchAllResults = searchQuery(query);
+  _searchResultsShown = Math.min(perPage, _searchAllResults.length);
+  _searchSelectedIdx = -1;
+  renderResultsPage(query);
+}
+
+function renderResultsPage(query) {
+  const container = document.getElementById('searchResults');
+  const srchCfg = CFG.search || {};
+  const tokens = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  const visible = _searchAllResults.slice(0, _searchResultsShown);
+
+  if (!visible.length) {
+    const msg = (srchCfg.noResultsMessage || "No results for '{query}'").replace('{query}', query);
+    const sub = srchCfg.noResultsSubtext || 'Try a different search term.';
+    container.innerHTML = `<div class="search-no-results"><div class="search-no-results-msg">${msg}</div><div class="search-no-results-sub">${sub}</div></div>`;
+    return;
+  }
+
+  // Group by page
+  const groups = {};
+  visible.forEach((r, idx) => {
+    if (!groups[r.pageKey]) groups[r.pageKey] = { label: r.pageLabel, items: [] };
+    groups[r.pageKey].items.push({ ...r, _idx: idx });
+  });
+
+  let html = Object.values(groups).map(g => {
+    const items = g.items.map(r => {
+      const title = r.heading || g.label;
+      const snippet = highlightSnippet(r.body, tokens);
+      const sel = r._idx === _searchSelectedIdx ? ' selected' : '';
+      return `<div class="search-result-item${sel}" data-result-idx="${r._idx}" onclick="goToResult(${r._idx})">
+        <div class="search-result-title">${title}</div>
+        ${snippet ? `<div class="search-result-snippet">${snippet}</div>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="search-group"><div class="search-group-label">${g.label}</div>${items}</div>`;
+  }).join('');
+
+  if (_searchResultsShown < _searchAllResults.length) {
+    html += `<div class="search-load-sentinel" style="height:1px;"></div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function loadMoreResults(onDone) {
+  const srchCfg = CFG.search || {};
+  const perPage = srchCfg.resultsPerPage || 5;
+  _searchResultsShown = Math.min(_searchResultsShown + perPage, _searchAllResults.length);
+  renderResultsPage(document.getElementById('searchInput').value);
+  if (typeof onDone === 'function') setTimeout(onDone, 50);
+}
+
+function clearSearchHighlights() {
+  document.querySelectorAll('.search-highlight-overlay').forEach(el => el.remove());
+}
+
+function highlightSearchTermsInSection(sectionEl, tokens) {
+  if (!sectionEl || !tokens.length) return;
+  clearSearchHighlights();
+
+  // Match at element level — check each candidate element's full text for all tokens
+  const candidates = Array.from(sectionEl.querySelectorAll(
+    'h1,h2,h3,h4,h5,p,li,.step-title,.step-desc,.service-title,.faq-question-text,.cps-timeline-body h4,.cps-team-name,.cps-tier-name,.cps-acc-title,.cps-jurisdiction-title,.cps-doc-category-title'
+  ));
+
+  const matchedEls = candidates.filter(el => {
+    const t = el.textContent.toLowerCase();
+    return tokens.every(token => t.includes(token));
+  });
+
+  if (!matchedEls.length) return;
+
+  const pad = 6;
+  const overlays = [];
+
+  // Pick the element with the shortest text — most precise match
+  const bestEl = matchedEls.reduce((best, el) =>
+    el.textContent.trim().length < best.textContent.trim().length ? el : best
+  );
+  console.log('[highlight] tokens:', tokens, '| bestEl tag:', bestEl.tagName, '| text:', bestEl.textContent.trim().slice(0,80));
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(bestEl);
+    const rects = Array.from(range.getClientRects()).filter(r => r.width > 2 && r.height > 2);
+    if (rects.length) {
+      const minLeft   = Math.min(...rects.map(r => r.left));
+      const minTop    = Math.min(...rects.map(r => r.top));
+      const maxRight  = Math.max(...rects.map(r => r.right));
+      const maxBottom = Math.max(...rects.map(r => r.bottom));
+      const div = document.createElement('div');
+      div.className = 'search-highlight-overlay';
+      div.style.cssText = `left:${minLeft + window.scrollX - pad}px;top:${minTop + window.scrollY - pad}px;width:${maxRight - minLeft + pad*2}px;height:${maxBottom - minTop + pad*2}px;`;
+      document.body.appendChild(div);
+      overlays.push(div);
+    }
+  } catch(e) { /* ignore */ }
+
+  if (!overlays.length) return;
+
+  setTimeout(() => {
+    overlays.forEach(el => el.style.opacity = '0');
+    setTimeout(() => overlays.forEach(el => el.remove()), 1600);
+  }, 8000);
+}
+
+function goToResult(idx) {
+  const r = _searchAllResults[idx];
+  if (!r) return;
+  const tokens = document.getElementById('searchInput').value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  closeSearch();
+
+  const doHighlight = () => {
+    if (!r.anchorId) return;
+    const target = document.getElementById(r.anchorId);
+    if (target) highlightSearchTermsInSection(target, tokens);
+  };
+
+  if (r.pageKey === 'home') showPage('home', r.anchorId);
+  else if (r.pageKey === 'about') showPage('about', r.anchorId);
+  else {
+    const cpIdx = parseInt(r.pageKey.replace('cp-',''), 10);
+    const page = (CFG.customPages||[])[cpIdx];
+    if (page) showPage(page.slug, r.anchorId);
+  }
+
+  // Wait for scroll to fully stop before highlighting
+  let _scrollEndTimer = null;
+  const onScroll = () => {
+    clearTimeout(_scrollEndTimer);
+    _scrollEndTimer = setTimeout(() => {
+      window.removeEventListener('scroll', onScroll);
+      doHighlight();
+    }, 120);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  // Fallback: if no scroll happens at all, run after 500ms
+  setTimeout(() => {
+    window.removeEventListener('scroll', onScroll);
+    clearTimeout(_scrollEndTimer);
+    doHighlight();
+  }, 500);
+}
+
+function openSearch() {
+  // Capture active page BEFORE buildSearchIndex disturbs display state
+  const activeEl = Array.from(document.querySelectorAll('[id^="page-"]'))
+    .find(el => getComputedStyle(el).display !== 'none');
+  _searchPrevPage = activeEl ? activeEl.id : null;
+  _wordIndex = null;
+
+  buildSearchIndex();
+
+  const overlay = document.getElementById('searchOverlay');
+  const input = document.getElementById('searchInput');
+  const resultsEl = document.getElementById('searchResults');
+  const srchCfg = CFG.search || {};
+  input.placeholder = srchCfg.placeholder || 'Search...';
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => input.focus(), 100);
+  renderSearchResults('');
+
+  // Infinite scroll via IntersectionObserver on sentinel
+  let _sentinelObs = null;
+  function observeSentinel() {
+    if (_sentinelObs) _sentinelObs.disconnect();
+    const sentinel = resultsEl.querySelector('.search-load-sentinel');
+    if (!sentinel) return;
+    _sentinelObs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        loadMoreResults(observeSentinel);
+      }
+    }, { root: resultsEl, threshold: 0.1 });
+    _sentinelObs.observe(sentinel);
+  }
+
+  // Keyboard navigation
+  input.oninput = () => {
+    _searchSelectedIdx = -1;
+    renderSuggestions(input.value);
+    renderSearchResults(input.value);
+    observeSentinel();
+  };
+  input.onkeydown = (e) => {
+    const items = document.querySelectorAll('.search-result-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      _searchSelectedIdx = Math.min(_searchSelectedIdx + 1, items.length - 1);
+      renderResultsPage(input.value);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      _searchSelectedIdx = Math.max(_searchSelectedIdx - 1, -1);
+      renderResultsPage(input.value);
+    } else if (e.key === 'Enter' && _searchSelectedIdx >= 0) {
+      goToResult(_searchSelectedIdx);
+    } else if (e.key === 'Escape') {
+      closeSearch();
+    }
+  };
+
+  // Observe sentinel after initial render
+  setTimeout(observeSentinel, 50);
+}
+
+function closeSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('searchInput').value = '';
+  const sugg = document.getElementById('searchSuggestions');
+  if (sugg) sugg.innerHTML = '';
+  // Restore the page that was active before search opened
+  if (_searchPrevPage) {
+    const name = _searchPrevPage.replace('page-custom-', '').replace('page-', '');
+    showPage(name);
+    _searchPrevPage = null;
+  }
+}
+
+// Close on backdrop click
+document.addEventListener('click', e => {
+  const overlay = document.getElementById('searchOverlay');
+  if (overlay && overlay.classList.contains('open') && e.target === overlay) closeSearch();
+});
+
 function initReveal() {
   const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        if (e.target.classList.contains('cps-tier-card--featured')) {
+          setTimeout(() => e.target.classList.add('cps-tier-pulse'), 1100);
+        }
+        obs.unobserve(e.target);
+      }
+    });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+  document.querySelectorAll('.cps-tier-card:not(.visible)').forEach(el => obs.observe(el));
 }
 
 /* =============================================
@@ -3634,7 +4862,7 @@ function getInheritedBg(sections, idx) {
   return 'light';
 }
 
-const CPS_NO_ZONE_TYPES = new Set(['link','button','cta','stats','two-col','feature-cards']);
+const CPS_NO_ZONE_TYPES = new Set(['link','button','cta','stats','two-col','feature-cards','video']);
 
 function applyTwoZoneLayout(wrapper, sec, isFirst) {
   if (CPS_NO_ZONE_TYPES.has(sec.type)) return;
@@ -3693,6 +4921,27 @@ function applyTwoZoneLayout(wrapper, sec, isFirst) {
   container.replaceWith(headerZone, contentZone);
 }
 
+function buildVideoEmbed(url, mp4) {
+  if (mp4) {
+    return '<video controls playsinline style="width:100%;height:100%;object-fit:contain;">' +
+      '<source src="' + mp4 + '" type="video/mp4"/>' +
+      'Your browser does not support video.' +
+    '</video>';
+  }
+  if (!url) return '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.3);font-size:14px;">No video URL set</div>';
+  const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    const src = 'https://www.youtube.com/embed/' + ytMatch[1] + '?rel=0&controls=1';
+    return '<iframe src="' + src + '" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
+  }
+  const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeoMatch) {
+    const src = 'https://player.vimeo.com/video/' + vimeoMatch[1] + '?controls=1';
+    return '<iframe src="' + src + '" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>';
+  }
+  return '<iframe src="' + escAttr(url) + '" allowfullscreen></iframe>';
+}
+
 function renderCustomSection(sec, idx, isFirst, allSections) {
   if (!sec || !sec.type) return null;
 
@@ -3703,6 +4952,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 
   const wrapper = document.createElement('section');
   wrapper.className = `section ${bgClass}`;
+  if (sec.anchorId) wrapper.id = sec.anchorId;
 
   // First section: replaces the page banner — clear fixed header, use banner typography
   if (isFirst) {
@@ -3721,7 +4971,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
     ? `page-banner-title${isDark ? ' page-banner-title-light' : ''}`
     : 'section-title';
   const subtitleStyle = isFirst
-    ? `font-size:clamp(15px,1.6vw,18px);color:${isDark ? 'rgba(255,255,255,0.65)' : 'var(--text-muted)'};line-height:1.7;max-width:600px;margin-top:14px;`
+    ? `font-size:clamp(15px,1.6vw,18px);color:${isDark ? 'rgba(255,255,255,0.65)' : 'var(--text-muted)'};line-height:1.7;max-width:900px;margin-top:14px;`
     : '';
 
   switch (sec.type) {
@@ -3747,7 +4997,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
         ${sec.heading ? `<${headTag} class="${headClass} cps-heading">${sec.heading}</${headTag}>` : ''}
         <div class="cps-body">${formatBody(sec.body)}</div>
         ${(sec.cta_linkLabel || sec.ctaLabel) ? `<div style="margin-top:28px;"><button class="btn-primary" ${
-          sec.cta_linkType === 'internal' ? `onclick="showPage('${escAttr(sec.cta_linkUrl || 'contact')}')"` :
+          sec.cta_linkType === 'internal' ? `onclick="showPage('${escAttr(sec.cta_linkUrl || 'contact')}','${escAttr(sec.cta_anchorId||'')}')"` :
           (sec.cta_linkType === 'external' || sec.cta_linkType === 'file') ? `onclick="openSmartLink('${escAttr(sec.cta_linkType)}','${escAttr(sec.cta_linkUrl)}')"` :
           `onclick="showPage('contact')"`
         }>${sec.cta_linkLabel || sec.ctaLabel} →</button></div>` : ''}
@@ -3767,10 +5017,14 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       const statItems = sec.items || [];
       const items = statItems.map(s => `
         <div class="stat-cell">
-          <div class="stat-num">${s.num}</div>
+          <div class="stat-num" data-stat-animate="${s.animate ? '1' : '0'}">${s.num}</div>
           <div class="stat-label">${s.label}</div>
         </div>`).join('');
       wrapper.innerHTML = `<div class="stats-inner" data-count="${statItems.length}">${items}</div>`;
+      if (sec.animateStats) {
+        // Defer until element is in DOM
+        requestAnimationFrame(() => initStatAnimations(wrapper));
+      }
       break;
     }
 
@@ -3780,7 +5034,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
         const hasLink = card.linkType && card.linkType !== 'none' && card.linkUrl && card.linkLabel;
         const linkOnclick = hasLink
           ? (card.linkType === 'internal'
-              ? 'showPage(\'' + escAttr(card.linkUrl) + '\')'
+              ? 'showPage(\'' + escAttr(card.linkUrl) + '\',\'' + escAttr(card.anchorId||'') + '\')'
               : 'openSmartLink(\'' + escAttr(card.linkType) + '\',\'' + escAttr(card.linkUrl) + '\')')
           : '';
         const linkHtml = hasLink
@@ -3823,7 +5077,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
         const hasLink = item.linkType && item.linkType !== 'none' && item.linkUrl;
         const clickAttr = hasLink
           ? (item.linkType === 'internal'
-              ? `onclick="showPage('${escAttr(item.linkUrl)}')" style="cursor:pointer;"`
+              ? `onclick="showPage('${escAttr(item.linkUrl)}','${escAttr(item.anchorId||'')}')" style="cursor:pointer;"`
               : `onclick="openSmartLink('${escAttr(item.linkType)}','${escAttr(item.linkUrl)}')" style="cursor:pointer;"`)
           : '';
         const arrow = hasLink ? `<span class="cps-bullet-arrow">→</span>` : '';
@@ -3858,7 +5112,8 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
             data-svc-detail="${escAttr(s.detail || s.desc)}"
             data-svc-btn-label="${escAttr(s.btnLabel||'')}"
             data-svc-btn-type="${escAttr(s.btnLinkType||'internal')}"
-            data-svc-btn-url="${escAttr(s.btnLinkUrl||'contact')}"` : ''}>
+            data-svc-btn-url="${escAttr(s.btnLinkUrl||'contact')}"
+            data-svc-btn-anchor="${escAttr(s.btnAnchorId||'')}"` : ''}>
           <div class="service-icon">${s.icon || '⚖️'}</div>
           <h3 class="service-title">${s.title}</h3>
           <p class="service-desc">${s.desc}</p>
@@ -3878,7 +5133,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       const items = (sec.items || []).map((s, i) => {
         const hasLink = s.linkType && s.linkType !== 'none' && s.linkUrl && s.linkLabel;
         const linkHtml = hasLink ? `<div class="step-link" onclick="${
-          s.linkType === 'internal' ? `showPage('${escAttr(s.linkUrl)}')` : `openSmartLink('${escAttr(s.linkType)}','${escAttr(s.linkUrl)}')`
+          s.linkType === 'internal' ? `showPage('${escAttr(s.linkUrl)}','${escAttr(s.anchorId||'')}')` : `openSmartLink('${escAttr(s.linkType)}','${escAttr(s.linkUrl)}')`
         }">${escAttr(s.linkLabel)} →</div>` : '';
         return `
         <div class="process-step${i===0?' step-active':''}" data-step="${i+1}">
@@ -3905,11 +5160,11 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       const items = (sec.items || []).map((f, i) => {
         const hasLink = f.linkType && f.linkType !== 'none' && f.linkUrl && f.linkLabel;
         const linkHtml = hasLink ? `<div class="faq-item-link" onclick="${
-          f.linkType === 'internal' ? `showPage('${escAttr(f.linkUrl)}')` : `openSmartLink('${escAttr(f.linkType)}','${escAttr(f.linkUrl)}')`
+          f.linkType === 'internal' ? `showPage('${escAttr(f.linkUrl)}','${escAttr(f.anchorId||'')}')` : `openSmartLink('${escAttr(f.linkType)}','${escAttr(f.linkUrl)}')`
         }">${escAttr(f.linkLabel)} →</div>` : '';
         return `
-        <div class="faq-item" id="cpfaq-${idx}-${i}">
-          <div class="faq-question" onclick="toggleFaq('cpfaq-${idx}-${i}')">
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
             <span class="faq-question-text">${f.q}</span>
             <div class="faq-toggle"><span class="faq-toggle-icon">+</span></div>
           </div>
@@ -3977,10 +5232,10 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       const secType   = sec.cta_secondary_linkType  || 'internal';
       const secUrl    = sec.cta_secondary_linkUrl   || sec.secondaryTarget || 'services';
       const primClick = primType === 'internal'
-        ? `onclick="showPage('${escAttr(primUrl)}')" `
+        ? `onclick="showPage('${escAttr(primUrl)}','${escAttr(sec.cta_primary_anchorId||'')}')" `
         : `onclick="openSmartLink('${escAttr(primType)}','${escAttr(primUrl)}')" `;
       const secClick  = secType === 'internal'
-        ? `onclick="showPage('${escAttr(secUrl)}')" `
+        ? `onclick="showPage('${escAttr(secUrl)}','${escAttr(sec.cta_secondary_anchorId||'')}')" `
         : `onclick="openSmartLink('${escAttr(secType)}','${escAttr(secUrl)}')" `;
       const primBtn   = primLabel ? `<button class="btn-primary" ${primClick}>${escAttr(primLabel)} →</button>` : '';
       const secBtn    = secLabel  ? `<button class="btn-outline" ${secClick}>${escAttr(secLabel)}</button>` : '';
@@ -4018,7 +5273,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       const items = (sec.items || []).map((item, i) => {
         const hasLink = item.linkType && item.linkType !== 'none' && item.linkUrl && item.linkLabel;
         const linkHtml = hasLink ? `<div class="cps-timeline-link" onclick="${
-          item.linkType === 'internal' ? `showPage('${escAttr(item.linkUrl)}')` : `openSmartLink('${escAttr(item.linkType)}','${escAttr(item.linkUrl)}')`
+          item.linkType === 'internal' ? `showPage('${escAttr(item.linkUrl)}','${escAttr(item.anchorId||'')}')` : `openSmartLink('${escAttr(item.linkType)}','${escAttr(item.linkUrl)}')`
         }">${escAttr(item.linkLabel)} →</div>` : '';
         return `
         <div class="cps-timeline-item reveal">
@@ -4048,22 +5303,28 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       const rows = (sec.items || []).map(row => {
         const hasLink = row.linkType && row.linkType !== 'none' && row.linkUrl && row.linkLabel;
         const linkHtml = hasLink ? `<div class="cps-fee-link" onclick="${
-          row.linkType === 'internal' ? `showPage('${escAttr(row.linkUrl)}')` : `openSmartLink('${escAttr(row.linkType)}','${escAttr(row.linkUrl)}')`
+          row.linkType === 'internal' ? `showPage('${escAttr(row.linkUrl)}','${escAttr(row.anchorId||'')}')` : `openSmartLink('${escAttr(row.linkType)}','${escAttr(row.linkUrl)}')`
         }">${escAttr(row.linkLabel)} →</div>` : '';
+        const col1Label = sec.col1Label || 'Service';
+        const col2Label = sec.col2Label || 'Value';
+        const col3Label = sec.col3Label || 'Notes';
         return `
         <tr>
-          <td><strong>${row.service}</strong>${row.note ? `<div class="cps-fee-note">${row.note}</div>` : ''}${linkHtml}</td>
-          <td><div class="cps-fee-amount">${row.amount}</div></td>
-          <td style="color:var(--text-muted);font-size:13px;">${row.detail || ''}</td>
+          <td data-label="${escAttr(col1Label)}"><strong>${row.service}</strong>${row.note ? `<div class="cps-fee-note">${row.note}</div>` : ''}${linkHtml}</td>
+          <td data-label="${escAttr(col2Label)}"><div class="cps-fee-amount">${row.amount}</div></td>
+          <td data-label="${escAttr(col3Label)}" class="cps-fee-detail">${row.detail || ''}</td>
         </tr>`;
       }).join('');
+      const col1Label = sec.col1Label || 'Service';
+      const col2Label = sec.col2Label || 'Value';
+      const col3Label = sec.col3Label || 'Notes';
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
         ${sec.heading ? `<${headTag} class="${headClass} reveal">${sec.heading}</${headTag}>` : ''}
         ${sec.subtitle ? `<p class="section-subtitle reveal reveal-delay-1" style="${subtitleStyle}">${sec.subtitle}</p>` : ''}
-        <div class="reveal reveal-delay-2" style="overflow-x:auto;">
+        <div class="reveal reveal-delay-2 cps-fee-wrap">
           <table class="cps-fee-table">
-            <thead><tr><th>${sec.col1Label || 'Service'}</th><th>${sec.col2Label || 'Value'}</th><th>${sec.col3Label || 'Notes'}</th></tr></thead>
+            <thead><tr><th>${col1Label}</th><th>${col2Label}</th><th>${col3Label}</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
         </div>
@@ -4076,7 +5337,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
     case 'jurisdiction': {
       const hasLink = sec.linkType && sec.linkType !== 'none' && sec.linkUrl && sec.linkLabel;
       const linkHtml = hasLink ? `<div class="cps-jurisdiction-link" onclick="${
-        sec.linkType === 'internal' ? `showPage('${escAttr(sec.linkUrl)}')` : `openSmartLink('${escAttr(sec.linkType)}','${escAttr(sec.linkUrl)}')`
+        sec.linkType === 'internal' ? `showPage('${escAttr(sec.linkUrl)}','${escAttr(sec.jur_anchorId||'')}')` : `openSmartLink('${escAttr(sec.linkType)}','${escAttr(sec.linkUrl)}')`
       }">${escAttr(sec.linkLabel)} →</div>` : '';
       wrapper.innerHTML = `<div class="container">
         ${labelHTML}
@@ -4212,7 +5473,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       let clickHandler = '';
       if (hasLink) {
         if (sec.linkType === 'internal') {
-          clickHandler = `onclick="showPage('${escAttr(sec.linkUrl)}')"`;
+          clickHandler = `onclick="showPage('${escAttr(sec.linkUrl)}','${escAttr(sec.link_anchorId||'')}')"`;
         } else {
           clickHandler = `onclick="openSmartLink('${escAttr(sec.linkType)}','${escAttr(sec.linkUrl)}')"`;
         }
@@ -4265,7 +5526,7 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
       }
 
       wrapper.innerHTML = `<div class="container">
-        <div class="cps-rt-wrap${rtFull ? ' cps-rt-full' : ''} cps-rt-clearfix">
+        <div class="cps-rt-wrap${rtFull ? ' cps-rt-full' : ''} cps-rt-clearfix reveal">
           ${imgHtml}
           <div class="cps-rt-body${rtIsDark ? ' on-dark' : ''}">${rtHtml}</div>
         </div>
@@ -4281,24 +5542,279 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
                            : 'cps-section-light';
       wrapper.className = `cps-appendage ${inheritedClass}`;
 
-      function makeBtnClick(linkType, linkUrl) {
+      function makeBtnClick(linkType, linkUrl, anchorId) {
         if (!linkType || linkType === 'none' || !linkUrl) return '';
-        if (linkType === 'internal') return `onclick="showPage('${escAttr(linkUrl)}')"`;
+        if (linkType === 'internal') return `onclick="showPage('${escAttr(linkUrl)}','${escAttr(anchorId||'')}')"`;
         return `onclick="openSmartLink('${escAttr(linkType)}','${escAttr(linkUrl)}')"`;
       }
       const hasPrimary = sec.primary_linkType && sec.primary_linkType !== 'none' && sec.primary_linkUrl;
       const hasSecondary = sec.secondary_linkType && sec.secondary_linkType !== 'none' && sec.secondary_linkUrl;
       const primaryBtn = (hasPrimary || sec.primary_linkLabel)
-        ? `<button class="btn-primary" ${makeBtnClick(sec.primary_linkType, sec.primary_linkUrl)}>${sec.primary_linkLabel || 'Learn More'} →</button>`
+        ? `<button class="btn-primary" ${makeBtnClick(sec.primary_linkType, sec.primary_linkUrl, sec.primary_anchorId)}>${sec.primary_linkLabel || 'Learn More'} →</button>`
         : '';
       const secondaryBtn = (hasSecondary || sec.secondary_linkLabel)
-        ? `<button class="btn-outline-dark" ${makeBtnClick(sec.secondary_linkType, sec.secondary_linkUrl)}>${sec.secondary_linkLabel || 'Learn More'}</button>`
+        ? `<button class="btn-outline-dark" ${makeBtnClick(sec.secondary_linkType, sec.secondary_linkUrl, sec.secondary_anchorId)}>${sec.secondary_linkLabel || 'Learn More'}</button>`
         : '';
       wrapper.innerHTML = `<div class="container">
         <div class="cps-button-actions reveal">
           ${primaryBtn}${secondaryBtn}
         </div>
       </div>`;
+      break;
+    }
+
+    // ── VIDEO EMBED ──────────────────────────────────────────────
+    case 'video': {
+      const layout   = sec.videoLayout   || 'contained';
+      const vidPos   = sec.videoPosition || 'left';
+      const embedUrl = sec.embedUrl      || '';
+      const mp4Url   = sec.mp4Url        || '';
+      const embedHtml = '<div class="cps-video-frame">' + buildVideoEmbed(embedUrl, mp4Url) + '</div>';
+
+      if (layout === 'two-col') {
+        const posClass = vidPos === 'right' ? ' video-right' : '';
+        const videoCol = '<div class="cps-video-col">' + embedHtml + '</div>';
+        const hasLink  = sec.cta_linkType && sec.cta_linkType !== 'none' && sec.cta_linkUrl && sec.cta_linkLabel;
+        const ctaHtml  = hasLink
+          ? '<div class="cps-video-cta"><button class="btn-primary" onclick="' +
+              (sec.cta_linkType === 'internal'
+                ? 'showPage(\'' + escAttr(sec.cta_linkUrl) + '\',\'' + escAttr(sec.cta_anchorId||'') + '\')'
+                : 'openSmartLink(\'' + escAttr(sec.cta_linkType) + '\',\'' + escAttr(sec.cta_linkUrl) + '\')') +
+            '">' + sec.cta_linkLabel + ' →</button></div>'
+          : '';
+        const textCol  = '<div class="cps-video-col cps-video-text reveal">' +
+          (sec.heading ? '<' + headTag + ' class="' + headClass + ' cps-heading">' + sec.heading + '</' + headTag + '>' : '') +
+          (sec.body    ? '<div class="cps-body">' + formatBody(sec.body) + '</div>' : '') +
+          ctaHtml +
+        '</div>';
+        wrapper.innerHTML = '<div class="container">' +
+          labelHTML +
+          '<div class="cps-video-layout--two-col' + posClass + ' reveal" style="margin-top:' + (labelHTML || sec.heading ? '0' : '0') + ';">' +
+            (vidPos === 'right' ? textCol + videoCol : videoCol + textCol) +
+          '</div>' +
+        '</div>';
+      } else {
+        const widthMap = { narrow: '560px', medium: '860px', wide: '1060px', full: '100%' };
+        const containedWidth = widthMap[sec.containedWidth] || '860px';
+        const layoutClass = layout === 'full' ? 'cps-video-layout--full' : 'cps-video-layout--contained';
+        const containedStyle = layout === 'contained' ? 'max-width:' + containedWidth + ';' : '';
+        wrapper.innerHTML = '<div class="container">' +
+          labelHTML +
+          (sec.heading ? '<' + headTag + ' class="' + headClass + ' cps-heading reveal" style="margin-bottom:24px;">' + sec.heading + '</' + headTag + '>' : '') +
+          (sec.body    ? '<div class="cps-body reveal reveal-delay-1" style="margin-bottom:24px;">' + formatBody(sec.body) + '</div>' : '') +
+          '<div class="' + layoutClass + ' reveal reveal-delay-1" style="' + containedStyle + '">' + embedHtml + '</div>' +
+        '</div>';
+      }
+      break;
+    }
+
+    // ── TIER CARDS ───────────────────────────────────────────────
+    case 'pricing': {
+      const cards = sec.items || [];
+
+      const cardHtml = cards.map((card, ci) => {
+        const style = card.cardStyle || 'light';
+        const isFeatured = card.featured === true;
+        const styleClass = 'cps-tier-card--' + style;
+        const featClass = isFeatured ? ' cps-tier-card--featured' : '';
+
+        // Ribbon
+        const ribbonHtml = card.ribbon
+          ? '<div class="cps-tier-ribbon">' + card.ribbon + '</div>'
+          : '';
+
+        // Image or icon
+        let mediaHtml = '';
+        if (card.imagePath) {
+          const szClass = ' cps-tier-img--' + (card.imageSize || 'md');
+          mediaHtml = '<img class="cps-tier-img' + szClass + '" src="' + card.imagePath + '" alt="' + escAttr(card.alt || card.name || '') + '" loading="lazy"/>';
+        } else if (card.icon) {
+          mediaHtml = '<div class="cps-tier-icon">' + card.icon + '</div>';
+        }
+
+        // Price
+        const priceHtml = card.price
+          ? '<div class="cps-tier-price-wrap"><span class="cps-tier-price">' + card.price + '</span>' +
+            (card.period ? '<span class="cps-tier-period">' + card.period + '</span>' : '') +
+            '</div>'
+          : '';
+
+        // Features
+        let featuresHtml = '';
+        if (card.features && card.features.length) {
+          const featureItems = card.features.map(f => {
+            const status = f.status || '';
+            const iconMap = { yes: '✓', no: '✗', partial: '~' };
+            const excludedClass = status === 'no' ? ' cps-tier-feature--excluded' : '';
+            if (f.isGroup) {
+              return '<div class="cps-tier-group-header">' + (f.label || '') + '</div>';
+            }
+            const showIcon = status !== '';
+            return '<div class="cps-tier-feature' + excludedClass + '">' +
+              (showIcon ? '<div class="cps-tier-feature-icon cps-tier-feature-icon--' + status + '">' + (iconMap[status]||'') + '</div>' : '') +
+              '<span>' + (f.label || '') + '</span>' +
+            '</div>';
+          }).join('');
+          featuresHtml = '<div class="cps-tier-features">' + featureItems + '</div>';
+        }
+
+        // CTA
+        const hasLink = card.cta_linkType && card.cta_linkType !== 'none' && card.cta_linkUrl && card.cta_linkLabel;
+        const ctaClick = hasLink
+          ? (card.cta_linkType === 'internal'
+              ? 'onclick="showPage(\'' + escAttr(card.cta_linkUrl) + '\',\'' + escAttr(card.cta_anchorId || '') + '\')"'
+              : 'onclick="openSmartLink(\'' + escAttr(card.cta_linkType) + '\',\'' + escAttr(card.cta_linkUrl) + '\')"')
+          : '';
+        const ctaHtml = hasLink
+          ? '<div class="cps-tier-cta"><button class="btn-primary" style="width:100%;" ' + ctaClick + '>' + card.cta_linkLabel + ' →</button></div>'
+          : '';
+
+        const noteHtml = card.note ? '<div class="cps-tier-note">' + card.note + '</div>' : '';
+
+        const delay = ci < 4 ? (ci * 0.1) + 's' : '0.4s';
+
+        return '<div class="cps-tier-card ' + styleClass + featClass + '" style="transition-delay:' + delay + ';">' +
+          ribbonHtml +
+          (card.imagePath ? mediaHtml : '') +
+          '<div class="cps-tier-body">' +
+            (!card.imagePath && card.icon ? mediaHtml : '') +
+            (card.name ? '<div class="cps-tier-name">' + card.name + '</div>' : '') +
+            (card.tagline ? '<div class="cps-tier-tagline">' + card.tagline + '</div>' : '') +
+            priceHtml +
+            '<div class="cps-tier-divider"></div>' +
+            featuresHtml +
+            ctaHtml +
+            noteHtml +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      const cols = Math.min(Math.max(cards.length, 1), 4);
+      wrapper.innerHTML = '<div class="container">' +
+        labelHTML +
+        (sec.heading  ? '<' + headTag + ' class="' + headClass + ' cps-heading reveal">' + sec.heading + '</' + headTag + '>' : '') +
+        (sec.subtitle ? '<p class="section-subtitle reveal reveal-delay-1" style="' + subtitleStyle + '">' + sec.subtitle + '</p>' : '') +
+        '<div class="cps-tier-grid" data-cols="' + cols + '">' + cardHtml + '</div>' +
+      '</div>';
+      break;
+    }
+
+    // ── IMAGE GALLERY ────────────────────────────────────────────
+    case 'gallery': {
+      const cols = sec.galleryCols || 3;
+      const galleryItems = sec.items || [];
+      const lbData = galleryItems.map(item => ({
+        src:     item.imagePath || '',
+        alt:     item.alt       || '',
+        title:   item.title     || '',
+        caption: item.caption   || '',
+      }));
+      const lbJson = escAttr(JSON.stringify(lbData));
+      const cells = galleryItems.map((item, i) => {
+        const src = item.imagePath || '';
+        return '<div class="cps-gallery-item reveal" onclick="openLightbox(JSON.parse(this.dataset.lb),' + i + ')" data-lb="' + lbJson + '">' +
+          (src ? '<img src="' + src + '" alt="' + escAttr(item.alt || item.title || '') + '" loading="lazy"/>' : '') +
+          '<div class="cps-gallery-overlay"><div class="cps-gallery-expand">⤢</div></div>' +
+        '</div>';
+      }).join('');
+      wrapper.innerHTML = '<div class="container">' +
+        labelHTML +
+        (sec.heading  ? '<' + headTag + ' class="' + headClass + ' cps-heading reveal">' + sec.heading + '</' + headTag + '>' : '') +
+        (sec.subtitle ? '<p class="section-subtitle reveal reveal-delay-1" style="' + subtitleStyle + '">' + sec.subtitle + '</p>' : '') +
+        '<div class="cps-gallery-grid reveal reveal-delay-1" data-cols="' + cols + '">' + cells + '</div>' +
+      '</div>';
+      break;
+    }
+
+    // ── ACCORDION ────────────────────────────────────────────────
+    case 'accordion': {
+      const items = (sec.items || []).map((item, i) => {
+        const imgPos = item.imagePos || 'none';
+        let bodyInner = '';
+        if (item.imagePath && imgPos === 'top') {
+          bodyInner = '<div class="cps-acc-img-top"><img src="' + item.imagePath + '" alt="' + (item.title || '') + '" loading="lazy"/></div>' + (item.body || '');
+        } else if (item.imagePath && (imgPos === 'left' || imgPos === 'right')) {
+          const thumb = '<div class="cps-acc-thumb"><img src="' + item.imagePath + '" alt="' + (item.title || '') + '" loading="lazy"/></div>';
+          const text = '<div class="cps-acc-text-part">' + (item.body || '') + '</div>';
+          bodyInner = '<div class="cps-acc-img-side">' + (imgPos === 'left' ? thumb + text : text + thumb) + '</div>';
+        } else {
+          bodyInner = item.body || '';
+        }
+        return '<div class="cps-acc-item">' +
+          '<div class="cps-acc-trigger" onclick="toggleAccordion(this)">' +
+            '<span class="cps-acc-title">' + (item.title || '') + '</span>' +
+            '<div class="cps-acc-chevron">+</div>' +
+          '</div>' +
+          '<div class="cps-acc-body"><div class="cps-acc-inner">' + bodyInner + '</div></div>' +
+        '</div>';
+      }).join('');
+      wrapper.innerHTML = '<div class="container">' +
+        labelHTML +
+        (sec.heading ? '<' + headTag + ' class="' + headClass + ' cps-heading reveal">' + sec.heading + '</' + headTag + '>' : '') +
+        (sec.subtitle ? '<p class="section-subtitle reveal reveal-delay-1" style="' + subtitleStyle + '">' + sec.subtitle + '</p>' : '') +
+        '<div class="cps-accordion reveal reveal-delay-1" style="margin-top:40px;">' + items + '</div>' +
+      '</div>';
+      break;
+    }
+
+    // ── LOGO STRIP ───────────────────────────────────────────────
+    case 'logo-strip': {
+      const logoSize = sec.logoSize || 'medium';
+      const logos = (sec.items || []).map(logo => {
+        const imgTag = logo.imagePath ? '<img src="' + logo.imagePath + '" alt="' + (logo.alt || logo.caption || '') + '" loading="lazy"/>' : '';
+        const inner = '<div class="cps-logo-img-wrap">' + imgTag + '</div>' + (logo.caption ? '<div class="cps-logo-caption">' + logo.caption + '</div>' : '');
+        if (logo.linkUrl) {
+          return '<div class="cps-logo-item" onclick="openSmartLink(\'external\',\'' + escAttr(logo.linkUrl) + '\')" style="cursor:pointer;">' + inner + '</div>';
+        }
+        return '<div class="cps-logo-item">' + inner + '</div>';
+      }).join('');
+      wrapper.classList.add('cps-section-logo-strip');
+      const hasHeader = sec.label || sec.heading || sec.subtitle;
+      if (!hasHeader) wrapper.classList.add('logo-strip-mode');
+      wrapper.innerHTML = '<div class="container">' +
+        labelHTML +
+        (sec.heading ? '<' + headTag + ' class="' + headClass + ' cps-heading reveal">' + sec.heading + '</' + headTag + '>' : '') +
+        (sec.subtitle ? '<p class="section-subtitle reveal reveal-delay-1" style="' + subtitleStyle + '">' + sec.subtitle + '</p>' : '') +
+        '<div class="cps-logo-strip cps-logo-strip--' + logoSize + ' reveal reveal-delay-1">' + logos + '</div>' +
+      '</div>';
+      break;
+    }
+
+    // ── MARQUEE / TICKER ─────────────────────────────────────────
+    case 'marquee': {
+      const mqMode = sec.mqMode || 'text';
+      const mqSpeed = sec.mqSpeed || 'medium';
+      const mqDir = sec.mqDir || 'left';
+      const mqPause = sec.mqPause !== false;
+      const mqSep = sec.mqSeparator || '·';
+      const speedMap = { slow: '50s', medium: '30s', fast: '15s' };
+      const dur = speedMap[mqSpeed] || '30s';
+      let trackInner = '';
+      if (mqMode === 'text') {
+        const text = sec.mqText || '';
+        const oneCopy = '<span class="cps-mq-text-item"><span class="cps-mq-text-content">' + text + '</span><span class="cps-mq-sep">' + mqSep + '</span></span>';
+        const halfTrack = oneCopy.repeat(10);
+        trackInner = halfTrack + halfTrack;
+      } else {
+        const logoItems = (sec.items || []).map(logo => {
+          const imgTag = logo.imagePath ? '<img src="' + logo.imagePath + '" alt="' + (logo.alt || '') + '" loading="lazy"/>' : '';
+          if (logo.linkUrl) return '<div class="cps-mq-logo-item" onclick="openSmartLink(\'external\',\'' + escAttr(logo.linkUrl) + '\')" style="cursor:pointer;">' + imgTag + '</div>';
+          return '<div class="cps-mq-logo-item">' + imgTag + '</div>';
+        }).join('');
+        trackInner = logoItems + logoItems;
+      }
+      const dirClass = 'dir-' + mqDir;
+      const pauseClass = mqPause ? ' pause-hover' : '';
+      const hasHeader = sec.heading || sec.subtitle || sec.label;
+      wrapper.classList.add('cps-section-marquee');
+      wrapper.innerHTML = '<div class="container">' +
+        labelHTML +
+        (sec.heading ? '<' + headTag + ' class="' + headClass + ' cps-heading reveal">' + sec.heading + '</' + headTag + '>' : '') +
+        (sec.subtitle ? '<p class="section-subtitle reveal reveal-delay-1" style="' + subtitleStyle + '">' + sec.subtitle + '</p>' : '') +
+      '</div>' +
+      '<div class="cps-marquee-outer ' + dirClass + pauseClass + '" style="--marquee-dur:' + dur + ';margin-top:' + (hasHeader ? '32px' : '0') + ';">' +
+        '<div class="cps-marquee-track">' + trackInner + '</div>' +
+      '</div>';
       break;
     }
 
@@ -4315,6 +5831,109 @@ function renderCustomSection(sec, idx, isFirst, allSections) {
 // Two-zone layout: splits sections with a heading into a tinted header zone
 // and a lighter content zone, separated by a thin divider line.
 // Helpers
+/* =============================================
+   STAT ANIMATIONS — count-up + sequential letter reveal
+   ============================================= */
+function initStatAnimations(container) {
+
+  function animateNumber(el, raw) {
+    const match = raw.match(/^([^0-9]*)([0-9]+\.?[0-9]*)(.*)$/);
+    if (!match) return;
+    const prefix = match[1];
+    const target = parseFloat(match[2]);
+    const suffix = match[3];
+    const isFloat = match[2].includes('.');
+    const decimals = isFloat ? (match[2].split('.')[1] || '').length : 0;
+    const duration = 1500;
+    const startTime = performance.now();
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function tick(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const value = easeOut(progress) * target;
+      el.textContent = prefix + (isFloat ? value.toFixed(decimals) : Math.floor(value)) + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = prefix + (isFloat ? target.toFixed(decimals) : target) + suffix;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function animateText(el, text) {
+    const stepMs = 15; // ms per letter step
+    const chars = text.split('');
+    const revealed = new Array(chars.length).fill('');
+
+    function getStart(ch) {
+      if (/[a-z]/.test(ch)) return 'a'.charCodeAt(0);
+      if (/[A-Z]/.test(ch)) return 'A'.charCodeAt(0);
+      return null; // non-letter — show instantly
+    }
+
+    function animateChar(i, onDone) {
+      const ch = chars[i];
+      const startCode = getStart(ch);
+
+      // Non-letter: show instantly and move on
+      if (startCode === null) {
+        revealed[i] = ch;
+        el.textContent = revealed.join('');
+        onDone();
+        return;
+      }
+
+      const targetCode = ch.charCodeAt(0);
+      let current = startCode;
+
+      function step() {
+        revealed[i] = String.fromCharCode(current);
+        el.textContent = revealed.join('');
+        if (current >= targetCode) {
+          onDone();
+          return;
+        }
+        current++;
+        setTimeout(step, stepMs);
+      }
+      step();
+    }
+
+    // Chain characters sequentially
+    function runChar(i) {
+      if (i >= chars.length) return;
+      animateChar(i, () => runChar(i + 1));
+    }
+
+    // Start with blank
+    el.textContent = '';
+    runChar(0);
+  }
+
+  const els = container.querySelectorAll('.stat-num');
+  if (!els.length) return;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      obs.unobserve(entry.target);
+      const el = entry.target;
+      // Respect per-item animate flag — '0' means skip
+      if (el.dataset.statAnimate === '0') return;
+      const raw = el.dataset.statRaw || el.textContent.trim();
+      el.dataset.statRaw = raw;
+      const hasNumber = /[0-9]/.test(raw);
+      if (hasNumber) {
+        animateNumber(el, raw);
+      } else {
+        animateText(el, raw);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  els.forEach(el => obs.observe(el));
+}
+
 function formatBody(text) {
   if (!text) return '';
   // Convert newlines to paragraphs if not already HTML
@@ -4328,9 +5947,9 @@ function escAttr(str) {
 }
 
 // Resolves and opens a smart link — handles external URL prefix and file paths
-function openSmartLink(linkType, linkUrl) {
+function openSmartLink(linkType, linkUrl, anchor) {
   if (!linkUrl) return;
-  if (linkType === 'internal') { showPage(linkUrl); return; }
+  if (linkType === 'internal') { showPage(linkUrl, anchor || ''); return; }
   let url = linkUrl.trim();
   if (linkType === 'external' && url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
   const a = document.createElement('a');
@@ -4346,6 +5965,55 @@ function openSmartLink(linkType, linkUrl) {
 // Generic modal for custom page service cards
 let _modalBtnLinkType = 'internal';
 let _modalBtnLinkUrl = 'contact';
+let _modalBtnAnchorId = '';
+
+// Image gallery lightbox
+let _lbItems = [];
+let _lbIdx = 0;
+
+function openLightbox(items, idx) {
+  _lbItems = items;
+  _lbIdx = idx;
+  _lbRender();
+  const lb = document.getElementById('cpsLightbox');
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function _lbRender() {
+  const item = _lbItems[_lbIdx];
+  if (!item) return;
+  const img = document.getElementById('cpsLightboxImg');
+  const cap = document.getElementById('cpsLightboxCaption');
+  img.src = item.src;
+  img.alt = item.alt || '';
+  const titleHtml = item.title ? '<div class="cps-lightbox-title">' + item.title + '</div>' : '';
+  const descHtml  = item.caption ? '<div class="cps-lightbox-desc">' + item.caption + '</div>' : '';
+  cap.innerHTML = titleHtml + descHtml;
+  // Show/hide arrows
+  const prev = document.querySelector('.cps-lightbox-prev');
+  const next = document.querySelector('.cps-lightbox-next');
+  if (prev) prev.style.display = _lbItems.length > 1 ? '' : 'none';
+  if (next) next.style.display = _lbItems.length > 1 ? '' : 'none';
+}
+
+function lightboxNav(dir) {
+  _lbIdx = (_lbIdx + dir + _lbItems.length) % _lbItems.length;
+  _lbRender();
+}
+
+function closeLightbox() {
+  document.getElementById('cpsLightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('cpsLightbox');
+  if (!lb || !lb.classList.contains('open')) return;
+  if (e.key === 'Escape')      closeLightbox();
+  if (e.key === 'ArrowLeft')   lightboxNav(-1);
+  if (e.key === 'ArrowRight')  lightboxNav(1);
+});
 
 function closeServiceModal() {
   const m = document.getElementById('serviceModal');
@@ -4354,16 +6022,17 @@ function closeServiceModal() {
 }
 
 function openCpsModalFromCard(el) {
-  const title      = el.dataset.svcTitle    || '';
-  const icon       = el.dataset.svcIcon     || '⚖️';
-  const body       = el.dataset.svcDetail   || '';
-  const btnLabel   = el.dataset.svcBtnLabel || '';
-  const btnLinkType = el.dataset.svcBtnType || 'internal';
-  const btnLinkUrl  = el.dataset.svcBtnUrl  || 'contact';
-  openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl);
+  const title       = el.dataset.svcTitle      || '';
+  const icon        = el.dataset.svcIcon       || '⚖️';
+  const body        = el.dataset.svcDetail     || '';
+  const btnLabel    = el.dataset.svcBtnLabel   || '';
+  const btnLinkType = el.dataset.svcBtnType    || 'internal';
+  const btnLinkUrl  = el.dataset.svcBtnUrl     || 'contact';
+  const btnAnchorId = el.dataset.svcBtnAnchor  || '';
+  openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl, btnAnchorId);
 }
 
-function openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl) {
+function openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl, btnAnchorId) {
   document.getElementById('modal-icon').textContent = icon;
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').textContent = body;
@@ -4373,7 +6042,8 @@ function openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl) {
     const label = btnLabel || 'Schedule a Consultation';
     btn.textContent = label + ' →';
     _modalBtnLinkType = btnLinkType || 'internal';
-    _modalBtnLinkUrl = btnLinkUrl || 'contact';
+    _modalBtnLinkUrl  = btnLinkUrl  || 'contact';
+    _modalBtnAnchorId = btnAnchorId || '';
     cta.style.display = (btnLinkType === 'none' && !btnLabel) ? 'none' : '';
   }
   document.getElementById('serviceModal').classList.add('open');
@@ -4382,7 +6052,7 @@ function openCpsModal(title, icon, body, btnLabel, btnLinkType, btnLinkUrl) {
 
 function handleModalCta() {
   closeServiceModal();
-  openSmartLink(_modalBtnLinkType, _modalBtnLinkUrl);
+  openSmartLink(_modalBtnLinkType, _modalBtnLinkUrl, _modalBtnAnchorId);
 }
 
 // Custom form submission handler
@@ -4478,5 +6148,18 @@ if (CFG.googleAnalyticsId) {
   gtag('js', new Date()); gtag('config', CFG.googleAnalyticsId);
 }
 </script>
+<!-- SEARCH OVERLAY -->
+<div id="searchOverlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Search">
+  <button class="search-close-btn" onclick="closeSearch()" aria-label="Close search">✕</button>
+  <div class="search-overlay-inner">
+    <div class="search-input-wrap">
+      <svg class="search-input-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" class="search-input" autocomplete="off" spellcheck="false"/>
+    </div>
+    <div id="searchSuggestions" class="search-suggestions"></div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+</div>
+
 </body>
 </html>
